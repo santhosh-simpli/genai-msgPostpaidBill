@@ -1,19 +1,21 @@
 package com.msg.telecom.config;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 class CorsConfigTest {
 
-    @Autowired
     private CorsConfig corsConfig;
+
+    @BeforeEach
+    void setUp() {
+        corsConfig = new CorsConfig();
+    }
 
     @Test
     public void testCorsFilter() {

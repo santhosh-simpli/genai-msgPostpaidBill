@@ -1,11 +1,11 @@
 # Functional Test Case Documentation
 ## MSG Telecom: Postpaid Billing System
 
-**Document Version:** 1.0.0  
-**Date:** January 8, 2026  
-**Project:** MSG Telecom Postpaid Billing System  
-**Test Framework:** JUnit 5, Mockito, Spring Boot Test  
-**Total Test Cases:** 81  
+**Document Version:** 1.0.0
+**Date:** January 8, 2026
+**Project:** MSG Telecom Postpaid Billing System
+**Test Framework:** JUnit 5, Mockito, Spring Boot Test
+**Total Test Cases:** 81
 **Test Status:** ✅ ALL PASSING
 
 ---
@@ -57,9 +57,9 @@
 ### Test Class: `AuthControllerTest.java`
 
 #### TC-AUTH-001: Successful Login
-**Test Method**: `login_Success_ReturnsAuthResponse()`  
-**Objective**: Verify successful user authentication returns JWT token  
-**Priority**: High  
+**Test Method**: `login_Success_ReturnsAuthResponse()`
+**Objective**: Verify successful user authentication returns JWT token
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -89,9 +89,9 @@ assertEquals("Bearer", response.getBody().getType());
 ---
 
 #### TC-AUTH-002: Login with Admin Credentials
-**Test Method**: `login_WithValidCredentials_CallsAuthService()`  
-**Objective**: Verify admin user can authenticate  
-**Priority**: High  
+**Test Method**: `login_WithValidCredentials_CallsAuthService()`
+**Objective**: Verify admin user can authenticate
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -117,9 +117,9 @@ verify(authService, times(1)).login(request);
 ---
 
 #### TC-AUTH-003: Successful User Registration
-**Test Method**: `register_Success_ReturnsAuthResponse()`  
-**Objective**: Verify new user registration creates account and returns token  
-**Priority**: High  
+**Test Method**: `register_Success_ReturnsAuthResponse()`
+**Objective**: Verify new user registration creates account and returns token
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -150,9 +150,9 @@ assertEquals("new-user-token", response.getBody().getToken());
 ---
 
 #### TC-AUTH-004: Register with Admin Role
-**Test Method**: `register_WithRole_ReturnsAuthResponse()`  
-**Objective**: Verify registration supports different user roles  
-**Priority**: Medium  
+**Test Method**: `register_WithRole_ReturnsAuthResponse()`
+**Objective**: Verify registration supports different user roles
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -175,9 +175,9 @@ assertEquals("new-user-token", response.getBody().getToken());
 ---
 
 #### TC-AUTH-005: Authentication Service Invocation
-**Test Method**: `register_CallsAuthService()`  
-**Objective**: Verify controller properly delegates to service layer  
-**Priority**: Medium  
+**Test Method**: `register_CallsAuthService()`
+**Objective**: Verify controller properly delegates to service layer
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Verification**:
@@ -190,9 +190,9 @@ verify(authService, times(1)).register(request);
 ---
 
 #### TC-AUTH-006: Bearer Token Type Verification
-**Test Method**: `login_ReturnsResponseWithBearerType()`  
-**Objective**: Ensure token type is consistently "Bearer"  
-**Priority**: Low  
+**Test Method**: `login_ReturnsResponseWithBearerType()`
+**Objective**: Ensure token type is consistently "Bearer"
+**Priority**: Low
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -204,9 +204,9 @@ verify(authService, times(1)).register(request);
 ---
 
 #### TC-AUTH-007: Multi-User Login Validation
-**Test Method**: `login_WithDifferentUsers_ReturnsCorrectTokens()`  
-**Objective**: Verify system supports concurrent user logins  
-**Priority**: Medium  
+**Test Method**: `login_WithDifferentUsers_ReturnsCorrectTokens()`
+**Objective**: Verify system supports concurrent user logins
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Test Data**: Multiple users with different credentials
@@ -223,9 +223,9 @@ verify(authService, times(1)).register(request);
 ### Test Class: `AuthServiceTest.java`
 
 #### TC-AUTH-SRV-001: Login Success at Service Layer
-**Test Method**: `login_Success()`  
-**Objective**: Validate authentication manager integration  
-**Priority**: High  
+**Test Method**: `login_Success()`
+**Objective**: Validate authentication manager integration
+**Priority**: High
 **Test Type**: Unit Test
 
 **Process Flow**:
@@ -253,9 +253,9 @@ verify(jwtTokenProvider, times(1)).generateToken(any());
 ---
 
 #### TC-AUTH-SRV-002: User Not Found Error
-**Test Method**: `login_UserNotFound()`  
-**Objective**: Verify error handling when user doesn't exist  
-**Priority**: High  
+**Test Method**: `login_UserNotFound()`
+**Objective**: Verify error handling when user doesn't exist
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -273,9 +273,9 @@ assertThrows(RuntimeException.class, () -> authService.login(loginRequest));
 ---
 
 #### TC-AUTH-SRV-003: Authentication Failure
-**Test Method**: `login_AuthenticationFailed()`  
-**Objective**: Verify handling of invalid credentials  
-**Priority**: High  
+**Test Method**: `login_AuthenticationFailed()`
+**Objective**: Verify handling of invalid credentials
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -293,9 +293,9 @@ verify(jwtTokenProvider, never()).generateToken(any());
 ---
 
 #### TC-AUTH-SRV-004: Registration Success
-**Test Method**: `register_Success()`  
-**Objective**: Validate complete user registration flow  
-**Priority**: High  
+**Test Method**: `register_Success()`
+**Objective**: Validate complete user registration flow
+**Priority**: High
 **Test Type**: Unit Test
 
 **Process Flow**:
@@ -319,9 +319,9 @@ verify(passwordEncoder, times(1)).encode("password123");
 ---
 
 #### TC-AUTH-SRV-005: Duplicate Username Rejection
-**Test Method**: `register_UsernameExists()`  
-**Objective**: Prevent duplicate usernames in system  
-**Priority**: High  
+**Test Method**: `register_UsernameExists()`
+**Objective**: Prevent duplicate usernames in system
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -340,9 +340,9 @@ verify(userRepository, never()).save(any(User.class));
 ---
 
 #### TC-AUTH-SRV-006: Duplicate Email Rejection
-**Test Method**: `register_EmailExists()`  
-**Objective**: Ensure email uniqueness across users  
-**Priority**: High  
+**Test Method**: `register_EmailExists()`
+**Objective**: Ensure email uniqueness across users
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -355,9 +355,9 @@ verify(userRepository, never()).save(any(User.class));
 ---
 
 #### TC-AUTH-SRV-007: Admin Role Registration
-**Test Method**: `register_AdminRole()`  
-**Objective**: Verify system supports admin user creation  
-**Priority**: Medium  
+**Test Method**: `register_AdminRole()`
+**Objective**: Verify system supports admin user creation
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -384,9 +384,9 @@ verify(userRepository, never()).save(any(User.class));
 ### Test Class: `CustomerControllerTest.java`
 
 #### TC-CUST-001: Admin Gets All Customers
-**Test Method**: `getAllCustomers_AdminRole_ReturnsAll()`  
-**Objective**: Verify admin users can view all customers  
-**Priority**: High  
+**Test Method**: `getAllCustomers_AdminRole_ReturnsAll()`
+**Objective**: Verify admin users can view all customers
+**Priority**: High
 **Test Type**: Unit Test
 
 **Preconditions**:
@@ -409,9 +409,9 @@ verify(customerService, times(1)).getAllCustomers();
 ---
 
 #### TC-CUST-002: Admin Gets Empty Customer List
-**Test Method**: `getAllCustomers_AdminRole_ReturnsEmptyList()`  
-**Objective**: Verify system handles no customers gracefully  
-**Priority**: Low  
+**Test Method**: `getAllCustomers_AdminRole_ReturnsEmptyList()`
+**Objective**: Verify system handles no customers gracefully
+**Priority**: Low
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -423,9 +423,9 @@ verify(customerService, times(1)).getAllCustomers();
 ---
 
 #### TC-CUST-003: Customer Gets Own Records Only
-**Test Method**: `getAllCustomers_CustomerRole_ReturnsOwn()`  
-**Objective**: Verify row-level security for customer role  
-**Priority**: High  
+**Test Method**: `getAllCustomers_CustomerRole_ReturnsOwn()`
+**Objective**: Verify row-level security for customer role
+**Priority**: High
 **Test Type**: Security Test
 
 **Preconditions**:
@@ -447,9 +447,9 @@ verify(customerService, never()).getAllCustomers();
 ---
 
 #### TC-CUST-004: Customer Access Isolation
-**Test Method**: `getAllCustomers_CustomerRole_ReturnsEmptyList()`  
-**Objective**: Verify customer without records gets empty list  
-**Priority**: Medium  
+**Test Method**: `getAllCustomers_CustomerRole_ReturnsEmptyList()`
+**Objective**: Verify customer without records gets empty list
+**Priority**: Medium
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -462,9 +462,9 @@ verify(customerService, never()).getAllCustomers();
 ---
 
 #### TC-CUST-005: Get Customer By ID as Admin
-**Test Method**: `getCustomerById_AsAdmin_ReturnsDto()`  
-**Objective**: Admin can retrieve any customer by ID  
-**Priority**: High  
+**Test Method**: `getCustomerById_AsAdmin_ReturnsDto()`
+**Objective**: Admin can retrieve any customer by ID
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -483,9 +483,9 @@ assertEquals("1234567890", response.getBody().getPhoneNumber());
 ---
 
 #### TC-CUST-006: Customer Access Own Record
-**Test Method**: `getCustomerById_AsCustomer_OwnCustomer_ReturnsDto()`  
-**Objective**: Customer can view their own profile  
-**Priority**: High  
+**Test Method**: `getCustomerById_AsCustomer_OwnCustomer_ReturnsDto()`
+**Objective**: Customer can view their own profile
+**Priority**: High
 **Test Type**: Security Test
 
 **Preconditions**:
@@ -501,9 +501,9 @@ assertEquals("1234567890", response.getBody().getPhoneNumber());
 ---
 
 #### TC-CUST-007: Create New Customer
-**Test Method**: `createCustomer_Success_ReturnsCreatedDto()`  
-**Objective**: Admin can create new customer account  
-**Priority**: High  
+**Test Method**: `createCustomer_Success_ReturnsCreatedDto()`
+**Objective**: Admin can create new customer account
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -528,9 +528,9 @@ assertEquals("1234567890", response.getBody().getPhoneNumber());
 ### Test Class: `CustomerServiceTest.java`
 
 #### TC-CUST-SRV-001: Get All Customers Service
-**Test Method**: `getAllCustomers_ReturnsList()`  
-**Objective**: Service layer retrieves all customers from repository  
-**Priority**: High  
+**Test Method**: `getAllCustomers_ReturnsList()`
+**Objective**: Service layer retrieves all customers from repository
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -542,9 +542,9 @@ assertEquals("1234567890", response.getBody().getPhoneNumber());
 ---
 
 #### TC-CUST-SRV-002: Get Customer By ID Found
-**Test Method**: `getCustomerById_Found()`  
-**Objective**: Successfully retrieve customer by valid ID  
-**Priority**: High  
+**Test Method**: `getCustomerById_Found()`
+**Objective**: Successfully retrieve customer by valid ID
+**Priority**: High
 **Test Type**: Unit Test
 
 **Assertions**:
@@ -559,9 +559,9 @@ verify(customerRepository, times(1)).findById(1L);
 ---
 
 #### TC-CUST-SRV-003: Get Customer By ID Not Found
-**Test Method**: `getCustomerById_NotFound()`  
-**Objective**: Handle non-existent customer ID gracefully  
-**Priority**: High  
+**Test Method**: `getCustomerById_NotFound()`
+**Objective**: Handle non-existent customer ID gracefully
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -570,7 +570,7 @@ verify(customerRepository, times(1)).findById(1L);
 
 **Assertions**:
 ```java
-RuntimeException ex = assertThrows(RuntimeException.class, 
+RuntimeException ex = assertThrows(RuntimeException.class,
     () -> customerService.getCustomerById(999L));
 assertTrue(ex.getMessage().contains("Customer not found"));
 ```
@@ -580,9 +580,9 @@ assertTrue(ex.getMessage().contains("Customer not found"));
 ---
 
 #### TC-CUST-SRV-004: Get Customers By User ID
-**Test Method**: `getCustomersByUserId_ReturnsList()`  
-**Objective**: Retrieve all customers linked to a user account  
-**Priority**: High  
+**Test Method**: `getCustomersByUserId_ReturnsList()`
+**Objective**: Retrieve all customers linked to a user account
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -594,9 +594,9 @@ assertTrue(ex.getMessage().contains("Customer not found"));
 ---
 
 #### TC-CUST-SRV-005: Create Customer Without Phone
-**Test Method**: `createCustomer_Success_WithoutPhone()`  
-**Objective**: Allow customer creation without phone number  
-**Priority**: Medium  
+**Test Method**: `createCustomer_Success_WithoutPhone()`
+**Objective**: Allow customer creation without phone number
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -609,9 +609,9 @@ assertTrue(ex.getMessage().contains("Customer not found"));
 ---
 
 #### TC-CUST-SRV-006: Create Customer With Phone
-**Test Method**: `createCustomer_Success_WithPhone()`  
-**Objective**: Create customer with phone number validation  
-**Priority**: High  
+**Test Method**: `createCustomer_Success_WithPhone()`
+**Objective**: Create customer with phone number validation
+**Priority**: High
 **Test Type**: Unit Test
 
 **Process**:
@@ -631,9 +631,9 @@ verify(customerRepository, times(1)).existsByPhoneNumber("9876543210");
 ---
 
 #### TC-CUST-SRV-007: Duplicate Phone Number Rejection
-**Test Method**: `createCustomer_PhoneExists()`  
-**Objective**: Prevent duplicate phone numbers in system  
-**Priority**: High  
+**Test Method**: `createCustomer_PhoneExists()`
+**Objective**: Prevent duplicate phone numbers in system
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -651,9 +651,9 @@ verify(customerRepository, never()).save(any(Customer.class));
 ---
 
 #### TC-CUST-SRV-008: Update Customer Details
-**Test Method**: `updateCustomer_Success()`  
-**Objective**: Modify existing customer information  
-**Priority**: High  
+**Test Method**: `updateCustomer_Success()`
+**Objective**: Modify existing customer information
+**Priority**: High
 **Test Type**: Unit Test
 
 **Update Fields**:
@@ -674,9 +674,9 @@ verify(customerRepository, never()).save(any(Customer.class));
 ### Test Class: `InvoiceControllerTest.java`
 
 #### TC-INV-001: Admin Gets All Invoices
-**Test Method**: `getAllInvoices_AdminRole_ReturnsAll()`  
-**Objective**: Admin can view all invoices in system  
-**Priority**: High  
+**Test Method**: `getAllInvoices_AdminRole_ReturnsAll()`
+**Objective**: Admin can view all invoices in system
+**Priority**: High
 **Test Type**: Unit Test
 
 **Preconditions**:
@@ -699,9 +699,9 @@ verify(invoiceService, times(1)).getAllInvoices();
 ---
 
 #### TC-INV-002: Operator Gets All Invoices
-**Test Method**: `getAllInvoices_OperatorRole_ReturnsAll()`  
-**Objective**: Operator role has full invoice visibility  
-**Priority**: High  
+**Test Method**: `getAllInvoices_OperatorRole_ReturnsAll()`
+**Objective**: Operator role has full invoice visibility
+**Priority**: High
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -714,9 +714,9 @@ verify(invoiceService, times(1)).getAllInvoices();
 ---
 
 #### TC-INV-003: Customer Gets Own Invoices Only
-**Test Method**: `getAllInvoices_CustomerRole_ReturnsOwnInvoices()`  
-**Objective**: Customer role restricted to own billing  
-**Priority**: High  
+**Test Method**: `getAllInvoices_CustomerRole_ReturnsOwnInvoices()`
+**Objective**: Customer role restricted to own billing
+**Priority**: High
 **Test Type**: Security Test
 
 **Process Flow**:
@@ -735,9 +735,9 @@ verify(invoiceService, times(1)).getInvoicesByCustomerId(1L);
 ---
 
 #### TC-INV-004: Customer Without Records Gets Empty List
-**Test Method**: `getAllInvoices_CustomerWithNoCustomerRecord_ReturnsEmptyList()`  
-**Objective**: Handle edge case of user without customer record  
-**Priority**: Medium  
+**Test Method**: `getAllInvoices_CustomerWithNoCustomerRecord_ReturnsEmptyList()`
+**Objective**: Handle edge case of user without customer record
+**Priority**: Medium
 **Test Type**: Edge Case Test
 
 **Expected Results**:
@@ -750,9 +750,9 @@ verify(invoiceService, times(1)).getInvoicesByCustomerId(1L);
 ---
 
 #### TC-INV-005: Create Invoice with Default Dates
-**Test Method**: `createInvoice_WithDefaultDates()`  
-**Objective**: System provides default billing period if not specified  
-**Priority**: Medium  
+**Test Method**: `createInvoice_WithDefaultDates()`
+**Objective**: System provides default billing period if not specified
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Default Behavior**:
@@ -765,9 +765,9 @@ verify(invoiceService, times(1)).getInvoicesByCustomerId(1L);
 ---
 
 #### TC-INV-006: Create Invoice with Custom Dates
-**Test Method**: `createInvoice_WithCustomDates()`  
-**Objective**: Support custom billing periods  
-**Priority**: High  
+**Test Method**: `createInvoice_WithCustomDates()`
+**Objective**: Support custom billing periods
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -790,9 +790,9 @@ verify(invoiceService, times(1)).getInvoicesByCustomerId(1L);
 ---
 
 #### TC-INV-007: Record Payment for Invoice
-**Test Method**: `recordPayment_AsCustomer_OwnInvoice()`  
-**Objective**: Customer can pay their own invoices  
-**Priority**: High  
+**Test Method**: `recordPayment_AsCustomer_OwnInvoice()`
+**Objective**: Customer can pay their own invoices
+**Priority**: High
 **Test Type**: Unit Test
 
 **Process**:
@@ -811,9 +811,9 @@ verify(invoiceService, times(1)).getInvoicesByCustomerId(1L);
 ---
 
 #### TC-INV-008: Prevent Cross-Customer Payment
-**Test Method**: `recordPayment_AsCustomer_OtherInvoice_Returns403()`  
-**Objective**: Customers cannot pay other customers' invoices  
-**Priority**: High  
+**Test Method**: `recordPayment_AsCustomer_OtherInvoice_Returns403()`
+**Objective**: Customers cannot pay other customers' invoices
+**Priority**: High
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -826,9 +826,9 @@ verify(invoiceService, times(1)).getInvoicesByCustomerId(1L);
 ---
 
 #### TC-INV-009: Get Invoice Payments
-**Test Method**: `getInvoicePayments_ReturnsPaymentList()`  
-**Objective**: Retrieve all payments for a specific invoice  
-**Priority**: Medium  
+**Test Method**: `getInvoicePayments_ReturnsPaymentList()`
+**Objective**: Retrieve all payments for a specific invoice
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -845,9 +845,9 @@ verify(invoiceService, times(1)).getInvoicesByCustomerId(1L);
 ### Test Class: `PaymentControllerTest.java`
 
 #### TC-PAY-001: Admin Gets All Payments
-**Test Method**: `getAllPayments_AdminRole_ReturnsAll()`  
-**Objective**: Admin can view all payment transactions  
-**Priority**: High  
+**Test Method**: `getAllPayments_AdminRole_ReturnsAll()`
+**Objective**: Admin can view all payment transactions
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -866,9 +866,9 @@ verify(paymentService, times(1)).getAllPayments();
 ---
 
 #### TC-PAY-002: Operator Gets All Payments
-**Test Method**: `getAllPayments_OperatorRole_ReturnsAll()`  
-**Objective**: Operator has full payment visibility  
-**Priority**: High  
+**Test Method**: `getAllPayments_OperatorRole_ReturnsAll()`
+**Objective**: Operator has full payment visibility
+**Priority**: High
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -881,9 +881,9 @@ verify(paymentService, times(1)).getAllPayments();
 ---
 
 #### TC-PAY-003: Customer Gets Own Payments Only
-**Test Method**: `getAllPayments_CustomerRole_ReturnsOwnPayments()`  
-**Objective**: Customer sees only their payment history  
-**Priority**: High  
+**Test Method**: `getAllPayments_CustomerRole_ReturnsOwnPayments()`
+**Objective**: Customer sees only their payment history
+**Priority**: High
 **Test Type**: Security Test
 
 **Process Flow**:
@@ -902,9 +902,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-PAY-004: Customer Without Records
-**Test Method**: `getAllPayments_CustomerWithNoCustomerRecord_ReturnsEmptyList()`  
-**Objective**: Handle customer without payment history  
-**Priority**: Low  
+**Test Method**: `getAllPayments_CustomerWithNoCustomerRecord_ReturnsEmptyList()`
+**Objective**: Handle customer without payment history
+**Priority**: Low
 **Test Type**: Edge Case Test
 
 **Expected Results**:
@@ -917,9 +917,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-PAY-005: Create Payment as Customer
-**Test Method**: `createPayment_AsCustomer_OwnInvoice()`  
-**Objective**: Customer can make payment for own invoice  
-**Priority**: High  
+**Test Method**: `createPayment_AsCustomer_OwnInvoice()`
+**Objective**: Customer can make payment for own invoice
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -941,9 +941,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-PAY-006: Prevent Unauthorized Payment
-**Test Method**: `createPayment_AsCustomer_OtherInvoice_Returns403()`  
-**Objective**: Block payment for another customer's invoice  
-**Priority**: High  
+**Test Method**: `createPayment_AsCustomer_OtherInvoice_Returns403()`
+**Objective**: Block payment for another customer's invoice
+**Priority**: High
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -960,9 +960,9 @@ verify(paymentService, never()).getAllPayments();
 ### 6.1 Invoice Service Tests
 
 #### TC-INV-SRV-001: Get All Invoices Ordered
-**Test Method**: `getAllInvoices_ReturnsOrderedList()`  
-**Objective**: Invoices returned in descending order  
-**Priority**: Medium  
+**Test Method**: `getAllInvoices_ReturnsOrderedList()`
+**Objective**: Invoices returned in descending order
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Behavior**:
@@ -974,9 +974,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INV-SRV-002: Get Invoice By ID
-**Test Method**: `getInvoiceById_Found()`  
-**Objective**: Retrieve specific invoice by ID  
-**Priority**: High  
+**Test Method**: `getInvoiceById_Found()`
+**Objective**: Retrieve specific invoice by ID
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -988,9 +988,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INV-SRV-003: Invoice Not Found
-**Test Method**: `getInvoiceById_NotFound()`  
-**Objective**: Handle non-existent invoice ID  
-**Priority**: High  
+**Test Method**: `getInvoiceById_NotFound()`
+**Objective**: Handle non-existent invoice ID
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -1002,9 +1002,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INV-SRV-004: Get Invoices By Customer
-**Test Method**: `getInvoicesByCustomerId_ReturnsOrdered()`  
-**Objective**: Retrieve customer-specific invoices  
-**Priority**: High  
+**Test Method**: `getInvoicesByCustomerId_ReturnsOrdered()`
+**Objective**: Retrieve customer-specific invoices
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1016,9 +1016,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INV-SRV-005: Create Invoice
-**Test Method**: `createInvoice_Success()`  
-**Objective**: Create new invoice record  
-**Priority**: High  
+**Test Method**: `createInvoice_Success()`
+**Objective**: Create new invoice record
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1031,9 +1031,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INV-SRV-006: Update Invoice
-**Test Method**: `updateInvoice_Success()`  
-**Objective**: Modify existing invoice details  
-**Priority**: High  
+**Test Method**: `updateInvoice_Success()`
+**Objective**: Modify existing invoice details
+**Priority**: High
 **Test Type**: Unit Test
 
 **Updatable Fields**:
@@ -1048,9 +1048,9 @@ verify(paymentService, never()).getAllPayments();
 ### 6.2 Payment Service Tests
 
 #### TC-PAY-SRV-001: Get All Payments
-**Test Method**: `getAllPayments_ReturnsList()`  
-**Objective**: Retrieve all payment records  
-**Priority**: Medium  
+**Test Method**: `getAllPayments_ReturnsList()`
+**Objective**: Retrieve all payment records
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1062,9 +1062,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-PAY-SRV-002: Get Payment By ID
-**Test Method**: `getPaymentById_Found()`  
-**Objective**: Retrieve specific payment  
-**Priority**: High  
+**Test Method**: `getPaymentById_Found()`
+**Objective**: Retrieve specific payment
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1076,9 +1076,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-PAY-SRV-003: Get Payments By Invoice
-**Test Method**: `getPaymentsByInvoiceId_ReturnsList()`  
-**Objective**: Get payment history for invoice  
-**Priority**: High  
+**Test Method**: `getPaymentsByInvoiceId_ReturnsList()`
+**Objective**: Get payment history for invoice
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1091,9 +1091,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-PAY-SRV-004: Create Payment
-**Test Method**: `createPayment_Success()`  
-**Objective**: Record new payment transaction  
-**Priority**: High  
+**Test Method**: `createPayment_Success()`
+**Objective**: Record new payment transaction
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1108,9 +1108,9 @@ verify(paymentService, never()).getAllPayments();
 ### 6.3 User Service Tests
 
 #### TC-USER-SRV-001: Get User By Username
-**Test Method**: `getUserByUsername_Found()`  
-**Objective**: Retrieve user account by username  
-**Priority**: High  
+**Test Method**: `getUserByUsername_Found()`
+**Objective**: Retrieve user account by username
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1122,9 +1122,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-USER-SRV-002: User Not Found
-**Test Method**: `getUserByUsername_NotFound()`  
-**Objective**: Handle non-existent username  
-**Priority**: High  
+**Test Method**: `getUserByUsername_NotFound()`
+**Objective**: Handle non-existent username
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -1136,9 +1136,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-USER-SRV-003: Get User By Email
-**Test Method**: `getUserByEmail_Found()`  
-**Objective**: Support email-based user lookup  
-**Priority**: Medium  
+**Test Method**: `getUserByEmail_Found()`
+**Objective**: Support email-based user lookup
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1150,9 +1150,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-USER-SRV-004: Get All Users
-**Test Method**: `getAllUsers_ReturnsList()`  
-**Objective**: Admin can list all system users  
-**Priority**: Medium  
+**Test Method**: `getAllUsers_ReturnsList()`
+**Objective**: Admin can list all system users
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1164,9 +1164,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-USER-SRV-005: Create User
-**Test Method**: `createUser_Success()`  
-**Objective**: Create new user account  
-**Priority**: High  
+**Test Method**: `createUser_Success()`
+**Objective**: Create new user account
+**Priority**: High
 **Test Type**: Unit Test
 
 **Process**:
@@ -1180,9 +1180,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-USER-SRV-006: Delete User
-**Test Method**: `deleteUser_Success()`  
-**Objective**: Remove user account from system  
-**Priority**: Medium  
+**Test Method**: `deleteUser_Success()`
+**Objective**: Remove user account from system
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1196,9 +1196,9 @@ verify(paymentService, never()).getAllPayments();
 ### 6.4 Service (Telecom Service) Tests
 
 #### TC-SVC-SRV-001: Get Services By Customer
-**Test Method**: `getServicesByCustomerId_ReturnsList()`  
-**Objective**: Retrieve customer's subscribed services  
-**Priority**: High  
+**Test Method**: `getServicesByCustomerId_ReturnsList()`
+**Objective**: Retrieve customer's subscribed services
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1210,9 +1210,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-SVC-SRV-002: Create Service
-**Test Method**: `createService_Success()`  
-**Objective**: Add new service to customer account  
-**Priority**: High  
+**Test Method**: `createService_Success()`
+**Objective**: Add new service to customer account
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -1229,9 +1229,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-SVC-SRV-003: Update Service Status
-**Test Method**: `updateServiceStatus_Success()`  
-**Objective**: Change service status (Active/Suspended/Cancelled)  
-**Priority**: High  
+**Test Method**: `updateServiceStatus_Success()`
+**Objective**: Change service status (Active/Suspended/Cancelled)
+**Priority**: High
 **Test Type**: Unit Test
 
 **Valid Status Transitions**:
@@ -1246,9 +1246,9 @@ verify(paymentService, never()).getAllPayments();
 ### 6.5 Usage Record Service Tests
 
 #### TC-USAGE-SRV-001: Create Usage Record
-**Test Method**: `createUsageRecord_Success()`  
-**Objective**: Record service usage  
-**Priority**: High  
+**Test Method**: `createUsageRecord_Success()`
+**Objective**: Record service usage
+**Priority**: High
 **Test Type**: Unit Test
 
 **Test Data**:
@@ -1266,9 +1266,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-USAGE-SRV-002: Get Usage By Service
-**Test Method**: `getUsageByServiceId_ReturnsList()`  
-**Objective**: Retrieve usage history for service  
-**Priority**: High  
+**Test Method**: `getUsageByServiceId_ReturnsList()`
+**Objective**: Retrieve usage history for service
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1285,9 +1285,9 @@ verify(paymentService, never()).getAllPayments();
 ### Test Class: `JwtTokenProviderTest.java`
 
 #### TC-JWT-001: Generate JWT Token
-**Test Method**: `generateToken_Success()`  
-**Objective**: Create valid JWT token from authentication  
-**Priority**: High  
+**Test Method**: `generateToken_Success()`
+**Objective**: Create valid JWT token from authentication
+**Priority**: High
 **Test Type**: Unit Test
 
 **Token Contents**:
@@ -1301,9 +1301,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-JWT-002: Extract Username from Token
-**Test Method**: `extractUsername_ValidToken()`  
-**Objective**: Parse username from JWT token  
-**Priority**: High  
+**Test Method**: `extractUsername_ValidToken()`
+**Objective**: Parse username from JWT token
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1315,9 +1315,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-JWT-003: Validate Token Signature
-**Test Method**: `validateToken_ValidSignature()`  
-**Objective**: Verify token authenticity  
-**Priority**: High  
+**Test Method**: `validateToken_ValidSignature()`
+**Objective**: Verify token authenticity
+**Priority**: High
 **Test Type**: Security Test
 
 **Validation Checks**:
@@ -1330,9 +1330,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-JWT-004: Reject Invalid Token
-**Test Method**: `validateToken_InvalidSignature()`  
-**Objective**: Detect tampered tokens  
-**Priority**: High  
+**Test Method**: `validateToken_InvalidSignature()`
+**Objective**: Detect tampered tokens
+**Priority**: High
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -1344,9 +1344,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-JWT-005: Reject Expired Token
-**Test Method**: `validateToken_ExpiredToken()`  
-**Objective**: Prevent use of expired tokens  
-**Priority**: High  
+**Test Method**: `validateToken_ExpiredToken()`
+**Objective**: Prevent use of expired tokens
+**Priority**: High
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -1358,9 +1358,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-JWT-006: Extract Authorities
-**Test Method**: `extractAuthorities_ValidToken()`  
-**Objective**: Parse user roles from token  
-**Priority**: High  
+**Test Method**: `extractAuthorities_ValidToken()`
+**Objective**: Parse user roles from token
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1372,9 +1372,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-JWT-007: Token Expiration Time
-**Test Method**: `getExpirationTime_ValidToken()`  
-**Objective**: Verify token expiration configuration  
-**Priority**: Medium  
+**Test Method**: `getExpirationTime_ValidToken()`
+**Objective**: Verify token expiration configuration
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1386,9 +1386,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-JWT-008: Token Refresh Support
-**Test Method**: `refreshToken_ValidToken()`  
-**Objective**: Generate new token from existing valid token  
-**Priority**: Medium  
+**Test Method**: `refreshToken_ValidToken()`
+**Objective**: Generate new token from existing valid token
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1403,9 +1403,9 @@ verify(paymentService, never()).getAllPayments();
 ### Test Class: `JwtAuthenticationFilterTest.java`
 
 #### TC-FILTER-001: Filter Extracts Token from Header
-**Test Method**: `doFilter_ValidBearerToken_AuthenticatesUser()`  
-**Objective**: JWT filter processes Authorization header  
-**Priority**: High  
+**Test Method**: `doFilter_ValidBearerToken_AuthenticatesUser()`
+**Objective**: JWT filter processes Authorization header
+**Priority**: High
 **Test Type**: Unit Test
 
 **Header Format**: `Authorization: Bearer {token}`
@@ -1420,9 +1420,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-FILTER-002: Filter Skips Non-Bearer Tokens
-**Test Method**: `doFilter_NoToken_ContinuesChain()`  
-**Objective**: Handle requests without authentication  
-**Priority**: High  
+**Test Method**: `doFilter_NoToken_ContinuesChain()`
+**Objective**: Handle requests without authentication
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1435,9 +1435,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-FILTER-003: Filter Validates Token
-**Test Method**: `doFilter_InvalidToken_RejectsRequest()`  
-**Objective**: Reject requests with invalid tokens  
-**Priority**: High  
+**Test Method**: `doFilter_InvalidToken_RejectsRequest()`
+**Objective**: Reject requests with invalid tokens
+**Priority**: High
 **Test Type**: Security Test
 
 **Expected Results**:
@@ -1450,9 +1450,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-FILTER-004: Filter Sets Authentication
-**Test Method**: `doFilter_ValidToken_SetsSecurityContext()`  
-**Objective**: Populate Spring Security context  
-**Priority**: High  
+**Test Method**: `doFilter_ValidToken_SetsSecurityContext()`
+**Objective**: Populate Spring Security context
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1465,9 +1465,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-FILTER-005: Filter Handles Exceptions
-**Test Method**: `doFilter_Exception_HandledGracefully()`  
-**Objective**: Prevent filter from breaking on errors  
-**Priority**: Medium  
+**Test Method**: `doFilter_Exception_HandledGracefully()`
+**Objective**: Prevent filter from breaking on errors
+**Priority**: Medium
 **Test Type**: Error Handling Test
 
 **Expected Results**:
@@ -1482,9 +1482,9 @@ verify(paymentService, never()).getAllPayments();
 ### Test Class: `CustomUserDetailsServiceTest.java`
 
 #### TC-USERDETAILS-001: Load User By Username
-**Test Method**: `loadUserByUsername_Found()`  
-**Objective**: Load user for Spring Security authentication  
-**Priority**: High  
+**Test Method**: `loadUserByUsername_Found()`
+**Objective**: Load user for Spring Security authentication
+**Priority**: High
 **Test Type**: Unit Test
 
 **Expected Results**:
@@ -1497,9 +1497,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-USERDETAILS-002: User Not Found
-**Test Method**: `loadUserByUsername_NotFound()`  
-**Objective**: Handle non-existent username  
-**Priority**: High  
+**Test Method**: `loadUserByUsername_NotFound()`
+**Objective**: Handle non-existent username
+**Priority**: High
 **Test Type**: Negative Test
 
 **Expected Results**:
@@ -1515,9 +1515,9 @@ verify(paymentService, never()).getAllPayments();
 ### Test Class: `IntegrationTest.java`
 
 #### TC-INT-001: Full User Registration Flow
-**Test Method**: `fullUserFlow_RegisterLoginAndAccess()`  
-**Objective**: End-to-end user registration and authentication  
-**Priority**: High  
+**Test Method**: `fullUserFlow_RegisterLoginAndAccess()`
+**Objective**: End-to-end user registration and authentication
+**Priority**: High
 **Test Type**: Integration Test
 
 **Test Flow**:
@@ -1537,9 +1537,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INT-002: Unauthorized Access
-**Test Method**: `accessProtectedEndpoint_WithoutToken_Returns401()`  
-**Objective**: Verify endpoints are protected  
-**Priority**: High  
+**Test Method**: `accessProtectedEndpoint_WithoutToken_Returns401()`
+**Objective**: Verify endpoints are protected
+**Priority**: High
 **Test Type**: Security Integration Test
 
 **Test Scenario**:
@@ -1555,9 +1555,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INT-003: Duplicate Username Registration
-**Test Method**: `registerUser_DuplicateUsername_ReturnsError()`  
-**Objective**: System prevents duplicate usernames  
-**Priority**: High  
+**Test Method**: `registerUser_DuplicateUsername_ReturnsError()`
+**Objective**: System prevents duplicate usernames
+**Priority**: High
 **Test Type**: Integration Negative Test
 
 **Test Flow**:
@@ -1574,9 +1574,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INT-004: Invalid Login Credentials
-**Test Method**: `login_InvalidCredentials_ReturnsError()`  
-**Objective**: Reject invalid login attempts  
-**Priority**: High  
+**Test Method**: `login_InvalidCredentials_ReturnsError()`
+**Objective**: Reject invalid login attempts
+**Priority**: High
 **Test Type**: Integration Security Test
 
 **Test Data**:
@@ -1597,9 +1597,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INT-005: Token-Based Resource Access
-**Test Method**: `accessProtectedEndpoint_WithValidToken_ReturnsData()`  
-**Objective**: Valid tokens grant access to protected resources  
-**Priority**: High  
+**Test Method**: `accessProtectedEndpoint_WithValidToken_ReturnsData()`
+**Objective**: Valid tokens grant access to protected resources
+**Priority**: High
 **Test Type**: Integration Test
 
 **Test Flow**:
@@ -1617,9 +1617,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INT-006: Role-Based Access Control
-**Test Method**: `accessAdminEndpoint_AsCustomer_Returns403()`  
-**Objective**: Role restrictions enforced  
-**Priority**: High  
+**Test Method**: `accessAdminEndpoint_AsCustomer_Returns403()`
+**Objective**: Role restrictions enforced
+**Priority**: High
 **Test Type**: Integration Security Test
 
 **Test Scenario**:
@@ -1635,9 +1635,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-INT-007: CORS Configuration
-**Test Method**: `corsRequest_ValidOrigin_Allowed()`  
-**Objective**: Cross-origin requests supported  
-**Priority**: Medium  
+**Test Method**: `corsRequest_ValidOrigin_Allowed()`
+**Objective**: Cross-origin requests supported
+**Priority**: Medium
 **Test Type**: Integration Test
 
 **Expected Results**:
@@ -1654,9 +1654,9 @@ verify(paymentService, never()).getAllPayments();
 ### 9.1 Model Tests
 
 #### TC-MODEL-001: User Model UserDetails Implementation
-**Test Method**: `userModel_ImplementsUserDetails()`  
-**Objective**: User entity implements Spring Security interface  
-**Priority**: High  
+**Test Method**: `userModel_ImplementsUserDetails()`
+**Objective**: User entity implements Spring Security interface
+**Priority**: High
 **Test Type**: Unit Test
 
 **Implemented Methods**:
@@ -1673,9 +1673,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-MODEL-002: Customer Model Relationships
-**Test Method**: `customerModel_Relationships()`  
-**Objective**: Verify JPA relationships configured  
-**Priority**: High  
+**Test Method**: `customerModel_Relationships()`
+**Objective**: Verify JPA relationships configured
+**Priority**: High
 **Test Type**: Unit Test
 
 **Relationships**:
@@ -1688,9 +1688,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-MODEL-003: Invoice Model Fields
-**Test Method**: `invoiceModel_AllFieldsPresent()`  
-**Objective**: Verify invoice data model completeness  
-**Priority**: Medium  
+**Test Method**: `invoiceModel_AllFieldsPresent()`
+**Objective**: Verify invoice data model completeness
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Required Fields**:
@@ -1706,9 +1706,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-MODEL-004: Payment Model Constraints
-**Test Method**: `paymentModel_Constraints()`  
-**Objective**: Verify NOT NULL constraints  
-**Priority**: Medium  
+**Test Method**: `paymentModel_Constraints()`
+**Objective**: Verify NOT NULL constraints
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Constraints**:
@@ -1722,9 +1722,9 @@ verify(paymentService, never()).getAllPayments();
 ---
 
 #### TC-MODEL-005: Service Model Builder Pattern
-**Test Method**: `serviceModel_BuilderPattern()`  
-**Objective**: Lombok builder works correctly  
-**Priority**: Low  
+**Test Method**: `serviceModel_BuilderPattern()`
+**Objective**: Lombok builder works correctly
+**Priority**: Low
 **Test Type**: Unit Test
 
 **Usage**:
@@ -1741,9 +1741,9 @@ Service service = Service.builder()
 ---
 
 #### TC-MODEL-006: UsageRecord Model Units
-**Test Method**: `usageRecordModel_UnitsValid()`  
-**Objective**: Usage units are properly defined  
-**Priority**: Medium  
+**Test Method**: `usageRecordModel_UnitsValid()`
+**Objective**: Usage units are properly defined
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Valid Units**:
@@ -1756,9 +1756,9 @@ Service service = Service.builder()
 ---
 
 #### TC-MODEL-007: User Role Enum
-**Test Method**: `userRoleEnum_AllRolesDefined()`  
-**Objective**: Verify all roles available  
-**Priority**: Medium  
+**Test Method**: `userRoleEnum_AllRolesDefined()`
+**Objective**: Verify all roles available
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Defined Roles**:
@@ -1773,9 +1773,9 @@ Service service = Service.builder()
 ### 9.2 DTO Tests
 
 #### TC-DTO-001: AuthResponse Structure
-**Test Method**: `authResponse_AllFieldsPresent()`  
-**Objective**: Verify authentication response DTO  
-**Priority**: Medium  
+**Test Method**: `authResponse_AllFieldsPresent()`
+**Objective**: Verify authentication response DTO
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Fields**:
@@ -1791,9 +1791,9 @@ Service service = Service.builder()
 ---
 
 #### TC-DTO-002: LoginRequest Validation
-**Test Method**: `loginRequest_ValidationAnnotations()`  
-**Objective**: Verify validation constraints  
-**Priority**: Medium  
+**Test Method**: `loginRequest_ValidationAnnotations()`
+**Objective**: Verify validation constraints
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Validations**:
@@ -1805,9 +1805,9 @@ Service service = Service.builder()
 ---
 
 #### TC-DTO-003: RegisterRequest All Fields
-**Test Method**: `registerRequest_AllFieldsPresent()`  
-**Objective**: Complete registration DTO  
-**Priority**: Medium  
+**Test Method**: `registerRequest_AllFieldsPresent()`
+**Objective**: Complete registration DTO
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Fields**:
@@ -1821,9 +1821,9 @@ Service service = Service.builder()
 ---
 
 #### TC-DTO-004: CustomerDto Nested User
-**Test Method**: `customerDto_NestedUserDto()`  
-**Objective**: DTO includes nested user object  
-**Priority**: Medium  
+**Test Method**: `customerDto_NestedUserDto()`
+**Objective**: DTO includes nested user object
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Structure**:
@@ -1845,9 +1845,9 @@ Service service = Service.builder()
 ---
 
 #### TC-DTO-005: InvoiceDto Date Format
-**Test Method**: `invoiceDto_DateFormatISO()`  
-**Objective**: Dates formatted as ISO strings  
-**Priority**: Low  
+**Test Method**: `invoiceDto_DateFormatISO()`
+**Objective**: Dates formatted as ISO strings
+**Priority**: Low
 **Test Type**: Unit Test
 
 **Format**: yyyy-MM-dd (e.g., "2026-01-08")
@@ -1857,9 +1857,9 @@ Service service = Service.builder()
 ---
 
 #### TC-DTO-006: PaymentDto Mapping
-**Test Method**: `paymentDto_FieldMapping()`  
-**Objective**: DTO properly maps from entity  
-**Priority**: Medium  
+**Test Method**: `paymentDto_FieldMapping()`
+**Objective**: DTO properly maps from entity
+**Priority**: Medium
 **Test Type**: Unit Test
 
 **Mapping**:
@@ -2059,12 +2059,12 @@ test:
 
 ### B.1 Latest Test Run
 
-**Date**: January 8, 2026  
-**Environment**: Local Development  
-**Total Tests**: 81  
-**Passed**: 81 ✅  
-**Failed**: 0  
-**Skipped**: 0  
+**Date**: January 8, 2026
+**Environment**: Local Development
+**Total Tests**: 81
+**Passed**: 81 ✅
+**Failed**: 0
+**Skipped**: 0
 **Execution Time**: 12.5 seconds
 
 ### B.2 Test Performance

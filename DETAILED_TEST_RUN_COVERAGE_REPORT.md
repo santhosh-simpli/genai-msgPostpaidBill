@@ -1,10 +1,10 @@
 # Detailed Test Run and Coverage Report
 ## MSG Telecom: Postpaid Billing System
 
-**Date:** January 8, 2026  
-**Test Framework:** JUnit 5, Mockito, Spring Boot Test  
-**Coverage Tool:** JaCoCo 0.8.11  
-**Java Version:** 17  
+**Date:** January 8, 2026
+**Test Framework:** JUnit 5, Mockito, Spring Boot Test
+**Coverage Tool:** JaCoCo 0.8.11
+**Java Version:** 17
 **Spring Boot:** 3.2.1
 
 ---

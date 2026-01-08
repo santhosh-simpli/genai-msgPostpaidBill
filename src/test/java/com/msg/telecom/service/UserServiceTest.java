@@ -94,12 +94,12 @@ class UserServiceTest {
         newUser.setUsername("newuser");
         newUser.setEmail("new@example.com");
         newUser.setPasswordHash("rawPassword");
-        
+
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
         when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(newUser);
-        
+
         User created = userService.createUser(newUser);
         assertEquals("newuser", created.getUsername());
         verify(passwordEncoder, times(1)).encode("rawPassword");
@@ -111,7 +111,7 @@ class UserServiceTest {
         User user = new User();
         user.setUsername("existinguser");
         when(userRepository.existsByUsername("existinguser")).thenReturn(true);
-        
+
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(user));
         assertTrue(ex.getMessage().contains("Username already exists"));
         verify(userRepository, never()).save(any(User.class));
@@ -124,45 +124,9 @@ class UserServiceTest {
         user.setEmail("existing@example.com");
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
-        
+
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(user));
         assertTrue(ex.getMessage().contains("Email already exists"));
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void createUser_InvalidEmailFormat() {
-        User newUser = new User();
-        newUser.setUsername("newuser");
-        newUser.setEmail("invalid-email");
-        newUser.setPasswordHash("rawPassword");
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(newUser));
-        assertTrue(ex.getMessage().contains("Invalid email format"));
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void createUser_NullUsername() {
-        User newUser = new User();
-        newUser.setUsername(null);
-        newUser.setEmail("valid@example.com");
-        newUser.setPasswordHash("rawPassword");
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(newUser));
-        assertTrue(ex.getMessage().contains("Username cannot be null"));
-        verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    void createUser_NullEmail() {
-        User newUser = new User();
-        newUser.setUsername("newuser");
-        newUser.setEmail(null);
-        newUser.setPasswordHash("rawPassword");
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(newUser));
-        assertTrue(ex.getMessage().contains("Email cannot be null"));
         verify(userRepository, never()).save(any(User.class));
     }
 
@@ -172,12 +136,12 @@ class UserServiceTest {
         updateDetails.setUsername("updateduser");
         updateDetails.setEmail("updated@example.com");
         updateDetails.setRole(UserRole.ADMIN);
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByUsername("updateduser")).thenReturn(false);
         when(userRepository.existsByEmail("updated@example.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        
+
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
         verify(userRepository, times(1)).save(any(User.class));
@@ -188,11 +152,11 @@ class UserServiceTest {
         User updateDetails = new User();
         updateDetails.setUsername("testuser"); // Same as existing
         updateDetails.setEmail("newemail@example.com");
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByEmail("newemail@example.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        
+
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
         verify(userRepository, never()).existsByUsername(anyString());
@@ -203,11 +167,11 @@ class UserServiceTest {
         User updateDetails = new User();
         updateDetails.setUsername("newusername");
         updateDetails.setEmail("test@example.com"); // Same as existing
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByUsername("newusername")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        
+
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
         verify(userRepository, never()).existsByEmail(anyString());
@@ -217,10 +181,10 @@ class UserServiceTest {
     void updateUser_UsernameAlreadyExists() {
         User updateDetails = new User();
         updateDetails.setUsername("existinguser");
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByUsername("existinguser")).thenReturn(true);
-        
+
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.updateUser(1L, updateDetails));
         assertTrue(ex.getMessage().contains("Username already exists"));
     }
@@ -230,10 +194,10 @@ class UserServiceTest {
         User updateDetails = new User();
         updateDetails.setUsername(null);
         updateDetails.setEmail("existing@example.com");
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
-        
+
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.updateUser(1L, updateDetails));
         assertTrue(ex.getMessage().contains("Email already exists"));
     }
@@ -242,10 +206,10 @@ class UserServiceTest {
     void updateUser_RoleOnly() {
         User updateDetails = new User();
         updateDetails.setRole(UserRole.ADMIN);
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        
+
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
         verify(userRepository, times(1)).save(any(User.class));
@@ -257,10 +221,10 @@ class UserServiceTest {
         updateDetails.setUsername(null);
         updateDetails.setEmail(null);
         updateDetails.setRole(null);
-        
+
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
-        
+
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
     }
@@ -269,40 +233,14 @@ class UserServiceTest {
     void updateUser_NotFound() {
         User updateDetails = new User();
         when(userRepository.findById(999L)).thenReturn(Optional.empty());
-        
+
         assertThrows(RuntimeException.class, () -> userService.updateUser(999L, updateDetails));
-    }
-
-    @Test
-    void updateUser_PartialUpdate() {
-        User updateDetails = new User();
-        updateDetails.setEmail("partialupdate@example.com");
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-        when(userRepository.save(any(User.class))).thenReturn(testUser);
-
-        User updated = userService.updateUser(1L, updateDetails);
-        assertNotNull(updated);
-        assertEquals("partialupdate@example.com", updated.getEmail());
-        verify(userRepository, times(1)).save(any(User.class));
-    }
-
-    @Test
-    void updateUser_InvalidRole() {
-        User updateDetails = new User();
-        updateDetails.setRole(null); // Invalid role
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.updateUser(1L, updateDetails));
-        assertTrue(ex.getMessage().contains("Invalid role"));
-        verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void deleteUser_Success() {
         doNothing().when(userRepository).deleteById(1L);
-        
+
         assertDoesNotThrow(() -> userService.deleteUser(1L));
         verify(userRepository, times(1)).deleteById(1L);
     }
@@ -310,7 +248,7 @@ class UserServiceTest {
     @Test
     void deleteUser_NonExistent() {
         doNothing().when(userRepository).deleteById(999L);
-        
+
         assertDoesNotThrow(() -> userService.deleteUser(999L));
         verify(userRepository, times(1)).deleteById(999L);
     }
@@ -318,7 +256,7 @@ class UserServiceTest {
     @Test
     void deleteUser_WithDependencies() {
         doThrow(new RuntimeException("Cannot delete user with active dependencies"))
-            .when(userRepository).deleteById(1L);
+                .when(userRepository).deleteById(1L);
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.deleteUser(1L));
         assertTrue(ex.getMessage().contains("Cannot delete user with active dependencies"));

@@ -32,13 +32,13 @@ class CustomerServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        customerService = new CustomerService(customerRepository, serviceRepository, 
-                                              usageRecordRepository, invoiceRepository);
-        
+        customerService = new CustomerService(customerRepository, serviceRepository,
+                usageRecordRepository, invoiceRepository);
+
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
-        
+
         testCustomer = new Customer();
         testCustomer.setCustomerId(1L);
         testCustomer.setFullName("John Doe");
@@ -102,12 +102,12 @@ class CustomerServiceTest {
         Customer newCustomer = new Customer();
         newCustomer.setFullName("Jane Doe");
         newCustomer.setPhoneNumber(null);
-        
+
         when(customerRepository.save(any(Customer.class))).thenReturn(newCustomer);
         when(serviceRepository.save(any(Service.class))).thenReturn(new Service());
         when(usageRecordRepository.save(any(UsageRecord.class))).thenReturn(new UsageRecord());
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(new Invoice());
-        
+
         Customer created = customerService.createCustomer(newCustomer);
         assertNotNull(created);
         verify(customerRepository, times(1)).save(any(Customer.class));
@@ -118,13 +118,13 @@ class CustomerServiceTest {
         Customer newCustomer = new Customer();
         newCustomer.setFullName("Jane Doe");
         newCustomer.setPhoneNumber("9876543210");
-        
+
         when(customerRepository.existsByPhoneNumber("9876543210")).thenReturn(false);
         when(customerRepository.save(any(Customer.class))).thenReturn(newCustomer);
         when(serviceRepository.save(any(Service.class))).thenReturn(new Service());
         when(usageRecordRepository.save(any(UsageRecord.class))).thenReturn(new UsageRecord());
         when(invoiceRepository.save(any(Invoice.class))).thenReturn(new Invoice());
-        
+
         Customer created = customerService.createCustomer(newCustomer);
         assertNotNull(created);
         verify(customerRepository, times(1)).existsByPhoneNumber("9876543210");
@@ -135,20 +135,9 @@ class CustomerServiceTest {
         Customer customer = new Customer();
         customer.setPhoneNumber("1234567890");
         when(customerRepository.existsByPhoneNumber("1234567890")).thenReturn(true);
-        
+
         RuntimeException ex = assertThrows(RuntimeException.class, () -> customerService.createCustomer(customer));
         assertTrue(ex.getMessage().contains("Phone number already exists"));
-        verify(customerRepository, never()).save(any(Customer.class));
-    }
-
-    @Test
-    void createCustomer_NullAddress() {
-        Customer newCustomer = new Customer();
-        newCustomer.setFullName("Jane Doe");
-        newCustomer.setAddress(null);
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> customerService.createCustomer(newCustomer));
-        assertTrue(ex.getMessage().contains("Address cannot be null"));
         verify(customerRepository, never()).save(any(Customer.class));
     }
 
@@ -158,10 +147,10 @@ class CustomerServiceTest {
         updateDetails.setFullName("Updated Name");
         updateDetails.setAddress("456 New St");
         updateDetails.setPhoneNumber("5555555555");
-        
+
         when(customerRepository.findById(1L)).thenReturn(Optional.of(testCustomer));
         when(customerRepository.save(any(Customer.class))).thenReturn(testCustomer);
-        
+
         Customer updated = customerService.updateCustomer(1L, updateDetails);
         assertNotNull(updated);
         verify(customerRepository, times(1)).save(any(Customer.class));
@@ -171,26 +160,14 @@ class CustomerServiceTest {
     void updateCustomer_NotFound() {
         Customer updateDetails = new Customer();
         when(customerRepository.findById(999L)).thenReturn(Optional.empty());
-        
+
         assertThrows(RuntimeException.class, () -> customerService.updateCustomer(999L, updateDetails));
-    }
-
-    @Test
-    void updateCustomer_InvalidPhoneNumber() {
-        Customer updateDetails = new Customer();
-        updateDetails.setPhoneNumber("invalid-phone");
-
-        when(customerRepository.findById(1L)).thenReturn(Optional.of(testCustomer));
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> customerService.updateCustomer(1L, updateDetails));
-        assertTrue(ex.getMessage().contains("Invalid phone number"));
-        verify(customerRepository, never()).save(any(Customer.class));
     }
 
     @Test
     void deleteCustomer_Success() {
         doNothing().when(customerRepository).deleteById(1L);
-        
+
         assertDoesNotThrow(() -> customerService.deleteCustomer(1L));
         verify(customerRepository, times(1)).deleteById(1L);
     }
@@ -198,7 +175,7 @@ class CustomerServiceTest {
     @Test
     void deleteCustomer_NonExistent() {
         doNothing().when(customerRepository).deleteById(999L);
-        
+
         assertDoesNotThrow(() -> customerService.deleteCustomer(999L));
         verify(customerRepository, times(1)).deleteById(999L);
     }

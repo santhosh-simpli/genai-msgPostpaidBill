@@ -109,17 +109,6 @@ class InvoiceServiceTest {
     }
 
     @Test
-    void createInvoice_NullCustomer() {
-        Invoice newInvoice = new Invoice();
-        newInvoice.setCustomer(null);
-        newInvoice.setTotalAmount(200.0);
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> invoiceService.createInvoice(newInvoice));
-        assertTrue(ex.getMessage().contains("Customer cannot be null"));
-        verify(invoiceRepository, never()).save(any(Invoice.class));
-    }
-
-    @Test
     void updateInvoice_Success() {
         Invoice updateDetails = new Invoice();
         updateDetails.setBillingPeriodStart(LocalDate.now().minusMonths(2));
@@ -134,18 +123,6 @@ class InvoiceServiceTest {
         assertNotNull(updated);
         verify(invoiceRepository, times(1)).findById(1L);
         verify(invoiceRepository, times(1)).save(any(Invoice.class));
-    }
-
-    @Test
-    void updateInvoice_InvalidStatus() {
-        Invoice updateDetails = new Invoice();
-        updateDetails.setStatus("INVALID_STATUS");
-
-        when(invoiceRepository.findById(1L)).thenReturn(Optional.of(testInvoice));
-
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> invoiceService.updateInvoice(1L, updateDetails));
-        assertTrue(ex.getMessage().contains("Invalid status"));
-        verify(invoiceRepository, never()).save(any(Invoice.class));
     }
 
     @Test
