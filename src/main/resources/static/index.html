@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSG Telecom - Postpaid Billing System</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'msg-yellow': '#F9DC5C',
+                        'msg-orange': '#F9A826',
+                        'msg-green': '#86C38C',
+                        'msg-blue': '#2E86AB',
+                        'msg-dark-blue': '#1A5F7A',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Professional MSG Gradient Backgrounds */
+        .msg-gradient-bg {
+            background: linear-gradient(135deg, #F9A826 0%, #F9DC5C 25%, #86C38C 50%, #2E86AB 75%, #1A5F7A 100%);
+        }
+
+        .msg-gradient-header {
+            background: linear-gradient(90deg, #1A5F7A 0%, #2E86AB 50%, #1A5F7A 100%);
+        }
+
+        .msg-gradient-main {
+            background: linear-gradient(135deg, #f0f9ff 0%, #fef3c7 30%, #ecfccb 60%, #dbeafe 100%);
+        }
+
+        .msg-card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(30, 86, 122, 0.1), 0 8px 10px -6px rgba(249, 168, 38, 0.05);
+        }
+
+        .msg-logo-glow {
+            filter: drop-shadow(0 0 8px rgba(249, 168, 38, 0.3));
+        }
+    </style>
+</head>
+
+<body class="msg-gradient-main min-h-screen">
+    <div x-data="billingApp()" x-init="init()" class="flex flex-col h-screen">
+
+        <!-- Header -->
+        <header class="msg-gradient-header text-white shadow-2xl">
+            <div class="container mx-auto px-6 py-5">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <img src="/images/msg-logo.svg" alt="MSG Logo" class="h-20 w-20 msg-logo-glow"
+                            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="hidden items-center justify-center h-20 w-20 bg-msg-yellow rounded-full text-msg-dark-blue font-bold text-2xl"
+                            style="display:none;">
+                            MSG
+                        </div>
+                        <div>
+                            <h1 class="text-3xl font-bold tracking-wide">MSG Telecom</h1>
+                            <p class="text-sm text-msg-yellow font-medium tracking-wider">Innovation Through
+                                Communication</p>
+                        </div>
+                    </div>
+                    <div x-show="currentUser" class="flex items-center space-x-4" x-cloak>
+                        <div class="text-right">
+                            <p class="font-semibold" x-text="currentUser?.username"></p>
+                            <p class="text-xs text-blue-200" x-text="currentUser?.role"></p>
+                        </div>
+                        <button @click="logout()" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg transition">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="bg-white shadow-md" x-show="currentUser" x-cloak>
+            <div class="container mx-auto px-6">
+                <div class="flex space-x-1">
+                    <button @click="currentView = 'dashboard'"
+                        :class="currentView === 'dashboard' ? 'border-b-4 border-msg-blue text-msg-blue bg-msg-yellow bg-opacity-20' : 'text-gray-600 hover:text-msg-blue hover:bg-yellow-50'"
+                        class="px-6 py-4 font-semibold transition">
+                        <i class="fas fa-chart-line mr-2"></i>Dashboard
+                    </button>
+                    <button @click="currentView = 'usage'"
+                        :class="currentView === 'usage' ? 'border-b-4 border-msg-blue text-msg-blue bg-msg-yellow bg-opacity-20' : 'text-gray-600 hover:text-msg-blue hover:bg-yellow-50'"
+                        class="px-6 py-4 font-semibold transition">
+                        <i class="fas fa-history mr-2"></i>Usage History
+                    </button>
+                    <button @click="currentView = 'invoices'"
+                        :class="currentView === 'invoices' ? 'border-b-4 border-msg-blue text-msg-blue bg-msg-yellow bg-opacity-20' : 'text-gray-600 hover:text-msg-blue hover:bg-yellow-50'"
+                        class="px-6 py-4 font-semibold transition">
+                        <i class="fas fa-file-invoice mr-2"></i>Invoices
+                    </button>
+                    <button @click="currentView = 'payments'"
+                        :class="currentView === 'payments' ? 'border-b-4 border-msg-blue text-msg-blue bg-msg-yellow bg-opacity-20' : 'text-gray-600 hover:text-msg-blue hover:bg-yellow-50'"
+                        class="px-6 py-4 font-semibold transition">
+                        <i class="fas fa-credit-card mr-2"></i>Payments
+                    </button>
+                    <button @click="currentView = 'admin'; loadCustomers(); loadUsers();"
+                        x-show="currentUser?.role === 'ADMIN'"
+                        :class="currentView === 'admin' ? 'border-b-4 border-msg-blue text-msg-blue bg-msg-yellow bg-opacity-20' : 'text-gray-600 hover:text-msg-blue hover:bg-yellow-50'"
+                        class="px-6 py-4 font-semibold transition">
+                        <i class="fas fa-user-shield mr-2"></i>Admin Panel
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <div class="container mx-auto px-6 py-8">
+
+                <!-- Dashboard View -->
+                <div x-show="currentView === 'dashboard'" x-cloak>
+                    <div class="mb-6 flex items-center justify-between">
+                        <div>
+                            <h2 class="text-3xl font-bold text-gray-800">
+                                Welcome back, <span x-text="currentUser?.username"></span>! 👋
+                            </h2>
+                            <p class="text-gray-600 mt-2">Here's an overview of your account</p>
+                        </div>
+                        <button @click="loadData()"
+                            class="bg-msg-blue hover:bg-msg-dark-blue text-white px-4 py-2 rounded-lg transition flex items-center gap-2">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+
+                    <!-- Overview Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Total Usage</p>
+                                    <p class="text-2xl font-bold text-gray-800" x-text="dashboardStats.totalUsage"></p>
+                                </div>
+                                <i class="fas fa-chart-bar text-3xl text-blue-500"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Paid Invoices</p>
+                                    <p class="text-2xl font-bold text-gray-800" x-text="dashboardStats.paidInvoices">
+                                    </p>
+                                </div>
+                                <i class="fas fa-check-circle text-3xl text-green-500"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Pending Invoices</p>
+                                    <p class="text-2xl font-bold text-gray-800" x-text="dashboardStats.pendingInvoices">
+                                    </p>
+                                </div>
+                                <i class="fas fa-clock text-3xl text-yellow-500"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-red-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Outstanding Amount</p>
+                                    <p class="text-2xl font-bold text-gray-800">$<span
+                                            x-text="dashboardStats.outstandingAmount.toFixed(2)"></span></p>
+                                </div>
+                                <i class="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Recent Invoices -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-file-invoice-dollar mr-2 text-msg-blue"></i>
+                                Recent Invoices
+                            </h3>
+                            <div class="space-y-3">
+                                <template x-for="invoice in recentInvoices" :key="invoice.invoiceId">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+                                        @click="currentView = 'invoices'">
+                                        <div>
+                                            <p class="font-semibold">Invoice #<span x-text="invoice.invoiceId"></span>
+                                            </p>
+                                            <p class="text-sm text-gray-600"
+                                                x-text="formatDate(invoice.billingPeriodStart)"></p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-bold text-gray-800">$<span
+                                                    x-text="invoice.totalAmount?.toFixed(2)"></span></p>
+                                            <span :class="getStatusClass(invoice.status)"
+                                                class="text-xs px-2 py-1 rounded" x-text="invoice.status"></span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div x-show="recentInvoices.length === 0" class="text-center text-gray-500 py-4">
+                                    No invoices found
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Payments -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h3 class="text-xl font-bold mb-4 flex items-center">
+                                <i class="fas fa-money-bill-wave mr-2 text-green-600"></i>
+                                Recent Payments
+                            </h3>
+                            <div class="space-y-3">
+                                <template x-for="payment in recentPayments" :key="payment.paymentId">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition cursor-pointer"
+                                        @click="currentView = 'payments'">
+                                        <div>
+                                            <p class="font-semibold">Payment #<span x-text="payment.paymentId"></span>
+                                            </p>
+                                            <p class="text-sm text-gray-600"
+                                                x-text="formatPaymentMethod(payment.paymentMethod)"></p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-bold text-gray-800">$<span
+                                                    x-text="payment.amount.toFixed(2)"></span></p>
+                                            <span
+                                                class="text-xs px-2 py-1 rounded bg-green-100 text-green-800">Completed</span>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div x-show="recentPayments.length === 0" class="text-center text-gray-500 py-4">
+                                    No payments found
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Usage History View -->
+                <div x-show="currentView === 'usage'" x-cloak>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">
+                                <i class="fas fa-history mr-2 text-msg-blue"></i>Usage History
+                            </h2>
+                        </div>
+
+                        <!-- Filters -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Service Type</label>
+                                <select x-model="usageFilter.serviceType" @change="filterUsage()"
+                                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                                    <option value="">All Services</option>
+                                    <option value="Mobile">Mobile</option>
+                                    <option value="Broadband">Broadband</option>
+                                    <option value="Cable TV">Cable TV</option>
+                                    <option value="VoIP">VoIP</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">From Date</label>
+                                <input type="date" x-model="usageFilter.fromDate" @change="filterUsage()"
+                                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">To Date</label>
+                                <input type="date" x-model="usageFilter.toDate" @change="filterUsage()"
+                                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+
+                        <!-- Usage Table -->
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-100 border-b-2 border-gray-300">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                            Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                            Service Type</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                            Quantity</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                            Rate/Unit</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                            Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    <template x-for="usage in filteredUsages" :key="usage.usageId">
+                                        <tr class="hover:bg-gray-50 transition">
+                                            <td class="px-6 py-4 text-sm text-gray-900"
+                                                x-text="formatDate(usage.usageDate)"></td>
+                                            <td class="px-6 py-4">
+                                                <span
+                                                    class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold"
+                                                    x-text="usage.service?.serviceType || 'N/A'"></span>
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-900"
+                                                x-text="usage.usageAmount?.toFixed(2) + ' ' + usage.unit"></td>
+                                            <td class="px-6 py-4 text-sm text-gray-900">$<span
+                                                    x-text="calculateRate(usage).toFixed(3)"></span></td>
+                                            <td class="px-6 py-4 text-sm font-semibold text-gray-900">$<span
+                                                    x-text="calculateUsageAmount(usage).toFixed(2)"></span></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoices View -->
+                <div x-show="currentView === 'invoices'" x-cloak>
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800">
+                                <i class="fas fa-file-invoice mr-2 text-msg-blue"></i>Invoices
+                            </h2>
+                        </div>
+
+                        <!-- Invoices Grid -->
+                        <div class="grid grid-cols-1 gap-4">
+                            <template x-for="invoice in invoices" :key="invoice.invoiceId">
+                                <div
+                                    class="border rounded-lg p-6 hover:shadow-lg transition bg-gradient-to-r from-white to-gray-50">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold text-gray-800">Invoice #<span
+                                                    x-text="invoice.invoiceId"></span></h3>
+                                            <p class="text-sm text-gray-600">
+                                                Billing Period: <span
+                                                    x-text="formatDate(invoice.billingPeriodStart)"></span> -
+                                                <span x-text="formatDate(invoice.billingPeriodEnd)"></span>
+                                            </p>
+                                        </div>
+                                        <span :class="getStatusClass(invoice.status)"
+                                            class="px-4 py-2 rounded-full text-xs font-bold uppercase"
+                                            x-text="invoice.status"></span>
+                                    </div>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500">Subtotal</p>
+                                            <p class="text-lg font-semibold">$<span
+                                                    x-text="(invoice.totalAmount * 0.92).toFixed(2)"></span></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Tax (8%)</p>
+                                            <p class="text-lg font-semibold">$<span
+                                                    x-text="(invoice.totalAmount * 0.08).toFixed(2)"></span></p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500">Total Amount</p>
+                                            <p class="text-lg font-bold text-msg-blue">$<span
+                                                    x-text="invoice.totalAmount?.toFixed(2)"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button @click="viewInvoiceDetails(invoice)"
+                                            class="flex-1 bg-msg-blue hover:bg-msg-dark-blue text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fas fa-eye mr-2"></i>View Details
+                                        </button>
+                                        <button @click="downloadInvoicePDF(invoice)"
+                                            class="flex-1 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fas fa-download mr-2"></i>Download PDF
+                                        </button>
+                                        <button x-show="invoice.status === 'PENDING'" @click="payInvoice(invoice)"
+                                            class="flex-1 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fas fa-credit-card mr-2"></i>Pay Now
+                                        </button>
+                                    </div>
+                                    <!-- Admin Notification Buttons -->
+                                    <div x-show="currentUser?.role === 'ADMIN' || currentUser?.role === 'OPERATOR'"
+                                        class="flex flex-wrap gap-2 mt-3 pt-3 border-t border-gray-200">
+                                        <button @click="sendInvoiceViaEmail(invoice)"
+                                            class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fas fa-envelope mr-2"></i>Send Email
+                                        </button>
+                                        <button @click="sendInvoiceViaWhatsApp(invoice)"
+                                            class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fab fa-whatsapp mr-2"></i>WhatsApp
+                                        </button>
+                                        <button @click="openNotificationModal(invoice)"
+                                            class="flex-1 bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded-lg transition">
+                                            <i class="fas fa-paper-plane mr-2"></i>Send Both
+                                        </button>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payments View -->
+                <div x-show="currentView === 'payments'" x-cloak>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Payment Form -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow-md p-6 sticky top-6">
+                                <h2 class="text-2xl font-bold mb-4 text-gray-800">
+                                    <i class="fas fa-credit-card mr-2 text-msg-blue"></i>Make Payment
+                                </h2>
+                                <form @submit.prevent="submitPayment()">
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Select
+                                            Invoice</label>
+                                        <select x-model="paymentForm.invoiceId" required
+                                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Choose an invoice...</option>
+                                            <template
+                                                x-for="invoice in invoices.filter(i => i.status?.toUpperCase() !== 'PAID')"
+                                                :key="invoice.invoiceId">
+                                                <option :value="invoice.invoiceId"
+                                                    x-text="`Invoice #${invoice.invoiceId} - $${invoice.totalAmount?.toFixed(2) || '0.00'} (${invoice.status})`">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Amount</label>
+                                        <input type="number" x-model="paymentForm.amount" step="0.01" required
+                                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                                            placeholder="0.00">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Payment
+                                            Method</label>
+                                        <div class="grid grid-cols-2 gap-2">
+                                            <button type="button" @click="paymentForm.paymentMethod = 'CREDIT_CARD'"
+                                                :class="paymentForm.paymentMethod === 'CREDIT_CARD' ? 'bg-msg-blue text-white' : 'bg-gray-100 text-gray-700'"
+                                                class="px-4 py-3 rounded-lg font-semibold transition hover:shadow-md">
+                                                <i class="fas fa-credit-card mr-2"></i>Credit Card
+                                            </button>
+                                            <button type="button" @click="paymentForm.paymentMethod = 'DEBIT_CARD'"
+                                                :class="paymentForm.paymentMethod === 'DEBIT_CARD' ? 'bg-msg-blue text-white' : 'bg-gray-100 text-gray-700'"
+                                                class="px-4 py-3 rounded-lg font-semibold transition hover:shadow-md">
+                                                <i class="fas fa-credit-card mr-2"></i>Debit Card
+                                            </button>
+                                            <button type="button" @click="paymentForm.paymentMethod = 'NET_BANKING'"
+                                                :class="paymentForm.paymentMethod === 'NET_BANKING' ? 'bg-msg-blue text-white' : 'bg-gray-100 text-gray-700'"
+                                                class="px-4 py-3 rounded-lg font-semibold transition hover:shadow-md">
+                                                <i class="fas fa-university mr-2"></i>Net Banking
+                                            </button>
+                                            <button type="button" @click="paymentForm.paymentMethod = 'UPI'"
+                                                :class="paymentForm.paymentMethod === 'UPI' ? 'bg-msg-blue text-white' : 'bg-gray-100 text-gray-700'"
+                                                class="px-4 py-3 rounded-lg font-semibold transition hover:shadow-md">
+                                                <i class="fas fa-mobile-alt mr-2"></i>UPI
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button type="submit"
+                                        class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg transition">
+                                        <i class="fas fa-check-circle mr-2"></i>Process Payment
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Payment History -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow-md p-6">
+                                <h2 class="text-2xl font-bold mb-4 text-gray-800">
+                                    <i class="fas fa-history mr-2 text-msg-blue"></i>Payment History
+                                </h2>
+                                <div class="space-y-4">
+                                    <template x-for="payment in payments" :key="payment.paymentId">
+                                        <div class="border rounded-lg p-4 hover:shadow-md transition">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <div>
+                                                    <p class="font-bold text-gray-800">Payment #<span
+                                                            x-text="payment.paymentId"></span></p>
+                                                    <p class="text-sm text-gray-600"
+                                                        x-text="formatDate(payment.paymentDate)"></p>
+                                                </div>
+                                                <span class="status-badge bg-green-100 text-green-800">
+                                                    Completed
+                                                </span>
+                                            </div>
+                                            <div class="grid grid-cols-3 gap-4">
+                                                <div>
+                                                    <p class="text-xs text-gray-500">Amount</p>
+                                                    <p class="text-lg font-bold text-msg-blue">$<span
+                                                            x-text="payment.amount.toFixed(2)"></span></p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-xs text-gray-500">Method</p>
+                                                    <p class="text-sm font-semibold"
+                                                        x-text="formatPaymentMethod(payment.paymentMethod)"></p>
+                                                </div>
+                                                <div>
+                                                    <p class="text-xs text-gray-500">Invoice</p>
+                                                    <p class="text-sm font-semibold"
+                                                        x-text="getInvoiceNumber(payment.invoice?.id)"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel View -->
+                <div x-show="currentView === 'admin' && currentUser?.role === 'ADMIN'" x-cloak>
+                    <div class="space-y-6">
+                        <!-- User Management -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-bold text-gray-800">
+                                    <i class="fas fa-users mr-2 text-msg-blue"></i>User Management
+                                </h2>
+                                <button @click="showUserModal = true; resetUserForm()"
+                                    class="bg-msg-blue hover:bg-msg-dark-blue text-white px-4 py-2 rounded-lg transition">
+                                    <i class="fas fa-plus mr-2"></i>Add User
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-100 border-b-2 border-gray-300">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Username</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Email</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Role</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Status</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <template x-for="user in users" :key="user.userId">
+                                            <tr class="hover:bg-gray-50 transition">
+                                                <td class="px-6 py-4 text-sm font-semibold text-gray-900"
+                                                    x-text="user.username"></td>
+                                                <td class="px-6 py-4 text-sm text-gray-900" x-text="user.email"></td>
+                                                <td class="px-6 py-4">
+                                                    <span
+                                                        class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-semibold"
+                                                        x-text="user.role"></span>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <span
+                                                        class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                        Active
+                                                    </span>
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <button @click="editUser(user)"
+                                                        class="text-msg-blue hover:text-msg-dark-blue mr-3">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button @click="deleteUser(user.userId)"
+                                                        class="text-red-600 hover:text-red-800">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Customer Management -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-2xl font-bold text-gray-800">
+                                    <i class="fas fa-user-friends mr-2 text-msg-blue"></i>Customer Management
+                                </h2>
+                                <button @click="showCustomerModal = true; resetCustomerForm()"
+                                    class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">
+                                    <i class="fas fa-plus mr-2"></i>Add Customer
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead class="bg-gray-100 border-b-2 border-gray-300">
+                                        <tr>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Full Name</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Username</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Email</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Phone</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Address</th>
+                                            <th
+                                                class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
+                                                Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <template x-for="customer in customers" :key="customer.customerId">
+                                            <tr class="hover:bg-gray-50 transition">
+                                                <td class="px-6 py-4 text-sm font-semibold text-gray-900"
+                                                    x-text="customer.fullName"></td>
+                                                <td class="px-6 py-4 text-sm text-gray-700"
+                                                    x-text="customer.user?.username || 'N/A'"></td>
+                                                <td class="px-6 py-4 text-sm text-gray-700"
+                                                    x-text="customer.user?.email || 'N/A'"></td>
+                                                <td class="px-6 py-4 text-sm text-gray-700"
+                                                    x-text="customer.phoneNumber"></td>
+                                                <td class="px-6 py-4 text-sm text-gray-700" x-text="customer.address">
+                                                </td>
+                                                <td class="px-6 py-4">
+                                                    <button @click="viewCustomerDetails(customer)"
+                                                        class="text-msg-blue hover:text-msg-dark-blue mr-3">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                    <button @click="deleteCustomer(customer.customerId)"
+                                                        class="text-red-600 hover:text-red-800">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                                <div x-show="customers.length === 0" class="text-center py-8 text-gray-500">
+                                    <i class="fas fa-inbox fa-3x mb-3"></i>
+                                    <p>No customers found. Add your first customer above.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Invoice Generation -->
+                        <div class="bg-white rounded-lg shadow-md p-6">
+                            <h2 class="text-2xl font-bold mb-4 text-gray-800">
+                                <i class="fas fa-file-invoice-dollar mr-2 text-msg-blue"></i>Generate Invoice
+                            </h2>
+                            <form @submit.prevent="generateInvoice()">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Customer</label>
+                                        <select x-model="invoiceForm.customerId" required
+                                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Select customer...</option>
+                                            <template x-for="customer in customers" :key="customer.customerId">
+                                                <option :value="customer.customerId"
+                                                    x-text="customer.fullName + ' (' + (customer.phoneNumber || customer.user?.email || 'ID: ' + customer.customerId) + ')'">
+                                                </option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Billing Start
+                                            Date</label>
+                                        <input type="date" x-model="invoiceForm.billingStartDate" required
+                                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Billing End
+                                            Date</label>
+                                        <input type="date" x-model="invoiceForm.billingEndDate" required
+                                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Amount ($)</label>
+                                        <input type="number" x-model="invoiceForm.amount" step="0.01" min="0" required
+                                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                                            placeholder="Enter invoice amount">
+                                    </div>
+                                </div>
+                                <button type="submit"
+                                    class="mt-4 bg-msg-blue hover:bg-msg-dark-blue text-white px-6 py-2 rounded-lg transition">
+                                    <i class="fas fa-plus-circle mr-2"></i>Generate Invoice
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Customer Add Modal -->
+        <div x-show="showCustomerModal"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+            @click.self="showCustomerModal = false" x-cloak>
+            <div class="relative top-10 mx-auto p-8 border w-full max-w-2xl shadow-lg rounded-lg bg-white">
+                <h3 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-user-plus mr-2 text-green-600"></i>Add New Customer
+                </h3>
+                <form @submit.prevent="saveCustomer()">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- User Account Details -->
+                        <div class="col-span-2">
+                            <h4 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Account Details</h4>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Username *</label>
+                            <input type="text" x-model="customerForm.username" required minlength="3"
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                            <input type="email" x-model="customerForm.email" required
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
+                            <input type="password" x-model="customerForm.password" required minlength="6"
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
+                        </div>
+
+                        <!-- Customer Profile Details -->
+                        <div class="col-span-2 mt-4">
+                            <h4 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Customer Information</h4>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name *</label>
+                            <input type="text" x-model="customerForm.fullName" required
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
+                            <input type="tel" x-model="customerForm.phoneNumber" required placeholder="+1-234-567-8900"
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
+                            <select x-model="customerForm.role" required
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                                <option value="CUSTOMER">Customer</option>
+                                <option value="OPERATOR">Operator</option>
+                            </select>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Address *</label>
+                            <textarea x-model="customerForm.address" required rows="2"
+                                placeholder="123 Main Street, City, State, ZIP"
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-end space-x-2 mt-6">
+                        <button type="button" @click="showCustomerModal = false"
+                            class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
+                            <i class="fas fa-save mr-2"></i>Create Customer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- User Edit Modal -->
+        <div x-show="showUserModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+            @click.self="showUserModal = false" x-cloak>
+            <div class="relative top-20 mx-auto p-8 border w-full max-w-md shadow-lg rounded-lg bg-white">
+                <h3 class="text-2xl font-bold mb-6" x-text="userForm.userId ? 'Edit User' : 'Add User'"></h3>
+                <form @submit.prevent="saveUser()">
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Username</label>
+                        <input type="text" x-model="userForm.username" required :disabled="userForm.userId"
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <input type="email" x-model="userForm.email" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
+                        <select x-model="userForm.role" required
+                            class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500">
+                            <option value="CUSTOMER">Customer</option>
+                            <option value="OPERATOR">Operator</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                    <div class="flex justify-end space-x-2">
+                        <button type="button" @click="showUserModal = false"
+                            class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                            Cancel
+                        </button>
+                        <button type="submit"
+                            class="bg-msg-blue text-white px-4 py-2 rounded-lg hover:bg-msg-dark-blue transition">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment Success Modal -->
+        <div x-show="showPaymentSuccess"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+            @click.self="showPaymentSuccess = false" x-cloak>
+            <div class="relative top-20 mx-auto p-8 border w-full max-w-md shadow-lg rounded-lg bg-white text-center">
+                <div class="mb-4">
+                    <i class="fas fa-check-circle text-6xl text-green-500"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Payment Successful!</h3>
+                <p class="text-gray-600 mb-4">Your payment has been processed successfully.</p>
+                <p class="text-sm text-gray-500 mb-6">Transaction ID: <span class="font-mono font-bold"
+                        x-text="lastTransactionId"></span></p>
+                <button @click="showPaymentSuccess = false"
+                    class="bg-msg-blue text-white px-6 py-2 rounded-lg hover:bg-msg-dark-blue transition">
+                    Close
+                </button>
+            </div>
+        </div>
+
+        <!-- Invoice Notification Modal -->
+        <div x-show="showNotificationModalFlag"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+            @click.self="showNotificationModalFlag = false" x-cloak>
+            <div class="relative top-10 mx-auto p-8 border w-full max-w-lg shadow-lg rounded-lg bg-white">
+                <h3 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-paper-plane mr-2 text-msg-blue"></i>Send Invoice Notification
+                </h3>
+                <div class="mb-4 p-4 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-600">Invoice #<span class="font-bold"
+                            x-text="selectedInvoice?.invoiceId"></span></p>
+                    <p class="text-lg font-bold text-msg-blue">$<span
+                            x-text="selectedInvoice?.totalAmount?.toFixed(2)"></span></p>
+                    <p class="text-sm text-gray-500" x-text="'Status: ' + selectedInvoice?.status"></p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Notification Type</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" @click="notificationForm.type = 'EMAIL'"
+                            :class="notificationForm.type === 'EMAIL' ? 'bg-blue-500 text-white' : 'bg-gray-100 text-gray-700'"
+                            class="px-4 py-3 rounded-lg font-semibold transition hover:shadow-md">
+                            <i class="fas fa-envelope mr-1"></i> Email
+                        </button>
+                        <button type="button" @click="notificationForm.type = 'WHATSAPP'"
+                            :class="notificationForm.type === 'WHATSAPP' ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700'"
+                            class="px-4 py-3 rounded-lg font-semibold transition hover:shadow-md">
+                            <i class="fab fa-whatsapp mr-1"></i> WhatsApp
+                        </button>
+                        <button type="button" @click="notificationForm.type = 'BOTH'"
+                            :class="notificationForm.type === 'BOTH' ? 'bg-purple-500 text-white' : 'bg-gray-100 text-gray-700'"
+                            class="px-4 py-3 rounded-lg font-semibold transition hover:shadow-md">
+                            <i class="fas fa-share-alt mr-1"></i> Both
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Custom Message (Optional)</label>
+                    <textarea x-model="notificationForm.message" rows="3"
+                        placeholder="Add a personalized message to the notification..."
+                        class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-2">
+                    <button type="button" @click="showNotificationModalFlag = false"
+                        class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">
+                        Cancel
+                    </button>
+                    <button type="button" @click="sendNotification()"
+                        class="bg-msg-blue text-white px-6 py-2 rounded-lg hover:bg-msg-dark-blue transition">
+                        <i class="fas fa-paper-plane mr-2"></i>Send Notification
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Result Modal -->
+        <div x-show="showNotificationResult"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+            @click.self="showNotificationResult = false" x-cloak>
+            <div class="relative top-20 mx-auto p-8 border w-full max-w-md shadow-lg rounded-lg bg-white">
+                <div class="text-center mb-4">
+                    <i
+                        :class="notificationResult?.success ? 'fas fa-check-circle text-6xl text-green-500' : 'fas fa-exclamation-circle text-6xl text-yellow-500'"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4 text-center"
+                    x-text="notificationResult?.success ? 'Notification Sent!' : 'Notification Status'"></h3>
+
+                <div class="space-y-3 mb-6">
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600"><i class="fas fa-user mr-2"></i>Customer</span>
+                        <span class="font-semibold" x-text="notificationResult?.customerName"></span>
+                    </div>
+                    <div x-show="notificationResult?.emailStatus"
+                        class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600"><i class="fas fa-envelope mr-2"></i>Email</span>
+                        <span
+                            :class="notificationResult?.emailStatus === 'SENT' ? 'text-green-600 font-semibold' : 'text-yellow-600 font-semibold'"
+                            x-text="notificationResult?.emailStatus"></span>
+                    </div>
+                    <div x-show="notificationResult?.whatsappStatus"
+                        class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                        <span class="text-gray-600"><i class="fab fa-whatsapp mr-2"></i>WhatsApp</span>
+                        <span
+                            :class="notificationResult?.whatsappStatus === 'LINK_GENERATED' ? 'text-green-600 font-semibold' : 'text-yellow-600 font-semibold'"
+                            x-text="notificationResult?.whatsappStatus"></span>
+                    </div>
+                </div>
+
+                <div x-show="notificationResult?.whatsappLink" class="mb-6">
+                    <a :href="notificationResult?.whatsappLink" target="_blank"
+                        class="block w-full bg-green-500 hover:bg-green-600 text-white text-center px-6 py-3 rounded-lg transition">
+                        <i class="fab fa-whatsapp mr-2"></i>Open WhatsApp to Send Message
+                    </a>
+                    <p class="text-xs text-gray-500 text-center mt-2">Click to open WhatsApp Web with pre-filled message
+                    </p>
+                </div>
+
+                <button @click="showNotificationResult = false"
+                    class="w-full bg-msg-blue text-white px-6 py-2 rounded-lg hover:bg-msg-dark-blue transition">
+                    Close
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function billingApp() {
+            return {
+                currentView: 'dashboard',
+                currentUser: null,
+                token: null,
+                API_BASE_URL: 'http://localhost:8090/api',
+
+                // Data
+                customers: [],
+                usages: [],
+                filteredUsages: [],
+                invoices: [],
+                payments: [],
+                users: [],
+
+                // Dashboard
+                dashboardStats: {
+                    totalUsage: 0,
+                    paidInvoices: 0,
+                    pendingInvoices: 0,
+                    outstandingAmount: 0
+                },
+                recentInvoices: [],
+                recentPayments: [],
+
+                // Filters
+                usageFilter: {
+                    serviceType: '',
+                    fromDate: '',
+                    toDate: ''
+                },
+
+                // Forms
+                paymentForm: {
+                    invoiceId: '',
+                    amount: '',
+                    paymentMethod: 'CREDIT_CARD'
+                },
+                invoiceForm: {
+                    customerId: '',
+                    billingStartDate: '',
+                    billingEndDate: '',
+                    amount: ''
+                },
+                userForm: {
+                    userId: null,
+                    username: '',
+                    email: '',
+                    role: 'CUSTOMER'
+                },
+
+                customerForm: {
+                    fullName: '',
+                    username: '',
+                    email: '',
+                    password: '',
+                    phoneNumber: '',
+                    address: '',
+                    role: 'CUSTOMER'
+                },
+
+                // Modals
+                showUserModal: false,
+                showCustomerModal: false,
+                showPaymentSuccess: false,
+                lastTransactionId: '',
+
+                // Notification state
+                showNotificationModalFlag: false,
+                showNotificationResult: false,
+                selectedInvoice: null,
+                notificationForm: {
+                    type: 'BOTH',
+                    message: ''
+                },
+                notificationResult: null,
+
+                async init() {
+                    this.token = localStorage.getItem('token');
+                    const userStr = localStorage.getItem('currentUser');
+
+                    if (!this.token || !userStr) {
+                        window.location.href = '/login.html';
+                        return;
+                    }
+
+                    this.currentUser = JSON.parse(userStr);
+                    await this.loadData();
+                },
+
+                async loadData() {
+                    await Promise.all([
+                        this.loadCustomers(),
+                        this.loadUsages(),
+                        this.loadInvoices(),
+                        this.loadPayments(),
+                    ]);
+
+                    if (this.hasPermission('MANAGE_USERS')) {
+                        await this.loadUsers();
+                    }
+
+                    this.calculateDashboardStats();
+                },
+
+                async apiCall(endpoint, method = 'GET', body = null) {
+                    const options = {
+                        method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    };
+
+                    if (body) {
+                        options.body = JSON.stringify(body);
+                    }
+
+                    const response = await fetch(`${this.API_BASE_URL}${endpoint}`, options);
+
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('currentUser');
+                        window.location.href = '/login.html';
+                        return;
+                    }
+
+                    // Check if response has content before parsing JSON
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        return response.json();
+                    }
+
+                    // For responses with no content (like DELETE), return empty object
+                    return {};
+                },
+
+                async loadCustomers() {
+                    try {
+                        this.customers = await this.apiCall('/customers');
+                    } catch (error) {
+                        console.error('Error loading customers:', error);
+                    }
+                },
+
+                async loadUsages() {
+                    try {
+                        this.usages = await this.apiCall('/service-usage');
+                        this.filteredUsages = this.usages;
+                        console.log('Loaded usages:', this.usages.length);
+                    } catch (error) {
+                        console.error('Error loading usages:', error);
+                    }
+                },
+
+                async loadInvoices() {
+                    try {
+                        this.invoices = await this.apiCall('/invoices');
+                        this.recentInvoices = this.invoices.slice(0, 5);
+                        console.log('Loaded invoices:', this.invoices.length, this.invoices.map(i => i.status));
+                    } catch (error) {
+                        console.error('Error loading invoices:', error);
+                    }
+                },
+
+                async loadPayments() {
+                    try {
+                        this.payments = await this.apiCall('/payments');
+                        this.recentPayments = this.payments.slice(0, 5);
+                    } catch (error) {
+                        console.error('Error loading payments:', error);
+                    }
+                },
+
+                async loadUsers() {
+                    try {
+                        this.users = await this.apiCall('/users');
+                    } catch (error) {
+                        console.error('Error loading users:', error);
+                    }
+                },
+
+                calculateDashboardStats() {
+                    console.log('Calculating dashboard stats...');
+                    console.log('Usages:', this.usages.length);
+                    console.log('Invoices:', this.invoices.length);
+
+                    this.dashboardStats.totalUsage = this.usages.length;
+
+                    // Case-insensitive status comparison to match database values
+                    const paidInvoices = this.invoices.filter(i => {
+                        const status = i.status?.toUpperCase();
+                        console.log('Invoice status:', i.status, '-> Upper:', status);
+                        return status === 'PAID';
+                    });
+                    this.dashboardStats.paidInvoices = paidInvoices.length;
+
+                    const pendingInvoices = this.invoices.filter(i => i.status?.toUpperCase() === 'PENDING');
+                    this.dashboardStats.pendingInvoices = pendingInvoices.length;
+
+                    this.dashboardStats.outstandingAmount = this.invoices
+                        .filter(i => {
+                            const status = i.status?.toUpperCase();
+                            return status === 'PENDING' || status === 'OVERDUE';
+                        })
+                        .reduce((sum, i) => sum + (i.totalAmount || 0), 0);
+
+                    console.log('Dashboard stats:', this.dashboardStats);
+                },
+
+                filterUsage() {
+                    this.filteredUsages = this.usages.filter(usage => {
+                        let match = true;
+
+                        if (this.usageFilter.serviceType && usage.service?.serviceType !== this.usageFilter.serviceType) {
+                            match = false;
+                        }
+
+                        if (this.usageFilter.fromDate && new Date(usage.usageDate) < new Date(this.usageFilter.fromDate)) {
+                            match = false;
+                        }
+
+                        if (this.usageFilter.toDate && new Date(usage.usageDate) > new Date(this.usageFilter.toDate)) {
+                            match = false;
+                        }
+
+                        return match;
+                    });
+                },
+
+                async submitPayment() {
+                    try {
+                        const payment = await this.apiCall('/payments', 'POST', this.paymentForm);
+                        this.lastTransactionId = `PAY-${payment.paymentId}`;
+                        this.showPaymentSuccess = true;
+                        this.paymentForm = { invoiceId: '', amount: '', paymentMethod: 'CREDIT_CARD' };
+                        // Refresh all related data
+                        await Promise.all([
+                            this.loadPayments(),
+                            this.loadInvoices()
+                        ]);
+                        this.calculateDashboardStats();
+                    } catch (error) {
+                        alert('Payment failed: ' + error.message);
+                    }
+                },
+
+                async generateInvoice() {
+                    try {
+                        // Build the invoice data with proper amount
+                        const invoiceData = {
+                            customerId: this.invoiceForm.customerId,
+                            billingStartDate: this.invoiceForm.billingStartDate,
+                            billingEndDate: this.invoiceForm.billingEndDate,
+                            totalAmount: parseFloat(this.invoiceForm.amount) || 0
+                        };
+
+                        const invoice = await this.apiCall('/invoices', 'POST', invoiceData);
+                        alert(`Invoice #${invoice.invoiceId || 'new'} generated successfully for $${invoiceData.totalAmount.toFixed(2)}!`);
+                        this.invoiceForm = { customerId: '', billingStartDate: '', billingEndDate: '', amount: '' };
+
+                        // Refresh invoices and recalculate stats - switch to invoices view
+                        await this.loadInvoices();
+                        this.calculateDashboardStats();
+
+                        // Navigate to invoices view to show the new invoice
+                        this.currentView = 'invoices';
+                    } catch (error) {
+                        alert('Failed to generate invoice: ' + error.message);
+                    }
+                },
+
+                async saveUser() {
+                    try {
+                        if (this.userForm.userId) {
+                            // When updating, send only the fields needed
+                            const updatedUser = await this.apiCall(`/users/${this.userForm.userId}`, 'PUT', {
+                                userId: this.userForm.userId,
+                                username: this.userForm.username,
+                                email: this.userForm.email,
+                                role: this.userForm.role
+                            });
+
+                            alert(`User "${updatedUser.username}" role updated to ${updatedUser.role} successfully!`);
+                        } else {
+                            await this.apiCall('/register', 'POST', {
+                                username: this.userForm.username,
+                                email: this.userForm.email,
+                                password: 'TempPass123!',
+                                role: this.userForm.role
+                            });
+                            alert('User created successfully! Default password: TempPass123!');
+                        }
+                        this.showUserModal = false;
+                        this.resetUserForm();
+                        // Refresh all data from server to ensure data consistency and UI update
+                        await this.loadUsers();
+                        await this.loadCustomers();
+                        // Force Alpine.js reactivity by reassigning the array
+                        this.users = [...this.users];
+                    } catch (error) {
+                        alert('Failed to save user: ' + error.message);
+                    }
+                },
+
+                async deleteUser(id) {
+                    if (confirm('Are you sure you want to delete this user?')) {
+                        try {
+                            await this.apiCall(`/users/${id}`, 'DELETE');
+                            await this.loadUsers();
+                            alert('User deleted successfully!');
+                        } catch (error) {
+                            alert('Failed to delete user: ' + error.message);
+                        }
+                    }
+                },
+
+                editUser(user) {
+                    this.userForm = { ...user };
+                    this.showUserModal = true;
+                },
+
+                resetUserForm() {
+                    this.userForm = {
+                        userId: null,
+                        username: '',
+                        email: '',
+                        role: 'CUSTOMER'
+                    };
+                },
+
+                // Customer Management Functions
+                async saveCustomer() {
+                    try {
+                        // First create the user account
+                        const registerResponse = await this.apiCall('/register', 'POST', {
+                            username: this.customerForm.username,
+                            email: this.customerForm.email,
+                            password: this.customerForm.password,
+                            role: this.customerForm.role
+                        });
+
+                        // Then create the customer profile with the newly created user ID
+                        const customerData = {
+                            user: {
+                                userId: registerResponse.id
+                            },
+                            fullName: this.customerForm.fullName,
+                            phoneNumber: this.customerForm.phoneNumber,
+                            address: this.customerForm.address
+                        };
+
+                        await this.apiCall('/customers', 'POST', customerData);
+
+                        this.showCustomerModal = false;
+                        this.resetCustomerForm();
+
+                        // Reload all data to show new customer's services, usage, and invoices
+                        await this.loadData();
+
+                        alert('Customer created successfully with sample services, usage records, and invoices!');
+                    } catch (error) {
+                        alert('Failed to create customer: ' + error.message);
+                    }
+                },
+
+                async deleteCustomer(customerId) {
+                    if (confirm('Are you sure you want to delete this customer? This will also delete their services, usage records, invoices, and payments.')) {
+                        try {
+                            await this.apiCall(`/customers/${customerId}`, 'DELETE');
+                            // Refresh all data since customer deletion affects multiple entities
+                            await this.loadData();
+                            alert('Customer and all related data deleted successfully!');
+                        } catch (error) {
+                            alert('Failed to delete customer: ' + error.message);
+                        }
+                    }
+                },
+
+                viewCustomerDetails(customer) {
+                    const details = `Customer Details:
+
+Full Name: ${customer.fullName}
+Username: ${customer.user?.username || 'N/A'}
+Email: ${customer.user?.email || 'N/A'}
+Phone: ${customer.phoneNumber}
+Address: ${customer.address}
+Customer ID: ${customer.customerId}
+User ID: ${customer.user?.userId || 'N/A'}`;
+
+                    alert(details);
+                },
+
+                resetCustomerForm() {
+                    this.customerForm = {
+                        fullName: '',
+                        username: '',
+                        email: '',
+                        password: '',
+                        phoneNumber: '',
+                        address: '',
+                        role: 'CUSTOMER'
+                    };
+                },
+
+                viewInvoiceDetails(invoice) {
+                    const subtotal = (invoice.totalAmount * 0.92).toFixed(2);
+                    const tax = (invoice.totalAmount * 0.08).toFixed(2);
+                    alert(`Invoice Details:\n\nInvoice #${invoice.invoiceId}\nBilling Period: ${this.formatDate(invoice.billingPeriodStart)} - ${this.formatDate(invoice.billingPeriodEnd)}\nSubtotal: $${subtotal}\nTax: $${tax}\nTotal Amount: $${invoice.totalAmount.toFixed(2)}\nStatus: ${invoice.status}`);
+                },
+
+                downloadInvoicePDF(invoice) {
+                    alert(`Downloading PDF for invoice #${invoice.invoiceId}...`);
+                    // In production, this would trigger actual PDF download
+                },
+
+                payInvoice(invoice) {
+                    this.currentView = 'payments';
+                    this.paymentForm.invoiceId = invoice.invoiceId;
+                    this.paymentForm.amount = invoice.totalAmount;
+                },
+
+                calculateRate(usage) {
+                    // Calculate rate per unit based on service type
+                    const serviceType = usage.service?.serviceType;
+                    const rates = {
+                        'Mobile': 0.12,      // $0.12 per minute
+                        'Broadband': 2.50,   // $2.50 per GB
+                        'Cable TV': 1.20,    // $1.20 per hour
+                        'VoIP': 0.08         // $0.08 per minute
+                    };
+                    return rates[serviceType] || 0.10;
+                },
+
+                calculateUsageAmount(usage) {
+                    // Calculate total amount for this usage record
+                    const rate = this.calculateRate(usage);
+                    return (usage.usageAmount || 0) * rate;
+                },
+
+                // Invoice Notification Functions
+                openNotificationModal(invoice) {
+                    this.selectedInvoice = invoice;
+                    this.notificationForm = { type: 'BOTH', message: '' };
+                    this.showNotificationModalFlag = true;
+                },
+
+                async sendInvoiceViaEmail(invoice) {
+                    try {
+                        const response = await this.apiCall(`/notifications/invoice/${invoice.invoiceId}/email`, 'POST', {
+                            customMessage: ''
+                        });
+                        this.notificationResult = response;
+                        this.showNotificationResult = true;
+                    } catch (error) {
+                        alert('Failed to send email: ' + error.message);
+                    }
+                },
+
+                async sendInvoiceViaWhatsApp(invoice) {
+                    try {
+                        const response = await this.apiCall(`/notifications/invoice/${invoice.invoiceId}/whatsapp`, 'POST', {
+                            customMessage: ''
+                        });
+                        this.notificationResult = response;
+                        this.showNotificationResult = true;
+
+                        // Automatically open WhatsApp link in new tab
+                        if (response.whatsappLink) {
+                            window.open(response.whatsappLink, '_blank');
+                        }
+                    } catch (error) {
+                        alert('Failed to generate WhatsApp message: ' + error.message);
+                    }
+                },
+
+                async sendNotification() {
+                    if (!this.selectedInvoice) {
+                        alert('No invoice selected');
+                        return;
+                    }
+
+                    try {
+                        const response = await this.apiCall('/notifications/invoice', 'POST', {
+                            invoiceId: this.selectedInvoice.invoiceId,
+                            notificationType: this.notificationForm.type,
+                            customMessage: this.notificationForm.message
+                        });
+
+                        this.notificationResult = response;
+                        this.showNotificationModalFlag = false;
+                        this.showNotificationResult = true;
+
+                        // If WhatsApp was included, open the link
+                        if (response.whatsappLink && (this.notificationForm.type === 'WHATSAPP' || this.notificationForm.type === 'BOTH')) {
+                            window.open(response.whatsappLink, '_blank');
+                        }
+                    } catch (error) {
+                        alert('Failed to send notification: ' + error.message);
+                    }
+                },
+
+                hasPermission(permission) {
+                    // Simple role-based check - ADMIN has all permissions
+                    return this.currentUser?.role === 'ADMIN';
+                },
+
+                formatDate(date) {
+                    return new Date(date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                },
+
+                formatServiceType(type) {
+                    return type.replace(/_/g, ' ');
+                },
+
+                formatPaymentMethod(method) {
+                    return method.replace(/_/g, ' ');
+                },
+
+                getUnit(serviceType) {
+                    const units = {
+                        'VOICE_CALL': 'mins',
+                        'DATA': 'GB',
+                        'SMS': 'msgs',
+                        'ROAMING': 'mins',
+                        'VALUE_ADDED_SERVICE': 'units'
+                    };
+                    return units[serviceType] || 'units';
+                },
+
+                getStatusClass(status) {
+                    const classes = {
+                        'PENDING': 'bg-yellow-100 text-yellow-800',
+                        'PAID': 'bg-green-100 text-green-800',
+                        'OVERDUE': 'bg-red-100 text-red-800',
+                        'CANCELLED': 'bg-gray-100 text-gray-800'
+                    };
+                    return classes[status] || 'bg-gray-100 text-gray-800';
+                },
+
+                getPaymentStatusClass(status) {
+                    const classes = {
+                        'SUCCESS': 'bg-green-100 text-green-800',
+                        'PENDING': 'bg-yellow-100 text-yellow-800',
+                        'FAILED': 'bg-red-100 text-red-800',
+                        'REFUNDED': 'bg-blue-100 text-blue-800'
+                    };
+                    return classes[status] || 'bg-gray-100 text-gray-800';
+                },
+
+                getInvoiceNumber(invoiceId) {
+                    const invoice = this.invoices.find(i => i.id === invoiceId);
+                    return invoice?.invoiceNumber || 'N/A';
+                },
+
+                logout() {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('currentUser');
+                    window.location.href = '/login.html';
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

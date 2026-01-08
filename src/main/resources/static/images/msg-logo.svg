@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+  <defs>
+    <style>
+      .msg-blue { fill: #2E86AB; }
+      .msg-yellow { fill: #F9DC5C; }
+    </style>
+  </defs>
+  
+  <!-- Outer Blue Ring -->
+  <circle cx="300" cy="300" r="280" class="msg-blue"/>
+  
+  <!-- Inner Yellow Circle -->
+  <circle cx="300" cy="300" r="250" class="msg-yellow"/>
+  
+  <!-- MSG Text -->
+  <text x="300" y="320" font-family="Arial, Helvetica, sans-serif" font-size="200" font-weight="bold" 
+        text-anchor="middle" class="msg-blue" letter-spacing="-5">MSG</text>
+  
+  <!-- INNOVATION Line -->
+  <text x="300" y="420" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" 
+        text-anchor="middle" class="msg-blue">INNOVATION</text>
+  
+  <!-- THROUGH Line -->
+  <text x="300" y="465" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" 
+        text-anchor="middle" class="msg-blue">THROUGH</text>
+  
+  <!-- COMMUNICATION. Line -->
+  <text x="300" y="510" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="bold" 
+        text-anchor="middle" class="msg-blue">COMMUNICATION.</text>
+</svg>
