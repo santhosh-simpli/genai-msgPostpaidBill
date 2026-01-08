@@ -24,4 +24,24 @@ class CorsConfigTest {
         assertNotNull(corsFilter);
         // Additional assertions to validate the CORS configuration
     }
+
+    @Test
+    public void testCorsFilter_EmptyConfiguration() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        CorsFilter corsFilter = new CorsFilter(source);
+        assertNotNull(corsFilter);
+    }
+
+    @Test
+    public void testCorsFilter_InvalidPath() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/invalid-path", configuration);
+
+        CorsFilter corsFilter = new CorsFilter(source);
+        assertNotNull(corsFilter);
+    }
 }

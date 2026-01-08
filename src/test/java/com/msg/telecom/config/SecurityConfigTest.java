@@ -25,6 +25,15 @@ class SecurityConfigTest {
     }
 
     @Test
+    void passwordEncoder_InvalidPassword() {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        String rawPassword = "testPassword";
+        String encodedPassword = encoder.encode(rawPassword);
+
+        assertFalse(encoder.matches("wrongPassword", encodedPassword));
+    }
+
+    @Test
     void authenticationManager_ReturnsAuthenticationManager() throws Exception {
         // Test authentication manager retrieval logic
         AuthenticationConfiguration authConfig = mock(AuthenticationConfiguration.class);
@@ -35,5 +44,14 @@ class SecurityConfigTest {
 
         assertNotNull(result);
         assertEquals(mockManager, result);
+    }
+
+    @Test
+    void authenticationManager_NullConfiguration() {
+        AuthenticationConfiguration authConfig = null;
+
+        assertThrows(NullPointerException.class, () -> {
+            AuthenticationManager result = authConfig.getAuthenticationManager();
+        });
     }
 }

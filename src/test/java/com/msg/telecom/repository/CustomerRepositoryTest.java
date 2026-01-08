@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,5 +67,32 @@ class CustomerRepositoryTest {
         assertEquals("John Doe", customer.getFullName());
         assertEquals("123 Main St", customer.getAddress());
         assertEquals("1234567890", customer.getPhoneNumber());
+    }
+
+    @Test
+    void findByUser_UserId_ReturnsCustomers() {
+        User user = new User();
+        user.setUsername("testuser");
+        user.setEmail("test@example.com");
+
+        Customer customer = new Customer();
+        customer.setFullName("John Doe");
+        customer.setUser(user);
+        customerRepository.save(customer);
+
+        List<Customer> customers = customerRepository.findByUser_UserId(user.getUserId());
+        assertFalse(customers.isEmpty());
+        assertEquals("John Doe", customers.get(0).getFullName());
+    }
+
+    @Test
+    void existsByPhoneNumber_ReturnsTrue() {
+        Customer customer = new Customer();
+        customer.setFullName("Jane Doe");
+        customer.setPhoneNumber("1234567890");
+        customerRepository.save(customer);
+
+        boolean exists = customerRepository.existsByPhoneNumber("1234567890");
+        assertTrue(exists);
     }
 }

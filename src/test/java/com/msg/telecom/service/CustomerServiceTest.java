@@ -142,6 +142,17 @@ class CustomerServiceTest {
     }
 
     @Test
+    void createCustomer_NullAddress() {
+        Customer newCustomer = new Customer();
+        newCustomer.setFullName("Jane Doe");
+        newCustomer.setAddress(null);
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> customerService.createCustomer(newCustomer));
+        assertTrue(ex.getMessage().contains("Address cannot be null"));
+        verify(customerRepository, never()).save(any(Customer.class));
+    }
+
+    @Test
     void updateCustomer_Success() {
         Customer updateDetails = new Customer();
         updateDetails.setFullName("Updated Name");
@@ -162,6 +173,18 @@ class CustomerServiceTest {
         when(customerRepository.findById(999L)).thenReturn(Optional.empty());
         
         assertThrows(RuntimeException.class, () -> customerService.updateCustomer(999L, updateDetails));
+    }
+
+    @Test
+    void updateCustomer_InvalidPhoneNumber() {
+        Customer updateDetails = new Customer();
+        updateDetails.setPhoneNumber("invalid-phone");
+
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(testCustomer));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> customerService.updateCustomer(1L, updateDetails));
+        assertTrue(ex.getMessage().contains("Invalid phone number"));
+        verify(customerRepository, never()).save(any(Customer.class));
     }
 
     @Test

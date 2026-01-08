@@ -108,6 +108,17 @@ class PaymentServiceTest {
     }
 
     @Test
+    void createPayment_NullInvoice() {
+        Payment newPayment = new Payment();
+        newPayment.setInvoice(null);
+        newPayment.setAmount(100.0);
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> paymentService.createPayment(newPayment));
+        assertTrue(ex.getMessage().contains("Invoice cannot be null"));
+        verify(paymentRepository, never()).save(any(Payment.class));
+    }
+
+    @Test
     void updatePayment_Success() {
         Payment updateDetails = new Payment();
         updateDetails.setPaymentDate(LocalDate.now().plusDays(1));
@@ -121,6 +132,18 @@ class PaymentServiceTest {
         assertNotNull(updated);
         verify(paymentRepository, times(1)).findById(1L);
         verify(paymentRepository, times(1)).save(any(Payment.class));
+    }
+
+    @Test
+    void updatePayment_InvalidAmount() {
+        Payment updateDetails = new Payment();
+        updateDetails.setAmount(-50.0); // Negative amount
+
+        when(paymentRepository.findById(1L)).thenReturn(Optional.of(testPayment));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> paymentService.updatePayment(1L, updateDetails));
+        assertTrue(ex.getMessage().contains("Invalid payment amount"));
+        verify(paymentRepository, never()).save(any(Payment.class));
     }
 
     @Test

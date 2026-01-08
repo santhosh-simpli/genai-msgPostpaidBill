@@ -46,14 +46,14 @@ class AuthServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
         testUser.setEmail("test@example.com");
         testUser.setPasswordHash("encodedPassword");
         testUser.setRole(UserRole.CUSTOMER);
-        
+
         loginRequest = new LoginRequest("testuser", "password123");
         registerRequest = new RegisterRequest("newuser", "new@example.com", "password123", "CUSTOMER");
     }
@@ -64,9 +64,9 @@ class AuthServiceTest {
             .thenReturn(authentication);
         when(jwtTokenProvider.generateToken(authentication)).thenReturn("jwt-token");
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        
+
         AuthResponse response = authService.login(loginRequest);
-        
+
         assertNotNull(response);
         assertEquals("jwt-token", response.getToken());
         assertEquals("testuser", response.getUsername());
@@ -82,7 +82,7 @@ class AuthServiceTest {
             .thenReturn(authentication);
         when(jwtTokenProvider.generateToken(authentication)).thenReturn("jwt-token");
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.empty());
-        
+
         assertThrows(RuntimeException.class, () -> authService.login(loginRequest));
     }
 
@@ -90,7 +90,7 @@ class AuthServiceTest {
     void login_AuthenticationFailed() {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
             .thenThrow(new RuntimeException("Bad credentials"));
-        
+
         assertThrows(RuntimeException.class, () -> authService.login(loginRequest));
         verify(jwtTokenProvider, never()).generateToken(any());
     }
@@ -102,7 +102,7 @@ class AuthServiceTest {
         newUser.setUsername("newuser");
         newUser.setEmail("new@example.com");
         newUser.setRole(UserRole.CUSTOMER);
-        
+
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
@@ -110,9 +110,9 @@ class AuthServiceTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
             .thenReturn(authentication);
         when(jwtTokenProvider.generateToken(authentication)).thenReturn("jwt-token");
-        
+
         AuthResponse response = authService.register(registerRequest);
-        
+
         assertNotNull(response);
         assertEquals("jwt-token", response.getToken());
         assertEquals("newuser", response.getUsername());
@@ -123,7 +123,7 @@ class AuthServiceTest {
     @Test
     void register_UsernameExists() {
         when(userRepository.existsByUsername("newuser")).thenReturn(true);
-        
+
         RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.register(registerRequest));
         assertTrue(ex.getMessage().contains("Username already exists"));
         verify(userRepository, never()).save(any(User.class));
@@ -133,7 +133,7 @@ class AuthServiceTest {
     void register_EmailExists() {
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("new@example.com")).thenReturn(true);
-        
+
         RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.register(registerRequest));
         assertTrue(ex.getMessage().contains("Email already exists"));
         verify(userRepository, never()).save(any(User.class));
@@ -147,7 +147,7 @@ class AuthServiceTest {
         adminUser.setUsername("admin");
         adminUser.setEmail("admin@example.com");
         adminUser.setRole(UserRole.ADMIN);
-        
+
         when(userRepository.existsByUsername("admin")).thenReturn(false);
         when(userRepository.existsByEmail("admin@example.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
@@ -155,9 +155,9 @@ class AuthServiceTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
             .thenReturn(authentication);
         when(jwtTokenProvider.generateToken(authentication)).thenReturn("jwt-token");
-        
+
         AuthResponse response = authService.register(adminRequest);
-        
+
         assertNotNull(response);
         assertEquals("admin", response.getUsername());
         verify(userRepository, times(1)).save(any(User.class));
@@ -170,7 +170,7 @@ class AuthServiceTest {
         newUser.setUsername("newuser");
         newUser.setEmail("new@example.com");
         newUser.setRole(UserRole.CUSTOMER);
-        
+
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
@@ -178,9 +178,9 @@ class AuthServiceTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
             .thenReturn(authentication);
         when(jwtTokenProvider.generateToken(authentication)).thenReturn("jwt-token");
-        
+
         authService.register(registerRequest);
-        
+
         // Verify that authentication happens after user is saved
         verify(userRepository, times(1)).save(any(User.class));
         verify(authenticationManager, times(1)).authenticate(any(UsernamePasswordAuthenticationToken.class));
@@ -225,5 +225,25 @@ class AuthServiceTest {
         // Assert
         assertNotNull(response);
         assertEquals("mockToken", response.getToken());
+    }
+
+    @Test
+    void register_NullPassword() {
+        RegisterRequest invalidRequest = new RegisterRequest("user", "user@example.com", null, "CUSTOMER");
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.register(invalidRequest));
+        assertTrue(ex.getMessage().contains("Password cannot be null"));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void login_InvalidToken() {
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+            .thenReturn(authentication);
+        when(jwtTokenProvider.generateToken(authentication)).thenReturn(null); // Invalid token
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.login(loginRequest));
+        assertTrue(ex.getMessage().contains("Invalid token generated"));
+        verify(jwtTokenProvider, times(1)).generateToken(authentication);
     }
 }

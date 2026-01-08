@@ -131,6 +131,42 @@ class UserServiceTest {
     }
 
     @Test
+    void createUser_InvalidEmailFormat() {
+        User newUser = new User();
+        newUser.setUsername("newuser");
+        newUser.setEmail("invalid-email");
+        newUser.setPasswordHash("rawPassword");
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(newUser));
+        assertTrue(ex.getMessage().contains("Invalid email format"));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void createUser_NullUsername() {
+        User newUser = new User();
+        newUser.setUsername(null);
+        newUser.setEmail("valid@example.com");
+        newUser.setPasswordHash("rawPassword");
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(newUser));
+        assertTrue(ex.getMessage().contains("Username cannot be null"));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void createUser_NullEmail() {
+        User newUser = new User();
+        newUser.setUsername("newuser");
+        newUser.setEmail(null);
+        newUser.setPasswordHash("rawPassword");
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(newUser));
+        assertTrue(ex.getMessage().contains("Email cannot be null"));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
     void updateUser_Success_AllFields() {
         User updateDetails = new User();
         updateDetails.setUsername("updateduser");
@@ -238,6 +274,32 @@ class UserServiceTest {
     }
 
     @Test
+    void updateUser_PartialUpdate() {
+        User updateDetails = new User();
+        updateDetails.setEmail("partialupdate@example.com");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(userRepository.save(any(User.class))).thenReturn(testUser);
+
+        User updated = userService.updateUser(1L, updateDetails);
+        assertNotNull(updated);
+        assertEquals("partialupdate@example.com", updated.getEmail());
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    void updateUser_InvalidRole() {
+        User updateDetails = new User();
+        updateDetails.setRole(null); // Invalid role
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.updateUser(1L, updateDetails));
+        assertTrue(ex.getMessage().contains("Invalid role"));
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
     void deleteUser_Success() {
         doNothing().when(userRepository).deleteById(1L);
         
@@ -251,5 +313,15 @@ class UserServiceTest {
         
         assertDoesNotThrow(() -> userService.deleteUser(999L));
         verify(userRepository, times(1)).deleteById(999L);
+    }
+
+    @Test
+    void deleteUser_WithDependencies() {
+        doThrow(new RuntimeException("Cannot delete user with active dependencies"))
+            .when(userRepository).deleteById(1L);
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.deleteUser(1L));
+        assertTrue(ex.getMessage().contains("Cannot delete user with active dependencies"));
+        verify(userRepository, times(1)).deleteById(1L);
     }
 }
