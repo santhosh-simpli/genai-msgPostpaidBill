@@ -2,10 +2,10 @@ package com.msg.telecom.service;
 
 import com.msg.telecom.model.User;
 import com.msg.telecom.model.UserRole;
+import com.msg.telecom.repository.CustomerRepository;
 import com.msg.telecom.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +21,9 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private CustomerRepository customerRepository;
+    @Mock
     private PasswordEncoder passwordEncoder;
-    @InjectMocks
     private UserService userService;
 
     private User testUser;
@@ -30,6 +31,7 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        userService = new UserService(userRepository, customerRepository, passwordEncoder);
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
@@ -40,19 +42,19 @@ class UserServiceTest {
 
     @Test
     void getAllUsers_ReturnsList() {
-        when(userRepository.findAll()).thenReturn(List.of(testUser));
+        when(userRepository.findAllByOrderByUserIdDesc()).thenReturn(List.of(testUser));
         List<User> users = userService.getAllUsers();
         assertEquals(1, users.size());
         assertEquals("testuser", users.get(0).getUsername());
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllByOrderByUserIdDesc();
     }
 
     @Test
     void getAllUsers_ReturnsEmptyList() {
-        when(userRepository.findAll()).thenReturn(Collections.emptyList());
+        when(userRepository.findAllByOrderByUserIdDesc()).thenReturn(Collections.emptyList());
         List<User> users = userService.getAllUsers();
         assertTrue(users.isEmpty());
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(1)).findAllByOrderByUserIdDesc();
     }
 
     @Test
@@ -141,6 +143,7 @@ class UserServiceTest {
         when(userRepository.existsByUsername("updateduser")).thenReturn(false);
         when(userRepository.existsByEmail("updated@example.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
@@ -156,6 +159,7 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByEmail("newemail@example.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
@@ -171,6 +175,7 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByUsername("newusername")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
@@ -209,6 +214,7 @@ class UserServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);
@@ -224,6 +230,7 @@ class UserServiceTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
+        when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
         User updated = userService.updateUser(1L, updateDetails);
         assertNotNull(updated);

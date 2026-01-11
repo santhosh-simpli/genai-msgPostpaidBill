@@ -24,6 +24,8 @@ class CustomerServiceTest {
     private UsageRecordRepository usageRecordRepository;
     @Mock
     private InvoiceRepository invoiceRepository;
+    @Mock
+    private UserRepository userRepository;
 
     private CustomerService customerService;
     private Customer testCustomer;
@@ -33,7 +35,7 @@ class CustomerServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         customerService = new CustomerService(customerRepository, serviceRepository,
-                usageRecordRepository, invoiceRepository);
+                usageRecordRepository, invoiceRepository, userRepository);
 
         testUser = new User();
         testUser.setUserId(1L);
@@ -49,19 +51,19 @@ class CustomerServiceTest {
 
     @Test
     void getAllCustomers_ReturnsList() {
-        when(customerRepository.findAll()).thenReturn(List.of(testCustomer));
+        when(customerRepository.findAllByOrderByCustomerIdDesc()).thenReturn(List.of(testCustomer));
         List<Customer> customers = customerService.getAllCustomers();
         assertEquals(1, customers.size());
         assertEquals("John Doe", customers.get(0).getFullName());
-        verify(customerRepository, times(1)).findAll();
+        verify(customerRepository, times(1)).findAllByOrderByCustomerIdDesc();
     }
 
     @Test
     void getAllCustomers_ReturnsEmptyList() {
-        when(customerRepository.findAll()).thenReturn(Collections.emptyList());
+        when(customerRepository.findAllByOrderByCustomerIdDesc()).thenReturn(Collections.emptyList());
         List<Customer> customers = customerService.getAllCustomers();
         assertTrue(customers.isEmpty());
-        verify(customerRepository, times(1)).findAll();
+        verify(customerRepository, times(1)).findAllByOrderByCustomerIdDesc();
     }
 
     @Test

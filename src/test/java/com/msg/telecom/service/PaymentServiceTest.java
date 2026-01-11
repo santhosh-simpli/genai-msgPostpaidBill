@@ -2,10 +2,10 @@ package com.msg.telecom.service;
 
 import com.msg.telecom.model.Invoice;
 import com.msg.telecom.model.Payment;
+import com.msg.telecom.repository.InvoiceRepository;
 import com.msg.telecom.repository.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -20,7 +20,8 @@ import static org.mockito.Mockito.*;
 class PaymentServiceTest {
     @Mock
     private PaymentRepository paymentRepository;
-    @InjectMocks
+    @Mock
+    private InvoiceRepository invoiceRepository;
     private PaymentService paymentService;
 
     private Payment testPayment;
@@ -29,10 +30,12 @@ class PaymentServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        paymentService = new PaymentService(paymentRepository, invoiceRepository);
 
         testInvoice = new Invoice();
         testInvoice.setInvoiceId(1L);
         testInvoice.setTotalAmount(200.0);
+        testInvoice.setStatus("PENDING");
 
         testPayment = new Payment();
         testPayment.setPaymentId(1L);
@@ -44,19 +47,19 @@ class PaymentServiceTest {
 
     @Test
     void getAllPayments_ReturnsList() {
-        when(paymentRepository.findAllByOrderByPaymentIdDesc()).thenReturn(List.of(testPayment));
+        when(paymentRepository.findAllByOrderByPaymentDateDesc()).thenReturn(List.of(testPayment));
         List<Payment> payments = paymentService.getAllPayments();
         assertEquals(1, payments.size());
         assertEquals(200.0, payments.get(0).getAmount());
-        verify(paymentRepository, times(1)).findAllByOrderByPaymentIdDesc();
+        verify(paymentRepository, times(1)).findAllByOrderByPaymentDateDesc();
     }
 
     @Test
     void getAllPayments_ReturnsEmptyList() {
-        when(paymentRepository.findAllByOrderByPaymentIdDesc()).thenReturn(Collections.emptyList());
+        when(paymentRepository.findAllByOrderByPaymentDateDesc()).thenReturn(Collections.emptyList());
         List<Payment> payments = paymentService.getAllPayments();
         assertTrue(payments.isEmpty());
-        verify(paymentRepository, times(1)).findAllByOrderByPaymentIdDesc();
+        verify(paymentRepository, times(1)).findAllByOrderByPaymentDateDesc();
     }
 
     @Test
@@ -100,11 +103,13 @@ class PaymentServiceTest {
         newPayment.setPaymentMethod("BANK_TRANSFER");
 
         when(paymentRepository.save(any(Payment.class))).thenReturn(newPayment);
+        when(invoiceRepository.save(any(Invoice.class))).thenReturn(testInvoice);
         Payment created = paymentService.createPayment(newPayment);
 
         assertNotNull(created);
         assertEquals(100.0, created.getAmount());
         verify(paymentRepository, times(1)).save(any(Payment.class));
+        verify(invoiceRepository, times(1)).save(any(Invoice.class));
     }
 
     @Test

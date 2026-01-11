@@ -185,9 +185,11 @@ class PaymentControllerTest {
         PaymentDto dto = new PaymentDto();
         dto.setAmount(200.0);
         dto.setStatus("CASH");
+        dto.setInvoiceId(1L);
         
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
+        when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(paymentService.createPayment(any(Payment.class))).thenReturn(testPayment);
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);
@@ -205,6 +207,7 @@ class PaymentControllerTest {
         
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
+        when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.singletonList(testCustomer));
         when(paymentService.createPayment(any(Payment.class))).thenReturn(testPayment);
 
@@ -219,8 +222,15 @@ class PaymentControllerTest {
         dto.setAmount(100.0);
         dto.setInvoiceId(999L);
         
+        Customer otherCustomer = new Customer();
+        otherCustomer.setCustomerId(999L);
+        Invoice otherInvoice = new Invoice();
+        otherInvoice.setInvoiceId(999L);
+        otherInvoice.setCustomer(otherCustomer);
+        
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
+        when(invoiceService.getInvoiceById(999L)).thenReturn(otherInvoice);
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.singletonList(testCustomer));
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);
@@ -283,9 +293,11 @@ class PaymentControllerTest {
         createdPayment.setPaymentId(5L);
         createdPayment.setAmount(500.0);
         createdPayment.setPaymentMethod("TRANSFER");
+        createdPayment.setInvoice(testInvoice);
         
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
+        when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(paymentService.createPayment(any(Payment.class))).thenReturn(createdPayment);
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);

@@ -2,12 +2,12 @@ package com.msg.telecom.service;
 
 import com.msg.telecom.model.User;
 import com.msg.telecom.model.UserRole;
+import com.msg.telecom.repository.CustomerRepository;
 import com.msg.telecom.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,9 +26,10 @@ class UserServiceExtendedTest {
     @Mock
     private UserRepository userRepository;
     @Mock
+    private CustomerRepository customerRepository;
+    @Mock
     private PasswordEncoder passwordEncoder;
 
-    @InjectMocks
     private UserService userService;
 
     private User testUser;
@@ -36,6 +37,7 @@ class UserServiceExtendedTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        userService = new UserService(userRepository, customerRepository, passwordEncoder);
 
         testUser = new User();
         testUser.setUserId(1L);
@@ -62,7 +64,7 @@ class UserServiceExtendedTest {
             operatorUser.setUsername("operator");
             operatorUser.setRole(UserRole.OPERATOR);
 
-            when(userRepository.findAll()).thenReturn(Arrays.asList(testUser, adminUser, operatorUser));
+            when(userRepository.findAllByOrderByUserIdDesc()).thenReturn(Arrays.asList(testUser, adminUser, operatorUser));
 
             List<User> result = userService.getAllUsers();
 
@@ -80,7 +82,7 @@ class UserServiceExtendedTest {
                     new User(), new User(), new User(), new User(),
                     new User(), new User(), new User(), new User(), new User());
 
-            when(userRepository.findAll()).thenReturn(manyUsers);
+            when(userRepository.findAllByOrderByUserIdDesc()).thenReturn(manyUsers);
 
             List<User> result = userService.getAllUsers();
 
@@ -169,6 +171,7 @@ class UserServiceExtendedTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
             when(userRepository.existsByUsername("newusername")).thenReturn(false);
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 
@@ -184,6 +187,7 @@ class UserServiceExtendedTest {
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
             when(userRepository.existsByEmail("newemail@example.com")).thenReturn(false);
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 
@@ -198,6 +202,7 @@ class UserServiceExtendedTest {
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 
@@ -245,6 +250,7 @@ class UserServiceExtendedTest {
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 
@@ -261,6 +267,7 @@ class UserServiceExtendedTest {
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 
@@ -280,6 +287,7 @@ class UserServiceExtendedTest {
             when(userRepository.existsByUsername("brandnewuser")).thenReturn(false);
             when(userRepository.existsByEmail("brandnew@example.com")).thenReturn(false);
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 

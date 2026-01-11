@@ -637,11 +637,15 @@
                                                 </td>
                                                 <td class="px-6 py-4">
                                                     <button @click="viewCustomerDetails(customer)"
-                                                        class="text-msg-blue hover:text-msg-dark-blue mr-3">
+                                                        class="text-msg-blue hover:text-msg-dark-blue mr-3" title="View Details">
                                                         <i class="fas fa-eye"></i>
                                                     </button>
+                                                    <button @click="editCustomer(customer)"
+                                                        class="text-green-600 hover:text-green-800 mr-3" title="Edit Customer">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
                                                     <button @click="deleteCustomer(customer.customerId)"
-                                                        class="text-red-600 hover:text-red-800">
+                                                        class="text-red-600 hover:text-red-800" title="Delete Customer">
                                                         <i class="fas fa-trash"></i>
                                                     </button>
                                                 </td>
@@ -706,39 +710,39 @@
             </div>
         </main>
 
-        <!-- Customer Add Modal -->
+        <!-- Customer Add/Edit Modal -->
         <div x-show="showCustomerModal"
             class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
             @click.self="showCustomerModal = false" x-cloak>
             <div class="relative top-10 mx-auto p-8 border w-full max-w-2xl shadow-lg rounded-lg bg-white">
                 <h3 class="text-2xl font-bold mb-6 text-gray-800">
-                    <i class="fas fa-user-plus mr-2 text-green-600"></i>Add New Customer
+                    <i :class="customerForm.customerId ? 'fas fa-user-edit text-blue-600' : 'fas fa-user-plus text-green-600'" class="mr-2"></i>
+                    <span x-text="customerForm.customerId ? 'Edit Customer' : 'Add New Customer'"></span>
                 </h3>
                 <form @submit.prevent="saveCustomer()">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- User Account Details -->
-                        <div class="col-span-2">
-                            <h4 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Account Details</h4>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Username *</label>
-                            <input type="text" x-model="customerForm.username" required minlength="3"
-                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
-                            <input type="email" x-model="customerForm.email" required
-                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                        </div>
-                        <div class="col-span-2">
+                        <!-- User Account Details (hidden when editing) -->
+                        <template x-if="!customerForm.customerId">
+                            <div class="col-span-2">
+                                <h4 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Account Details</h4>
+                            </div>
+                        </template>
+                        <template x-if="!customerForm.customerId">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-2">Username *</label>
+                                <input type="text" x-model="customerForm.username" required minlength="3"
+                                    class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            </div>
+                        </template>
+                        <div x-show="!customerForm.customerId">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Password *</label>
-                            <input type="password" x-model="customerForm.password" required minlength="6"
+                            <input type="password" x-model="customerForm.password" :required="!customerForm.customerId" minlength="6"
                                 class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                             <p class="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
                         </div>
 
                         <!-- Customer Profile Details -->
-                        <div class="col-span-2 mt-4">
+                        <div class="col-span-2" :class="customerForm.customerId ? '' : 'mt-4'">
                             <h4 class="text-lg font-semibold text-gray-700 mb-3 border-b pb-2">Customer Information</h4>
                         </div>
                         <div class="col-span-2">
@@ -747,11 +751,19 @@
                                 class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         </div>
                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                            <input type="email" x-model="customerForm.email" required
+                                class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                            <p x-show="customerForm.customerId" class="text-xs text-blue-500 mt-1">
+                                <i class="fas fa-info-circle"></i> Email changes will sync with linked user account
+                            </p>
+                        </div>
+                        <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
                             <input type="tel" x-model="customerForm.phoneNumber" required placeholder="+1-234-567-8900"
                                 class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         </div>
-                        <div>
+                        <div x-show="!customerForm.customerId">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Role</label>
                             <select x-model="customerForm.role" required
                                 class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-green-500 focus:border-green-500">
@@ -767,13 +779,15 @@
                         </div>
                     </div>
                     <div class="flex justify-end space-x-2 mt-6">
-                        <button type="button" @click="showCustomerModal = false"
+                        <button type="button" @click="showCustomerModal = false; resetCustomerForm()"
                             class="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 transition">
                             Cancel
                         </button>
                         <button type="submit"
-                            class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">
-                            <i class="fas fa-save mr-2"></i>Create Customer
+                            :class="customerForm.customerId ? 'bg-blue-600 hover:bg-blue-700' : 'bg-green-600 hover:bg-green-700'"
+                            class="text-white px-6 py-2 rounded-lg transition">
+                            <i :class="customerForm.customerId ? 'fas fa-save' : 'fas fa-plus'" class="mr-2"></i>
+                            <span x-text="customerForm.customerId ? 'Update Customer' : 'Create Customer'"></span>
                         </button>
                     </div>
                 </form>
@@ -999,6 +1013,7 @@
                 },
 
                 customerForm: {
+                    customerId: null,
                     fullName: '',
                     username: '',
                     email: '',
@@ -1279,38 +1294,82 @@
                 },
 
                 // Customer Management Functions
+                /**
+                 * Saves customer data (creates new or updates existing).
+                 * When updating, email changes are automatically synchronized with the linked User entity.
+                 */
                 async saveCustomer() {
                     try {
-                        // First create the user account
-                        const registerResponse = await this.apiCall('/register', 'POST', {
-                            username: this.customerForm.username,
-                            email: this.customerForm.email,
-                            password: this.customerForm.password,
-                            role: this.customerForm.role
-                        });
+                        if (this.customerForm.customerId) {
+                            // Update existing customer
+                            const customerData = {
+                                customerId: this.customerForm.customerId,
+                                name: this.customerForm.fullName,
+                                fullName: this.customerForm.fullName,
+                                email: this.customerForm.email,
+                                phoneNumber: this.customerForm.phoneNumber,
+                                address: this.customerForm.address
+                            };
+                            
+                            await this.apiCall(`/customers/${this.customerForm.customerId}`, 'PUT', customerData);
+                            
+                            this.showCustomerModal = false;
+                            this.resetCustomerForm();
+                            
+                            // Reload all data to reflect synchronized changes across user and customer
+                            await this.loadData();
+                            
+                            alert('Customer updated successfully! Email changes have been synchronized with the user account.');
+                        } else {
+                            // Create new customer - First create the user account
+                            const registerResponse = await this.apiCall('/register', 'POST', {
+                                username: this.customerForm.username,
+                                email: this.customerForm.email,
+                                password: this.customerForm.password,
+                                role: this.customerForm.role
+                            });
 
-                        // Then create the customer profile with the newly created user ID
-                        const customerData = {
-                            user: {
-                                userId: registerResponse.id
-                            },
-                            fullName: this.customerForm.fullName,
-                            phoneNumber: this.customerForm.phoneNumber,
-                            address: this.customerForm.address
-                        };
+                            // Then create the customer profile with the newly created user ID
+                            const customerData = {
+                                user: {
+                                    userId: registerResponse.id
+                                },
+                                fullName: this.customerForm.fullName,
+                                phoneNumber: this.customerForm.phoneNumber,
+                                address: this.customerForm.address
+                            };
 
-                        await this.apiCall('/customers', 'POST', customerData);
+                            await this.apiCall('/customers', 'POST', customerData);
 
-                        this.showCustomerModal = false;
-                        this.resetCustomerForm();
+                            this.showCustomerModal = false;
+                            this.resetCustomerForm();
 
-                        // Reload all data to show new customer's services, usage, and invoices
-                        await this.loadData();
+                            // Reload all data to show new customer's services, usage, and invoices
+                            await this.loadData();
 
-                        alert('Customer created successfully with sample services, usage records, and invoices!');
+                            alert('Customer created successfully with sample services, usage records, and invoices!');
+                        }
                     } catch (error) {
-                        alert('Failed to create customer: ' + error.message);
+                        alert('Failed to save customer: ' + error.message);
                     }
+                },
+
+                /**
+                 * Opens the customer modal in edit mode with existing customer data.
+                 * @param {Object} customer - The customer object to edit
+                 */
+                editCustomer(customer) {
+                    this.customerForm = {
+                        customerId: customer.customerId,
+                        fullName: customer.fullName || customer.name,
+                        username: customer.user?.username || '',
+                        email: customer.user?.email || customer.email || '',
+                        password: '',
+                        phoneNumber: customer.phoneNumber || '',
+                        address: customer.address || '',
+                        role: customer.user?.role || 'CUSTOMER'
+                    };
+                    this.showCustomerModal = true;
                 },
 
                 async deleteCustomer(customerId) {
@@ -1340,8 +1399,12 @@ User ID: ${customer.user?.userId || 'N/A'}`;
                     alert(details);
                 },
 
+                /**
+                 * Resets the customer form to initial empty state.
+                 */
                 resetCustomerForm() {
                     this.customerForm = {
+                        customerId: null,
                         fullName: '',
                         username: '',
                         email: '',

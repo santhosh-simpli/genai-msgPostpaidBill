@@ -303,4 +303,249 @@ class InvoiceControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody().get(0).getCustomerId());
     }
+
+    // Additional tests to improve coverage for createInvoice method
+
+    @Test
+    void createInvoice_WithAllFields_ReturnsCreatedDto() {
+        InvoiceDto dto = new InvoiceDto();
+        dto.setCustomerId(1L);
+        dto.setTotalAmount(150.0);
+        dto.setBillingStartDate("2025-01-01");
+        dto.setBillingEndDate("2025-01-31");
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(2L);
+        createdInvoice.setCustomer(testCustomer);
+        createdInvoice.setTotalAmount(150.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setBillingPeriodStart(LocalDate.parse("2025-01-01"));
+        createdInvoice.setBillingPeriodEnd(LocalDate.parse("2025-01-31"));
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<InvoiceDto> response = invoiceController.createInvoice(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(150.0, response.getBody().getTotalAmount());
+        assertEquals("PENDING", response.getBody().getStatus());
+    }
+
+    @Test
+    void createInvoice_WithNullTotalAmount_DefaultsToZero() {
+        InvoiceDto dto = new InvoiceDto();
+        dto.setCustomerId(1L);
+        dto.setTotalAmount(null);
+        dto.setBillingStartDate("2025-02-01");
+        dto.setBillingEndDate("2025-02-28");
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(3L);
+        createdInvoice.setCustomer(testCustomer);
+        createdInvoice.setTotalAmount(0.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setBillingPeriodStart(LocalDate.parse("2025-02-01"));
+        createdInvoice.setBillingPeriodEnd(LocalDate.parse("2025-02-28"));
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<InvoiceDto> response = invoiceController.createInvoice(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0.0, response.getBody().getTotalAmount());
+    }
+
+    @Test
+    void createInvoice_WithBillingPeriodStartAndEnd_ReturnsCreatedDto() {
+        InvoiceDto dto = new InvoiceDto();
+        dto.setCustomerId(1L);
+        dto.setTotalAmount(200.0);
+        dto.setBillingPeriodStart("2025-03-01");
+        dto.setBillingPeriodEnd("2025-03-31");
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(4L);
+        createdInvoice.setCustomer(testCustomer);
+        createdInvoice.setTotalAmount(200.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setBillingPeriodStart(LocalDate.parse("2025-03-01"));
+        createdInvoice.setBillingPeriodEnd(LocalDate.parse("2025-03-31"));
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<InvoiceDto> response = invoiceController.createInvoice(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("2025-03-01", response.getBody().getBillingPeriodStart());
+        assertEquals("2025-03-31", response.getBody().getBillingPeriodEnd());
+    }
+
+    @Test
+    void createInvoice_WithNullDates_UsesDefaults() {
+        InvoiceDto dto = new InvoiceDto();
+        dto.setCustomerId(1L);
+        dto.setTotalAmount(100.0);
+        dto.setBillingStartDate(null);
+        dto.setBillingEndDate(null);
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(5L);
+        createdInvoice.setCustomer(testCustomer);
+        createdInvoice.setTotalAmount(100.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setBillingPeriodStart(LocalDate.now().withDayOfMonth(1));
+        createdInvoice.setBillingPeriodEnd(LocalDate.now());
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<InvoiceDto> response = invoiceController.createInvoice(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody().getBillingPeriodStart());
+        assertNotNull(response.getBody().getBillingPeriodEnd());
+    }
+
+    @Test
+    void createInvoice_WithEmptyDates_UsesDefaults() {
+        InvoiceDto dto = new InvoiceDto();
+        dto.setCustomerId(1L);
+        dto.setTotalAmount(100.0);
+        dto.setBillingStartDate("");
+        dto.setBillingEndDate("");
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(6L);
+        createdInvoice.setCustomer(testCustomer);
+        createdInvoice.setTotalAmount(100.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setBillingPeriodStart(LocalDate.now().withDayOfMonth(1));
+        createdInvoice.setBillingPeriodEnd(LocalDate.now());
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<InvoiceDto> response = invoiceController.createInvoice(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void createInvoice_WithMixedDateFormats_PrefersStartEndDates() {
+        InvoiceDto dto = new InvoiceDto();
+        dto.setCustomerId(1L);
+        dto.setTotalAmount(300.0);
+        dto.setBillingStartDate("2025-04-01");
+        dto.setBillingEndDate("2025-04-30");
+        dto.setBillingPeriodStart("2025-05-01");
+        dto.setBillingPeriodEnd("2025-05-31");
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(7L);
+        createdInvoice.setCustomer(testCustomer);
+        createdInvoice.setTotalAmount(300.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setBillingPeriodStart(LocalDate.parse("2025-04-01"));
+        createdInvoice.setBillingPeriodEnd(LocalDate.parse("2025-04-30"));
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<InvoiceDto> response = invoiceController.createInvoice(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("2025-04-01", response.getBody().getBillingPeriodStart());
+    }
+
+    @Test
+    void createInvoice_WithOnlyPeriodStartAndEnd_ReturnsCreatedDto() {
+        InvoiceDto dto = new InvoiceDto();
+        dto.setCustomerId(1L);
+        dto.setTotalAmount(250.0);
+        dto.setBillingStartDate(null);
+        dto.setBillingEndDate(null);
+        dto.setBillingPeriodStart("2025-06-01");
+        dto.setBillingPeriodEnd("2025-06-30");
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(8L);
+        createdInvoice.setCustomer(testCustomer);
+        createdInvoice.setTotalAmount(250.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setBillingPeriodStart(LocalDate.parse("2025-06-01"));
+        createdInvoice.setBillingPeriodEnd(LocalDate.parse("2025-06-30"));
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<InvoiceDto> response = invoiceController.createInvoice(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("2025-06-01", response.getBody().getBillingPeriodStart());
+        assertEquals("2025-06-30", response.getBody().getBillingPeriodEnd());
+    }
+
+    @Test
+    void getAllInvoices_InvoiceWithNullBillingPeriodStart_HandlesProperly() {
+        testInvoice.setBillingPeriodStart(null);
+        testInvoice.setBillingPeriodEnd(LocalDate.now());
+
+        when(authentication.getName()).thenReturn("admin");
+        when(userService.getUserByUsername("admin")).thenReturn(adminUser);
+        when(invoiceService.getAllInvoices()).thenReturn(Collections.singletonList(testInvoice));
+
+        ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody().get(0).getBillingPeriodStart());
+    }
+
+    @Test
+    void getInvoicePayments_PaymentWithNullInvoice_HandlesProperly() {
+        testPayment.setInvoice(null);
+        when(paymentService.getPaymentsByInvoiceId(1L)).thenReturn(Collections.singletonList(testPayment));
+
+        ResponseEntity<List<PaymentDto>> response = invoiceController.getInvoicePayments(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody().get(0).getInvoiceId());
+    }
+
+    @Test
+    void getInvoicePayments_PaymentWithNullPaymentDate_HandlesProperly() {
+        testPayment.setPaymentDate(null);
+        when(paymentService.getPaymentsByInvoiceId(1L)).thenReturn(Collections.singletonList(testPayment));
+
+        ResponseEntity<List<PaymentDto>> response = invoiceController.getInvoicePayments(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody().get(0).getPaymentDate());
+    }
+
+    @Test
+    void recordPayment_WithPaymentId_ReturnsCreatedDto() {
+        PaymentDto dto = new PaymentDto();
+        dto.setPaymentId(10L);
+        dto.setAmount(75.0);
+        dto.setStatus("BANK_TRANSFER");
+
+        Payment createdPayment = new Payment();
+        createdPayment.setPaymentId(10L);
+        createdPayment.setAmount(75.0);
+        createdPayment.setPaymentMethod("BANK_TRANSFER");
+        createdPayment.setInvoice(testInvoice);
+
+        when(authentication.getName()).thenReturn("admin");
+        when(userService.getUserByUsername("admin")).thenReturn(adminUser);
+        when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
+        when(paymentService.createPayment(any(Payment.class))).thenReturn(createdPayment);
+
+        ResponseEntity<PaymentDto> response = invoiceController.recordPayment(1L, dto, authentication);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(10L, response.getBody().getPaymentId());
+    }
 }

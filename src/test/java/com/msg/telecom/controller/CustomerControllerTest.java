@@ -2,9 +2,13 @@ package com.msg.telecom.controller;
 
 import com.msg.telecom.dto.CustomerDto;
 import com.msg.telecom.model.Customer;
+import com.msg.telecom.model.Invoice;
+import com.msg.telecom.model.Service;
 import com.msg.telecom.model.User;
 import com.msg.telecom.model.UserRole;
 import com.msg.telecom.service.CustomerService;
+import com.msg.telecom.service.InvoiceService;
+import com.msg.telecom.service.ServiceService;
 import com.msg.telecom.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,6 +29,10 @@ import static org.mockito.Mockito.*;
 class CustomerControllerTest {
     @Mock
     private CustomerService customerService;
+    @Mock
+    private ServiceService serviceService;
+    @Mock
+    private InvoiceService invoiceService;
     @Mock
     private UserService userService;
     @Mock
@@ -211,5 +219,223 @@ class CustomerControllerTest {
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
+    }
+
+    // Additional tests for missing method coverage
+
+    @Test
+    void getAllCustomers_OperatorRole_ReturnsAll() {
+        User operatorUser = new User();
+        operatorUser.setUserId(3L);
+        operatorUser.setUsername("operator");
+        operatorUser.setRole(UserRole.OPERATOR);
+
+        when(authentication.getName()).thenReturn("operator");
+        when(userService.getUserByUsername("operator")).thenReturn(operatorUser);
+        when(customerService.getAllCustomers()).thenReturn(List.of(testCustomer));
+
+        ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+        verify(customerService, times(1)).getAllCustomers();
+    }
+
+    @Test
+    void getCustomerById_AsCustomer_OtherCustomer_ReturnsForbidden() {
+        User otherUser = new User();
+        otherUser.setUserId(99L);
+        otherUser.setUsername("otheruser");
+        otherUser.setRole(UserRole.CUSTOMER);
+        
+        testCustomer.setUser(customerUser);
+        
+        when(authentication.getName()).thenReturn("otheruser");
+        when(userService.getUserByUsername("otheruser")).thenReturn(otherUser);
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+
+        ResponseEntity<CustomerDto> response = customerController.getCustomerById(1L, authentication);
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+    }
+
+    @Test
+    void getCustomerServices_ReturnsServiceList() {
+        Service service1 = new Service();
+        service1.setServiceId(1L);
+        service1.setServiceType("DATA");
+        
+        Service service2 = new Service();
+        service2.setServiceId(2L);
+        service2.setServiceType("VOICE");
+
+        when(serviceService.getServicesByCustomerId(1L)).thenReturn(Arrays.asList(service1, service2));
+
+        ResponseEntity<List<Service>> response = customerController.getCustomerServices(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, response.getBody().size());
+    }
+
+    @Test
+    void getCustomerServices_NoServices_ReturnsEmptyList() {
+        when(serviceService.getServicesByCustomerId(1L)).thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<Service>> response = customerController.getCustomerServices(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().isEmpty());
+    }
+
+    @Test
+    void addCustomerService_Success_ReturnsCreatedService() {
+        Service newService = new Service();
+        newService.setServiceType("DATA");
+        newService.setStatus("ACTIVE");
+
+        Service createdService = new Service();
+        createdService.setServiceId(10L);
+        createdService.setServiceType("DATA");
+        createdService.setStatus("ACTIVE");
+        createdService.setCustomer(testCustomer);
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(serviceService.createService(any(Service.class))).thenReturn(createdService);
+
+        ResponseEntity<Service> response = customerController.addCustomerService(1L, newService);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("DATA", response.getBody().getServiceType());
+        assertEquals("ACTIVE", response.getBody().getStatus());
+    }
+
+    @Test
+    void getCustomerInvoices_ReturnsInvoiceList() {
+        Invoice invoice1 = new Invoice();
+        invoice1.setInvoiceId(1L);
+        invoice1.setTotalAmount(100.0);
+        invoice1.setStatus("PENDING");
+
+        Invoice invoice2 = new Invoice();
+        invoice2.setInvoiceId(2L);
+        invoice2.setTotalAmount(200.0);
+        invoice2.setStatus("PAID");
+
+        when(invoiceService.getInvoicesByCustomerId(1L)).thenReturn(Arrays.asList(invoice1, invoice2));
+
+        ResponseEntity<List<Invoice>> response = customerController.getCustomerInvoices(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(2, response.getBody().size());
+    }
+
+    @Test
+    void getCustomerInvoices_NoInvoices_ReturnsEmptyList() {
+        when(invoiceService.getInvoicesByCustomerId(1L)).thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<Invoice>> response = customerController.getCustomerInvoices(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertTrue(response.getBody().isEmpty());
+    }
+
+    @Test
+    void generateCustomerInvoice_Success_ReturnsCreatedInvoice() {
+        Invoice newInvoice = new Invoice();
+        newInvoice.setTotalAmount(150.0);
+        newInvoice.setStatus("PENDING");
+
+        Invoice createdInvoice = new Invoice();
+        createdInvoice.setInvoiceId(10L);
+        createdInvoice.setTotalAmount(150.0);
+        createdInvoice.setStatus("PENDING");
+        createdInvoice.setCustomer(testCustomer);
+
+        when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
+        when(invoiceService.createInvoice(any(Invoice.class))).thenReturn(createdInvoice);
+
+        ResponseEntity<Invoice> response = customerController.generateCustomerInvoice(1L, newInvoice);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(150.0, response.getBody().getTotalAmount());
+        assertEquals("PENDING", response.getBody().getStatus());
+    }
+
+    @Test
+    void toDto_CustomerWithNullUser_HandlesGracefully() {
+        Customer customerWithNullUser = new Customer();
+        customerWithNullUser.setCustomerId(5L);
+        customerWithNullUser.setFullName("No User Customer");
+        customerWithNullUser.setPhoneNumber("1111111111");
+        customerWithNullUser.setAddress("456 Test St");
+        customerWithNullUser.setUser(null);
+
+        when(authentication.getName()).thenReturn("admin");
+        when(userService.getUserByUsername("admin")).thenReturn(adminUser);
+        when(customerService.getAllCustomers()).thenReturn(List.of(customerWithNullUser));
+
+        ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody().get(0).getEmail());
+        assertNull(response.getBody().get(0).getUserId());
+        assertNull(response.getBody().get(0).getUser());
+    }
+
+    @Test
+    void toDto_CustomerWithUserAndRole_IncludesUserDto() {
+        when(authentication.getName()).thenReturn("admin");
+        when(userService.getUserByUsername("admin")).thenReturn(adminUser);
+        when(customerService.getAllCustomers()).thenReturn(List.of(testCustomer));
+
+        ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody().get(0).getUser());
+        assertEquals("customer", response.getBody().get(0).getUser().getUsername());
+        assertEquals("CUSTOMER", response.getBody().get(0).getUser().getRole());
+    }
+
+    @Test
+    void toDto_CustomerWithUserNullRole_HandlesGracefully() {
+        User userWithNullRole = new User();
+        userWithNullRole.setUserId(10L);
+        userWithNullRole.setUsername("nullrole");
+        userWithNullRole.setEmail("nullrole@test.com");
+        userWithNullRole.setRole(null);
+
+        Customer customerWithNullRole = new Customer();
+        customerWithNullRole.setCustomerId(6L);
+        customerWithNullRole.setFullName("Null Role Customer");
+        customerWithNullRole.setUser(userWithNullRole);
+
+        when(authentication.getName()).thenReturn("admin");
+        when(userService.getUserByUsername("admin")).thenReturn(adminUser);
+        when(customerService.getAllCustomers()).thenReturn(List.of(customerWithNullRole));
+
+        ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNull(response.getBody().get(0).getUser().getRole());
+    }
+
+    @Test
+    void createCustomer_WithAddress_ReturnsDto() {
+        CustomerDto dto = new CustomerDto();
+        dto.setName("Address Customer");
+        dto.setPhoneNumber("2222222222");
+
+        Customer createdCustomer = new Customer();
+        createdCustomer.setCustomerId(7L);
+        createdCustomer.setFullName("Address Customer");
+        createdCustomer.setPhoneNumber("2222222222");
+        createdCustomer.setAddress("789 Address St");
+
+        when(customerService.createCustomer(any(Customer.class))).thenReturn(createdCustomer);
+
+        ResponseEntity<CustomerDto> response = customerController.createCustomer(dto);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("789 Address St", response.getBody().getAddress());
     }
 }
