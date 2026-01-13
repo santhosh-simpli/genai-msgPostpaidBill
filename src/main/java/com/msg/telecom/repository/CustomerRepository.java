@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
-    
+
     /**
      * Finds all customers associated with a specific user.
      *
@@ -28,7 +28,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      * @return List of customers linked to the user
      */
     List<Customer> findByUser_UserId(Long userId);
-    
+
     /**
      * Finds a customer by their phone number.
      *
@@ -36,7 +36,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      * @return Optional containing the customer if found
      */
     Optional<Customer> findByPhoneNumber(String phoneNumber);
-    
+
     /**
      * Checks if a customer exists with the given phone number.
      *
@@ -44,9 +44,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
      * @return true if a customer with this phone number exists
      */
     boolean existsByPhoneNumber(String phoneNumber);
-    
+
     /**
-     * Retrieves all customers ordered by customer ID descending (most recent first).
+     * Retrieves all customers ordered by customer ID descending (most recent
+     * first).
      *
      * @return List of all customers with newest entries first
      */

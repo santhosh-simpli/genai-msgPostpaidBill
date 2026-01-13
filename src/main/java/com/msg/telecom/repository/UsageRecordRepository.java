@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * Repository interface for UsageRecord entity data access operations.
  * <p>
- * Provides CRUD operations and custom query methods for managing usage record data.
+ * Provides CRUD operations and custom query methods for managing usage record
+ * data.
  * </p>
  *
  * @author MSG Telecom Development Team
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @Repository
 public interface UsageRecordRepository extends JpaRepository<UsageRecord, Long> {
-    
+
     /**
      * Finds all usage records for a specific service.
      *

@@ -64,7 +64,8 @@ class UserServiceExtendedTest {
             operatorUser.setUsername("operator");
             operatorUser.setRole(UserRole.OPERATOR);
 
-            when(userRepository.findAllByOrderByUserIdDesc()).thenReturn(Arrays.asList(testUser, adminUser, operatorUser));
+            when(userRepository.findAllByOrderByUserIdDesc())
+                    .thenReturn(Arrays.asList(testUser, adminUser, operatorUser));
 
             List<User> result = userService.getAllUsers();
 

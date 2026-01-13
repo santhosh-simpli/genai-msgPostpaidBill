@@ -68,7 +68,7 @@ public class UsageRecordService {
      */
     public UsageRecord createUsageRecord(UsageRecord usageRecord) {
         UsageRecord savedRecord = usageRecordRepository.save(usageRecord);
-        log.info("Created new usage record with ID: {} - Amount: {} {}", 
+        log.info("Created new usage record with ID: {} - Amount: {} {}",
                 savedRecord.getUsageId(), usageRecord.getUsageAmount(), usageRecord.getUnit());
         return savedRecord;
     }

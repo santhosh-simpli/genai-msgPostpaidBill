@@ -69,7 +69,8 @@ public class PaymentService {
     }
 
     /**
-     * Creates a new payment and automatically updates the associated invoice status.
+     * Creates a new payment and automatically updates the associated invoice
+     * status.
      * <p>
      * When a payment is created, the linked invoice status is automatically
      * updated to "PAID" to reflect the payment. This ensures data consistency
@@ -82,10 +83,10 @@ public class PaymentService {
     public Payment createPayment(Payment payment) {
         // Save the payment first
         Payment savedPayment = paymentRepository.save(payment);
-        log.info("Created new payment with ID: {} for invoice ID: {}", 
-                savedPayment.getPaymentId(), 
+        log.info("Created new payment with ID: {} for invoice ID: {}",
+                savedPayment.getPaymentId(),
                 payment.getInvoice() != null ? payment.getInvoice().getInvoiceId() : "N/A");
-        
+
         // Automatically update invoice status to PAID after payment is created
         if (payment.getInvoice() != null) {
             Invoice invoice = payment.getInvoice();
@@ -93,7 +94,7 @@ public class PaymentService {
             invoiceRepository.save(invoice);
             log.info("Updated invoice {} status to PAID after payment", invoice.getInvoiceId());
         }
-        
+
         return savedPayment;
     }
 

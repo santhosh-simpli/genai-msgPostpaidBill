@@ -67,7 +67,7 @@ public class ServiceService {
      */
     public Service createService(Service service) {
         Service savedService = serviceRepository.save(service);
-        log.info("Created new service with ID: {} - Type: {}", 
+        log.info("Created new service with ID: {} - Type: {}",
                 savedService.getServiceId(), service.getServiceType());
         return savedService;
     }

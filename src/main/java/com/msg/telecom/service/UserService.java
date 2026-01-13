@@ -13,7 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 /**
- * Service class for managing User entities and authentication-related operations.
+ * Service class for managing User entities and authentication-related
+ * operations.
  * <p>
  * This service handles CRUD operations for users and ensures data consistency
  * by synchronizing email changes with linked Customer entities.
@@ -100,12 +101,13 @@ public class UserService {
      * @param id          The user's unique identifier
      * @param userDetails The user data containing updated values
      * @return The updated user entity
-     * @throws RuntimeException if user is not found or if username/email already taken
+     * @throws RuntimeException if user is not found or if username/email already
+     *                          taken
      */
     public User updateUser(Long id, User userDetails) {
         User user = getUserById(id);
         String oldEmail = user.getEmail();
-        
+
         // Update username if changed and not already taken
         if (userDetails.getUsername() != null && !userDetails.getUsername().equals(user.getUsername())) {
             if (userRepository.existsByUsername(userDetails.getUsername())) {
@@ -114,29 +116,29 @@ public class UserService {
             user.setUsername(userDetails.getUsername());
             log.info("Updated username for user ID: {}", id);
         }
-        
+
         // Update email if changed and not already taken
         if (userDetails.getEmail() != null && !userDetails.getEmail().equals(user.getEmail())) {
             if (userRepository.existsByEmail(userDetails.getEmail())) {
                 throw new RuntimeException("Email already exists");
             }
             user.setEmail(userDetails.getEmail());
-            
+
             // Cascade email update to all linked customers for data consistency
             List<Customer> linkedCustomers = customerRepository.findByUser_UserId(id);
             for (Customer customer : linkedCustomers) {
                 customer.setEmail(userDetails.getEmail());
                 customerRepository.save(customer);
-                log.info("Synchronized email update from user {} to customer {}", 
+                log.info("Synchronized email update from user {} to customer {}",
                         id, customer.getCustomerId());
             }
         }
-        
+
         // Update role if provided
         if (userDetails.getRole() != null) {
             user.setRole(userDetails.getRole());
         }
-        
+
         log.info("Updated user with ID: {}", id);
         return userRepository.save(user);
     }

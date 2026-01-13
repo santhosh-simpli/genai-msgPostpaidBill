@@ -9,7 +9,8 @@ import java.util.List;
 /**
  * Repository interface for Service entity data access operations.
  * <p>
- * Provides CRUD operations and custom query methods for managing telecom service data.
+ * Provides CRUD operations and custom query methods for managing telecom
+ * service data.
  * </p>
  *
  * @author MSG Telecom Development Team
@@ -18,7 +19,7 @@ import java.util.List;
  */
 @Repository
 public interface ServiceRepository extends JpaRepository<Service, Long> {
-    
+
     /**
      * Finds all services for a specific customer.
      *
@@ -26,7 +27,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
      * @return List of services subscribed by the customer
      */
     List<Service> findByCustomer_CustomerId(Long customerId);
-    
+
     /**
      * Finds all services with a specific status.
      *

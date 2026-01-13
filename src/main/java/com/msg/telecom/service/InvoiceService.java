@@ -81,7 +81,7 @@ public class InvoiceService {
      */
     public Invoice createInvoice(Invoice invoice) {
         Invoice savedInvoice = invoiceRepository.save(invoice);
-        log.info("Created new invoice with ID: {} for customer ID: {}", 
+        log.info("Created new invoice with ID: {} for customer ID: {}",
                 savedInvoice.getInvoiceId(),
                 invoice.getCustomer() != null ? invoice.getCustomer().getCustomerId() : "N/A");
         return savedInvoice;

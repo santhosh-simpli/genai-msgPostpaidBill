@@ -147,7 +147,7 @@ public class UserController {
         user.setUserId(dto.getUserId());
         user.setUsername(dto.getUsername());
         user.setEmail(dto.getEmail());
-        
+
         // Convert role string to UserRole enum with error handling
         if (dto.getRole() != null) {
             try {

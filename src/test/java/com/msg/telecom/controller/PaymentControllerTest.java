@@ -51,30 +51,30 @@ class PaymentControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         adminUser = new User();
         adminUser.setUserId(1L);
         adminUser.setUsername("admin");
         adminUser.setRole(UserRole.ADMIN);
-        
+
         customerUser = new User();
         customerUser.setUserId(2L);
         customerUser.setUsername("customer");
         customerUser.setRole(UserRole.CUSTOMER);
-        
+
         operatorUser = new User();
         operatorUser.setUserId(3L);
         operatorUser.setUsername("operator");
         operatorUser.setRole(UserRole.OPERATOR);
-        
+
         testCustomer = new Customer();
         testCustomer.setCustomerId(1L);
         testCustomer.setUser(customerUser);
-        
+
         testInvoice = new Invoice();
         testInvoice.setInvoiceId(1L);
         testInvoice.setCustomer(testCustomer);
-        
+
         testPayment = new Payment();
         testPayment.setPaymentId(1L);
         testPayment.setAmount(100.0);
@@ -90,7 +90,7 @@ class PaymentControllerTest {
         when(paymentService.getAllPayments()).thenReturn(Collections.singletonList(testPayment));
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         assertEquals(100.0, response.getBody().get(0).getAmount());
@@ -104,7 +104,7 @@ class PaymentControllerTest {
         when(paymentService.getAllPayments()).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -116,7 +116,7 @@ class PaymentControllerTest {
         when(paymentService.getAllPayments()).thenReturn(Collections.singletonList(testPayment));
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         verify(paymentService, times(1)).getAllPayments();
@@ -131,7 +131,7 @@ class PaymentControllerTest {
         when(paymentService.getPaymentsByInvoiceId(1L)).thenReturn(Collections.singletonList(testPayment));
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         verify(paymentService, never()).getAllPayments();
@@ -144,7 +144,7 @@ class PaymentControllerTest {
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -157,7 +157,7 @@ class PaymentControllerTest {
         when(invoiceService.getInvoicesByCustomerId(1L)).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -169,13 +169,13 @@ class PaymentControllerTest {
         payment2.setAmount(200.0);
         payment2.setPaymentMethod("CASH");
         payment2.setPaymentDate(LocalDate.now());
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(paymentService.getAllPayments()).thenReturn(Arrays.asList(testPayment, payment2));
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
     }
@@ -186,14 +186,14 @@ class PaymentControllerTest {
         dto.setAmount(200.0);
         dto.setStatus("CASH");
         dto.setInvoiceId(1L);
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(paymentService.createPayment(any(Payment.class))).thenReturn(testPayment);
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
@@ -204,7 +204,7 @@ class PaymentControllerTest {
         dto.setAmount(100.0);
         dto.setStatus("CARD");
         dto.setInvoiceId(1L);
-        
+
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
         when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
@@ -212,7 +212,7 @@ class PaymentControllerTest {
         when(paymentService.createPayment(any(Payment.class))).thenReturn(testPayment);
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -221,20 +221,20 @@ class PaymentControllerTest {
         PaymentDto dto = new PaymentDto();
         dto.setAmount(100.0);
         dto.setInvoiceId(999L);
-        
+
         Customer otherCustomer = new Customer();
         otherCustomer.setCustomerId(999L);
         Invoice otherInvoice = new Invoice();
         otherInvoice.setInvoiceId(999L);
         otherInvoice.setCustomer(otherCustomer);
-        
+
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
         when(invoiceService.getInvoiceById(999L)).thenReturn(otherInvoice);
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.singletonList(testCustomer));
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);
-        
+
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -243,26 +243,26 @@ class PaymentControllerTest {
         PaymentDto dto = new PaymentDto();
         dto.setAmount(100.0);
         dto.setInvoiceId(1L);
-        
+
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.emptyList());
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);
-        
+
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
     @Test
     void getAllPayments_PaymentWithNullInvoice_HandlesProperly() {
         testPayment.setInvoice(null);
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(paymentService.getAllPayments()).thenReturn(Collections.singletonList(testPayment));
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody().get(0).getInvoiceId());
     }
@@ -270,13 +270,13 @@ class PaymentControllerTest {
     @Test
     void getAllPayments_PaymentWithNullPaymentDate_HandlesProperly() {
         testPayment.setPaymentDate(null);
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(paymentService.getAllPayments()).thenReturn(Collections.singletonList(testPayment));
 
         ResponseEntity<List<PaymentDto>> response = paymentController.getAllPayments(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody().get(0).getPaymentDate());
     }
@@ -288,20 +288,20 @@ class PaymentControllerTest {
         dto.setAmount(500.0);
         dto.setStatus("TRANSFER");
         dto.setInvoiceId(1L);
-        
+
         Payment createdPayment = new Payment();
         createdPayment.setPaymentId(5L);
         createdPayment.setAmount(500.0);
         createdPayment.setPaymentMethod("TRANSFER");
         createdPayment.setInvoice(testInvoice);
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(paymentService.createPayment(any(Payment.class))).thenReturn(createdPayment);
 
         ResponseEntity<PaymentDto> response = paymentController.createPayment(dto, authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(500.0, response.getBody().getAmount());
     }

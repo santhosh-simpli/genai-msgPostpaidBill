@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
-    
+
     /**
      * Finds all payments for a specific invoice.
      *
@@ -29,7 +29,8 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     List<Payment> findByInvoice_InvoiceId(Long invoiceId);
 
     /**
-     * Retrieves all payments ordered by payment date descending (most recent first).
+     * Retrieves all payments ordered by payment date descending (most recent
+     * first).
      * <p>
      * This ensures newly made payments appear at the top of payment lists.
      * </p>

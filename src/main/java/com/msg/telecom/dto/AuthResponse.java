@@ -18,22 +18,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthResponse {
-    
+
     /** JWT authentication token. */
     private String token;
-    
+
     /** Token type. Always "Bearer" for JWT. */
     private String type = "Bearer";
-    
+
     /** User's unique identifier. */
     private Long id;
-    
+
     /** User's username. */
     private String username;
-    
+
     /** User's email address. */
     private String email;
-    
+
     /** User's role (CUSTOMER, OPERATOR, ADMIN). */
     private String role;
 

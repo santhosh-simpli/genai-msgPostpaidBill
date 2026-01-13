@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * Entity class representing a Service subscription in the telecom billing system.
+ * Entity class representing a Service subscription in the telecom billing
+ * system.
  * <p>
  * Services represent the telecom products subscribed to by customers,
  * such as voice plans, data plans, SMS packages, etc.

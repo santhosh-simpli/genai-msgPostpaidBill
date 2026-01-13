@@ -19,11 +19,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginRequest {
-    
+
     /** Username for authentication. Required field. */
     @NotBlank(message = "Username is required")
     private String username;
-    
+
     /** Password for authentication. Required field. */
     @NotBlank(message = "Password is required")
     private String password;

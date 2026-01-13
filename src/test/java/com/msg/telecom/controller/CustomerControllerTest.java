@@ -47,17 +47,17 @@ class CustomerControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         adminUser = new User();
         adminUser.setUserId(1L);
         adminUser.setUsername("admin");
         adminUser.setRole(UserRole.ADMIN);
-        
+
         customerUser = new User();
         customerUser.setUserId(2L);
         customerUser.setUsername("customer");
         customerUser.setRole(UserRole.CUSTOMER);
-        
+
         testCustomer = new Customer();
         testCustomer.setCustomerId(1L);
         testCustomer.setFullName("Test Customer");
@@ -73,7 +73,7 @@ class CustomerControllerTest {
         when(customerService.getAllCustomers()).thenReturn(List.of(testCustomer));
 
         ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         assertEquals("Test Customer", response.getBody().get(0).getName());
@@ -87,7 +87,7 @@ class CustomerControllerTest {
         when(customerService.getAllCustomers()).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -99,7 +99,7 @@ class CustomerControllerTest {
         when(customerService.getCustomersByUserId(2L)).thenReturn(List.of(testCustomer));
 
         ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         verify(customerService, times(1)).getCustomersByUserId(2L);
@@ -113,7 +113,7 @@ class CustomerControllerTest {
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -125,7 +125,7 @@ class CustomerControllerTest {
         when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
 
         ResponseEntity<CustomerDto> response = customerController.getCustomerById(1L, authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Test Customer", response.getBody().getName());
         assertEquals("1234567890", response.getBody().getPhoneNumber());
@@ -139,7 +139,7 @@ class CustomerControllerTest {
         when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
 
         ResponseEntity<CustomerDto> response = customerController.getCustomerById(1L, authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
@@ -149,16 +149,16 @@ class CustomerControllerTest {
         CustomerDto dto = new CustomerDto();
         dto.setName("New Customer");
         dto.setPhoneNumber("9876543210");
-        
+
         Customer createdCustomer = new Customer();
         createdCustomer.setCustomerId(2L);
         createdCustomer.setFullName("New Customer");
         createdCustomer.setPhoneNumber("9876543210");
-        
+
         when(customerService.createCustomer(any(Customer.class))).thenReturn(createdCustomer);
 
         ResponseEntity<CustomerDto> response = customerController.createCustomer(dto);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("New Customer", response.getBody().getName());
         assertEquals("9876543210", response.getBody().getPhoneNumber());
@@ -171,16 +171,16 @@ class CustomerControllerTest {
         dto.setEmail("full@example.com");
         dto.setPhoneNumber("5555555555");
         dto.setUserId(1L);
-        
+
         Customer createdCustomer = new Customer();
         createdCustomer.setCustomerId(3L);
         createdCustomer.setFullName("Full Customer");
         createdCustomer.setPhoneNumber("5555555555");
-        
+
         when(customerService.createCustomer(any(Customer.class))).thenReturn(createdCustomer);
 
         ResponseEntity<CustomerDto> response = customerController.createCustomer(dto);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
     }
@@ -188,9 +188,9 @@ class CustomerControllerTest {
     @Test
     void deleteCustomer_Success_ReturnsOk() {
         doNothing().when(customerService).deleteCustomer(1L);
-        
+
         ResponseEntity<Void> response = customerController.deleteCustomer(1L);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(customerService, times(1)).deleteCustomer(1L);
     }
@@ -198,9 +198,9 @@ class CustomerControllerTest {
     @Test
     void deleteCustomer_NonExistent_ReturnsOk() {
         doNothing().when(customerService).deleteCustomer(999L);
-        
+
         ResponseEntity<Void> response = customerController.deleteCustomer(999L);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(customerService, times(1)).deleteCustomer(999L);
     }
@@ -210,13 +210,13 @@ class CustomerControllerTest {
         Customer customer2 = new Customer();
         customer2.setCustomerId(2L);
         customer2.setFullName("Second Customer");
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(customerService.getAllCustomers()).thenReturn(Arrays.asList(testCustomer, customer2));
 
         ResponseEntity<List<CustomerDto>> response = customerController.getAllCustomers(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
     }
@@ -247,9 +247,9 @@ class CustomerControllerTest {
         otherUser.setUserId(99L);
         otherUser.setUsername("otheruser");
         otherUser.setRole(UserRole.CUSTOMER);
-        
+
         testCustomer.setUser(customerUser);
-        
+
         when(authentication.getName()).thenReturn("otheruser");
         when(userService.getUserByUsername("otheruser")).thenReturn(otherUser);
         when(customerService.getCustomerById(1L)).thenReturn(testCustomer);
@@ -264,7 +264,7 @@ class CustomerControllerTest {
         Service service1 = new Service();
         service1.setServiceId(1L);
         service1.setServiceType("DATA");
-        
+
         Service service2 = new Service();
         service2.setServiceId(2L);
         service2.setServiceType("VOICE");

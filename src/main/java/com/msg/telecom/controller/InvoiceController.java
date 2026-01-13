@@ -25,11 +25,13 @@ import java.util.List;
  * REST Controller for managing Invoice resources.
  * <p>
  * This controller handles all HTTP requests related to invoice management
- * including creating invoices, recording payments, and retrieving invoice history.
+ * including creating invoices, recording payments, and retrieving invoice
+ * history.
  * </p>
  * <p>
  * Invoices are returned in descending order by ID (most recent first).
- * When a payment is recorded for an invoice, the invoice status is automatically
+ * When a payment is recorded for an invoice, the invoice status is
+ * automatically
  * updated to "PAID" and will appear at the top of lists.
  * </p>
  *
@@ -65,7 +67,7 @@ public class InvoiceController {
     public ResponseEntity<List<InvoiceDto>> getAllInvoices(Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         List<Invoice> invoices;
-        
+
         // Role-based filtering of invoice data
         if (currentUser.getRole().name().equals("ADMIN") || currentUser.getRole().name().equals("OPERATOR")) {
             invoices = invoiceService.getAllInvoices();
@@ -77,7 +79,7 @@ public class InvoiceController {
             }
             invoices = invoiceService.getInvoicesByCustomerId(customers.get(0).getCustomerId());
         }
-        
+
         List<InvoiceDto> dtos = invoices.stream().map(this::toInvoiceDto).toList();
         log.debug("Retrieved {} invoices for user: {}", dtos.size(), authentication.getName());
         return ResponseEntity.ok(dtos);
@@ -138,7 +140,8 @@ public class InvoiceController {
      * @param id             The invoice's unique identifier
      * @param paymentDto     The payment data to record
      * @param authentication The current authentication context
-     * @return ResponseEntity containing the created PaymentDto or 403 if unauthorized
+     * @return ResponseEntity containing the created PaymentDto or 403 if
+     *         unauthorized
      */
     @PostMapping("/{id}/payments")
     @PreAuthorize("hasAnyRole('CUSTOMER', 'ADMIN')")
@@ -146,22 +149,22 @@ public class InvoiceController {
             Authentication authentication) {
         Invoice invoice = invoiceService.getInvoiceById(id);
         User currentUser = userService.getUserByUsername(authentication.getName());
-        
+
         // Customers can only record payments for their own invoices
         if (currentUser.getRole().name().equals("CUSTOMER")) {
             List<Customer> customers = customerService.getCustomersByUserId(currentUser.getUserId());
             if (customers.isEmpty()
                     || !invoice.getCustomer().getCustomerId().equals(customers.get(0).getCustomerId())) {
-                log.warn("Unauthorized payment attempt by user {} for invoice {}", 
+                log.warn("Unauthorized payment attempt by user {} for invoice {}",
                         currentUser.getUsername(), id);
                 return ResponseEntity.status(403).build();
             }
         }
-        
+
         Payment payment = toPaymentEntity(paymentDto);
         payment.setInvoice(invoice);
         Payment created = paymentService.createPayment(payment);
-        log.info("Recorded payment {} for invoice {} - Invoice now marked as PAID", 
+        log.info("Recorded payment {} for invoice {} - Invoice now marked as PAID",
                 created.getPaymentId(), id);
         return ResponseEntity.ok(toPaymentDto(created));
     }
@@ -227,14 +230,14 @@ public class InvoiceController {
         payment.setPaymentId(dto.getPaymentId());
         payment.setAmount(dto.getAmount());
         payment.setPaymentMethod(dto.getStatus());
-        
+
         // Set payment date to current date if not provided
         if (dto.getPaymentDate() != null && !dto.getPaymentDate().isEmpty()) {
             payment.setPaymentDate(LocalDate.parse(dto.getPaymentDate()));
         } else {
             payment.setPaymentDate(LocalDate.now());
         }
-        
+
         return payment;
     }
 }

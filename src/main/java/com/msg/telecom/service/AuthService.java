@@ -52,15 +52,14 @@ public class AuthService {
      */
     public AuthResponse login(LoginRequest request) {
         log.info("Login attempt for username: {}", request.getUsername());
-        
+
         // Authenticate using Spring Security's AuthenticationManager
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
         // Generate JWT token from successful authentication
         String token = jwtTokenProvider.generateToken(authentication);
-        
+
         // Retrieve user details for response
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -88,12 +87,12 @@ public class AuthService {
      */
     public AuthResponse register(RegisterRequest request) {
         log.info("Registration attempt for username: {}", request.getUsername());
-        
+
         // Check for duplicate username
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new RuntimeException("Username already exists");
         }
-        
+
         // Check for duplicate email
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
@@ -111,8 +110,7 @@ public class AuthService {
 
         // Automatically authenticate the new user
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
         String token = jwtTokenProvider.generateToken(authentication);
 

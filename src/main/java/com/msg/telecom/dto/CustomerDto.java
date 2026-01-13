@@ -15,28 +15,28 @@ import lombok.Data;
  */
 @Data
 public class CustomerDto {
-    
+
     /** Unique identifier for the customer. */
     private Long customerId;
-    
+
     /** Short name or alias for the customer. */
     private String name;
-    
+
     /** Full name of the customer. */
     private String fullName;
-    
+
     /** Customer's email address. Synchronized with linked User entity. */
     private String email;
-    
+
     /** Customer's phone number. */
     private String phoneNumber;
-    
+
     /** Customer's physical address. */
     private String address;
-    
+
     /** ID of the linked User entity. */
     private Long userId;
-    
+
     /** Full user details for displaying linked data. */
     private UserDto user;
 }

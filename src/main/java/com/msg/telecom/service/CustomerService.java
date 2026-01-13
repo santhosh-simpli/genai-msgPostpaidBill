@@ -17,7 +17,7 @@ import java.util.Random;
  * automatic sample data generation for new customers including services,
  * usage records, and invoices.
  * </p>
- * 
+ *
  * @author MSG Telecom Development Team
  * @version 1.0
  * @since 2024-01-01
@@ -33,7 +33,7 @@ public class CustomerService {
     private final InvoiceRepository invoiceRepository;
     private final UserRepository userRepository;
     private final Random random = new Random();
-    
+
     /**
      * Constructs a CustomerService with required dependencies.
      *
@@ -44,10 +44,10 @@ public class CustomerService {
      * @param userRepository        Repository for user data access
      */
     public CustomerService(CustomerRepository customerRepository,
-                          ServiceRepository serviceRepository,
-                          UsageRecordRepository usageRecordRepository,
-                          InvoiceRepository invoiceRepository,
-                          UserRepository userRepository) {
+            ServiceRepository serviceRepository,
+            UsageRecordRepository usageRecordRepository,
+            InvoiceRepository invoiceRepository,
+            UserRepository userRepository) {
         this.customerRepository = customerRepository;
         this.serviceRepository = serviceRepository;
         this.usageRecordRepository = usageRecordRepository;
@@ -58,7 +58,8 @@ public class CustomerService {
     /**
      * Retrieves all customers from the database.
      *
-     * @return List of all customers, ordered by customer ID descending (most recent first)
+     * @return List of all customers, ordered by customer ID descending (most recent
+     *         first)
      */
     public List<Customer> getAllCustomers() {
         return customerRepository.findAllByOrderByCustomerIdDesc();
@@ -91,9 +92,9 @@ public class CustomerService {
      * <p>
      * When a customer is created, the system automatically generates:
      * <ul>
-     *   <li>1-2 random services (Mobile, Broadband, Cable TV, or VoIP)</li>
-     *   <li>3-5 usage records per service</li>
-     *   <li>2-3 sample invoices with varying statuses</li>
+     * <li>1-2 random services (Mobile, Broadband, Cable TV, or VoIP)</li>
+     * <li>3-5 usage records per service</li>
+     * <li>2-3 sample invoices with varying statuses</li>
      * </ul>
      * </p>
      *
@@ -102,19 +103,19 @@ public class CustomerService {
      * @throws RuntimeException if the phone number already exists
      */
     public Customer createCustomer(Customer customer) {
-        if (customer.getPhoneNumber() != null && 
-            customerRepository.existsByPhoneNumber(customer.getPhoneNumber())) {
+        if (customer.getPhoneNumber() != null &&
+                customerRepository.existsByPhoneNumber(customer.getPhoneNumber())) {
             throw new RuntimeException("Phone number already exists");
         }
         customer = customerRepository.save(customer);
         log.info("Created new customer with ID: {}", customer.getCustomerId());
-        
+
         // Automatically generate sample data for new customer
         generateSampleDataForCustomer(customer);
-        
+
         return customer;
     }
-    
+
     /**
      * Generates sample data for a newly created customer.
      * <p>
@@ -125,58 +126,58 @@ public class CustomerService {
      * @param customer The customer to generate data for
      */
     private void generateSampleDataForCustomer(Customer customer) {
-        String[] serviceTypes = {"Mobile", "Broadband", "Cable TV", "VoIP"};
+        String[] serviceTypes = { "Mobile", "Broadband", "Cable TV", "VoIP" };
         int numServices = random.nextInt(2) + 1; // 1-2 services
-        
+
         for (int i = 0; i < numServices; i++) {
             String serviceType = serviceTypes[random.nextInt(serviceTypes.length)];
-            
+
             // Create service
             com.msg.telecom.model.Service service = com.msg.telecom.model.Service.builder()
-                .customer(customer)
-                .serviceType(serviceType)
-                .startDate(LocalDate.now().minusDays(random.nextInt(180) + 30))
-                .status("Active")
-                .build();
+                    .customer(customer)
+                    .serviceType(serviceType)
+                    .startDate(LocalDate.now().minusDays(random.nextInt(180) + 30))
+                    .status("Active")
+                    .build();
             service = serviceRepository.save(service);
-            
+
             // Create 3-5 usage records
             int numRecords = random.nextInt(3) + 3;
             for (int j = 0; j < numRecords; j++) {
                 String unit = getUnitForServiceType(serviceType);
                 double amount = getRandomUsageAmount(serviceType);
-                
+
                 UsageRecord record = UsageRecord.builder()
-                    .service(service)
-                    .usageDate(LocalDate.now().minusDays(random.nextInt(60)))
-                    .usageAmount(amount)
-                    .unit(unit)
-                    .build();
+                        .service(service)
+                        .usageDate(LocalDate.now().minusDays(random.nextInt(60)))
+                        .usageAmount(amount)
+                        .unit(unit)
+                        .build();
                 usageRecordRepository.save(record);
             }
         }
-        
+
         // Create 2-3 sample invoices
         int numInvoices = random.nextInt(2) + 2;
-        String[] statuses = {"PAID", "PENDING", "OVERDUE"};
-        
+        String[] statuses = { "PAID", "PENDING", "OVERDUE" };
+
         for (int i = 0; i < numInvoices; i++) {
             LocalDate startDate = LocalDate.now().minusMonths(i + 1).withDayOfMonth(1);
             LocalDate endDate = startDate.plusMonths(1).minusDays(1);
             double amount = 50 + random.nextDouble() * 450; // $50-$500
-            
+
             Invoice invoice = Invoice.builder()
-                .customer(customer)
-                .billingPeriodStart(startDate)
-                .billingPeriodEnd(endDate)
-                .totalAmount(amount)
-                .status(statuses[i < statuses.length ? i : random.nextInt(statuses.length)])
-                .build();
+                    .customer(customer)
+                    .billingPeriodStart(startDate)
+                    .billingPeriodEnd(endDate)
+                    .totalAmount(amount)
+                    .status(statuses[i < statuses.length ? i : random.nextInt(statuses.length)])
+                    .build();
             invoiceRepository.save(invoice);
         }
         log.debug("Generated sample data for customer ID: {}", customer.getCustomerId());
     }
-    
+
     /**
      * Maps service type to appropriate usage unit.
      *
@@ -192,7 +193,7 @@ public class CustomerService {
             default -> "Units";
         };
     }
-    
+
     /**
      * Generates a random usage amount based on service type.
      *
@@ -226,7 +227,7 @@ public class CustomerService {
         customer.setFullName(customerDetails.getFullName());
         customer.setAddress(customerDetails.getAddress());
         customer.setPhoneNumber(customerDetails.getPhoneNumber());
-        
+
         // Synchronize email with linked User entity if email changed
         if (customerDetails.getEmail() != null && customer.getUser() != null) {
             User linkedUser = customer.getUser();
@@ -235,13 +236,13 @@ public class CustomerService {
                 if (!userRepository.existsByEmail(customerDetails.getEmail())) {
                     linkedUser.setEmail(customerDetails.getEmail());
                     userRepository.save(linkedUser);
-                    log.info("Synchronized email update from customer {} to user {}", 
+                    log.info("Synchronized email update from customer {} to user {}",
                             customer.getCustomerId(), linkedUser.getUserId());
                 }
             }
             customer.setEmail(customerDetails.getEmail());
         }
-        
+
         log.info("Updated customer with ID: {}", customer.getCustomerId());
         return customerRepository.save(customer);
     }

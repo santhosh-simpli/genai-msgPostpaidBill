@@ -62,14 +62,14 @@ public class CustomerController {
     public ResponseEntity<List<CustomerDto>> getAllCustomers(Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         List<Customer> customers;
-        
+
         // Role-based filtering of customer data
         if (currentUser.getRole().name().equals("ADMIN") || currentUser.getRole().name().equals("OPERATOR")) {
             customers = customerService.getAllCustomers();
         } else {
             customers = customerService.getCustomersByUserId(currentUser.getUserId());
         }
-        
+
         List<CustomerDto> dtos = customers.stream().map(this::toDto).toList();
         log.debug("Retrieved {} customers for user: {}", dtos.size(), authentication.getName());
         return ResponseEntity.ok(dtos);
@@ -111,14 +111,14 @@ public class CustomerController {
     public ResponseEntity<CustomerDto> getCustomerById(@PathVariable Long id, Authentication authentication) {
         User currentUser = userService.getUserByUsername(authentication.getName());
         Customer customer = customerService.getCustomerById(id);
-        
+
         // Ensure customers can only view their own profile
         if (currentUser.getRole().name().equals("CUSTOMER") &&
                 !customer.getUser().getUserId().equals(currentUser.getUserId())) {
             log.warn("Unauthorized access attempt to customer {} by user {}", id, currentUser.getUsername());
             return ResponseEntity.status(403).build();
         }
-        
+
         return ResponseEntity.ok(toDto(customer));
     }
 
@@ -136,9 +136,9 @@ public class CustomerController {
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'OPERATOR')")
-    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id, 
-                                                       @RequestBody CustomerDto customerDto,
-                                                       Authentication authentication) {
+    public ResponseEntity<CustomerDto> updateCustomer(@PathVariable Long id,
+            @RequestBody CustomerDto customerDto,
+            Authentication authentication) {
         Customer customerDetails = toEntity(customerDto);
         customerDetails.setEmail(customerDto.getEmail());
         Customer updated = customerService.updateCustomer(id, customerDetails);

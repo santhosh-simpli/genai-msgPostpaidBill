@@ -15,16 +15,16 @@ import lombok.Data;
  */
 @Data
 public class ServiceDto {
-    
+
     /** Unique identifier for the service. */
     private Long serviceId;
-    
+
     /** Type of service (VOICE, DATA, SMS, BUNDLE). */
     private String serviceType;
-    
+
     /** Current status (ACTIVE, SUSPENDED, CANCELLED). */
     private String status;
-    
+
     /** ID of the customer who subscribed to this service. */
     private Long customerId;
 }

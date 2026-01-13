@@ -15,16 +15,16 @@ import lombok.Data;
  */
 @Data
 public class UserDto {
-    
+
     /** Unique identifier for the user. */
     private Long userId;
-    
+
     /** Username for authentication. */
     private String username;
-    
+
     /** User's email address. Synchronized with linked Customer entities. */
     private String email;
-    
+
     /** User's role (CUSTOMER, OPERATOR, ADMIN). */
     private String role;
 }

@@ -37,8 +37,7 @@ class IntegrationTest {
         ResponseEntity<AuthResponse> registerResponse = restTemplate.postForEntity(
                 getBaseUrl() + "/auth/register",
                 registerRequest,
-                AuthResponse.class
-        );
+                AuthResponse.class);
 
         // Registration may fail in test environment - check if successful
         if (registerResponse.getStatusCode() == HttpStatus.OK && registerResponse.getBody() != null) {
@@ -53,8 +52,7 @@ class IntegrationTest {
             ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
                     getBaseUrl() + "/auth/login",
                     loginRequest,
-                    AuthResponse.class
-            );
+                    AuthResponse.class);
 
             if (loginResponse.getStatusCode() == HttpStatus.OK && loginResponse.getBody() != null) {
                 assertNotNull(loginResponse.getBody().getToken());
@@ -69,17 +67,17 @@ class IntegrationTest {
                     getBaseUrl() + "/users",
                     HttpMethod.GET,
                     entity,
-                    String.class
-            );
+                    String.class);
 
-            // In test environment, accept both OK and FORBIDDEN (token validation might fail)
-            assertTrue(protectedResponse.getStatusCode() == HttpStatus.OK || 
-                       protectedResponse.getStatusCode() == HttpStatus.FORBIDDEN);
+            // In test environment, accept both OK and FORBIDDEN (token validation might
+            // fail)
+            assertTrue(protectedResponse.getStatusCode() == HttpStatus.OK ||
+                    protectedResponse.getStatusCode() == HttpStatus.FORBIDDEN);
         } else {
             // If registration fails, just verify the endpoint is accessible
-            assertTrue(registerResponse.getStatusCode().is4xxClientError() || 
-                       registerResponse.getStatusCode().is5xxServerError() ||
-                       registerResponse.getStatusCode() == HttpStatus.OK);
+            assertTrue(registerResponse.getStatusCode().is4xxClientError() ||
+                    registerResponse.getStatusCode().is5xxServerError() ||
+                    registerResponse.getStatusCode() == HttpStatus.OK);
         }
     }
 
@@ -87,8 +85,7 @@ class IntegrationTest {
     void accessProtectedEndpoint_WithoutToken_Returns401() {
         ResponseEntity<String> response = restTemplate.getForEntity(
                 getBaseUrl() + "/users",
-                String.class
-        );
+                String.class);
 
         // Spring Security returns 403 FORBIDDEN when authentication is missing
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
@@ -106,19 +103,17 @@ class IntegrationTest {
         restTemplate.postForEntity(
                 getBaseUrl() + "/auth/register",
                 registerRequest,
-                AuthResponse.class
-        );
+                AuthResponse.class);
 
         // Attempt duplicate registration
         registerRequest.setEmail("second@test.com");
         ResponseEntity<AuthResponse> duplicateResponse = restTemplate.postForEntity(
                 getBaseUrl() + "/auth/register",
                 registerRequest,
-                AuthResponse.class
-        );
+                AuthResponse.class);
 
-        assertTrue(duplicateResponse.getStatusCode().is4xxClientError() || 
-                   duplicateResponse.getStatusCode().is5xxServerError());
+        assertTrue(duplicateResponse.getStatusCode().is4xxClientError() ||
+                duplicateResponse.getStatusCode().is5xxServerError());
     }
 
     @Test
@@ -130,11 +125,10 @@ class IntegrationTest {
         ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
                 getBaseUrl() + "/auth/login",
                 loginRequest,
-                AuthResponse.class
-        );
+                AuthResponse.class);
 
-        assertTrue(response.getStatusCode().is4xxClientError() || 
-                   response.getStatusCode().is5xxServerError());
+        assertTrue(response.getStatusCode().is4xxClientError() ||
+                response.getStatusCode().is5xxServerError());
     }
 
     @Test
@@ -149,8 +143,7 @@ class IntegrationTest {
         ResponseEntity<AuthResponse> authResponse = restTemplate.postForEntity(
                 getBaseUrl() + "/auth/register",
                 registerRequest,
-                AuthResponse.class
-        );
+                AuthResponse.class);
 
         // Check if registration succeeded before proceeding
         if (authResponse.getBody() != null && authResponse.getBody().getToken() != null) {
@@ -166,15 +159,14 @@ class IntegrationTest {
                     getBaseUrl() + "/customers",
                     HttpMethod.GET,
                     entity,
-                    String.class
-            );
-            
+                    String.class);
+
             // Verify we got a response
             assertNotNull(customersResponse);
         } else {
             // If registration fails, verify endpoint is reachable
-            assertTrue(authResponse.getStatusCode().is2xxSuccessful() || 
-                       authResponse.getStatusCode().is4xxClientError());
+            assertTrue(authResponse.getStatusCode().is2xxSuccessful() ||
+                    authResponse.getStatusCode().is4xxClientError());
         }
     }
 }

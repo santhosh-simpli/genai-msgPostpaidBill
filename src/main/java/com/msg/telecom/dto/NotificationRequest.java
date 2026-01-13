@@ -15,13 +15,13 @@ import lombok.Data;
  */
 @Data
 public class NotificationRequest {
-    
+
     /** ID of the invoice to notify about. */
     private Long invoiceId;
-    
+
     /** Type of notification: "EMAIL", "WHATSAPP", or "BOTH". */
     private String notificationType;
-    
+
     /** Optional custom message to include in the notification. */
     private String customMessage;
 }

@@ -1,7 +1,7 @@
 # Test Coverage Improvement Report
 
-**Project:** MSG Telecom Postpaid Billing System  
-**Date:** January 11, 2026  
+**Project:** MSG Telecom Postpaid Billing System
+**Date:** January 11, 2026
 **Report Type:** Test Coverage Enhancement
 
 ---

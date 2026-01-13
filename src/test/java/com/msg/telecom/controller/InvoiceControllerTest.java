@@ -52,33 +52,33 @@ class InvoiceControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        
+
         adminUser = new User();
         adminUser.setUserId(1L);
         adminUser.setUsername("admin");
         adminUser.setRole(UserRole.ADMIN);
-        
+
         customerUser = new User();
         customerUser.setUserId(2L);
         customerUser.setUsername("customer");
         customerUser.setRole(UserRole.CUSTOMER);
-        
+
         operatorUser = new User();
         operatorUser.setUserId(3L);
         operatorUser.setUsername("operator");
         operatorUser.setRole(UserRole.OPERATOR);
-        
+
         testCustomer = new Customer();
         testCustomer.setCustomerId(1L);
         testCustomer.setUser(customerUser);
-        
+
         testInvoice = new Invoice();
         testInvoice.setInvoiceId(1L);
         testInvoice.setTotalAmount(100.0);
         testInvoice.setStatus("PENDING");
         testInvoice.setBillingPeriodEnd(LocalDate.now());
         testInvoice.setCustomer(testCustomer);
-        
+
         testPayment = new Payment();
         testPayment.setPaymentId(1L);
         testPayment.setAmount(50.0);
@@ -94,7 +94,7 @@ class InvoiceControllerTest {
         when(invoiceService.getAllInvoices()).thenReturn(Collections.singletonList(testInvoice));
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         verify(invoiceService, times(1)).getAllInvoices();
@@ -107,7 +107,7 @@ class InvoiceControllerTest {
         when(invoiceService.getAllInvoices()).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -119,7 +119,7 @@ class InvoiceControllerTest {
         when(invoiceService.getAllInvoices()).thenReturn(Collections.singletonList(testInvoice));
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         verify(invoiceService, times(1)).getAllInvoices();
@@ -133,7 +133,7 @@ class InvoiceControllerTest {
         when(invoiceService.getInvoicesByCustomerId(1L)).thenReturn(Collections.singletonList(testInvoice));
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         verify(invoiceService, never()).getAllInvoices();
@@ -147,7 +147,7 @@ class InvoiceControllerTest {
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -160,13 +160,13 @@ class InvoiceControllerTest {
         invoice2.setStatus("PAID");
         invoice2.setBillingPeriodEnd(LocalDate.now().plusDays(30));
         invoice2.setCustomer(testCustomer);
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(invoiceService.getAllInvoices()).thenReturn(Arrays.asList(testInvoice, invoice2));
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
     }
@@ -176,14 +176,14 @@ class InvoiceControllerTest {
         PaymentDto dto = new PaymentDto();
         dto.setAmount(50.0);
         dto.setStatus("CASH");
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(paymentService.createPayment(any(Payment.class))).thenReturn(testPayment);
 
         ResponseEntity<PaymentDto> response = invoiceController.recordPayment(1L, dto, authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(50.0, response.getBody().getAmount());
     }
@@ -193,7 +193,7 @@ class InvoiceControllerTest {
         PaymentDto dto = new PaymentDto();
         dto.setAmount(50.0);
         dto.setStatus("CARD");
-        
+
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
         when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
@@ -201,7 +201,7 @@ class InvoiceControllerTest {
         when(paymentService.createPayment(any(Payment.class))).thenReturn(testPayment);
 
         ResponseEntity<PaymentDto> response = invoiceController.recordPayment(1L, dto, authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
@@ -209,18 +209,18 @@ class InvoiceControllerTest {
     void recordPayment_CustomerRole_NotOwnInvoice_ReturnsForbidden() {
         PaymentDto dto = new PaymentDto();
         dto.setAmount(50.0);
-        
+
         Customer otherCustomer = new Customer();
         otherCustomer.setCustomerId(999L);
         testInvoice.setCustomer(otherCustomer);
-        
+
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
         when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.singletonList(testCustomer));
 
         ResponseEntity<PaymentDto> response = invoiceController.recordPayment(1L, dto, authentication);
-        
+
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -228,14 +228,14 @@ class InvoiceControllerTest {
     void recordPayment_CustomerWithNoCustomerRecord_ReturnsForbidden() {
         PaymentDto dto = new PaymentDto();
         dto.setAmount(50.0);
-        
+
         when(authentication.getName()).thenReturn("customer");
         when(userService.getUserByUsername("customer")).thenReturn(customerUser);
         when(invoiceService.getInvoiceById(1L)).thenReturn(testInvoice);
         when(customerService.getCustomersByUserId(2L)).thenReturn(Collections.emptyList());
 
         ResponseEntity<PaymentDto> response = invoiceController.recordPayment(1L, dto, authentication);
-        
+
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
     }
 
@@ -244,7 +244,7 @@ class InvoiceControllerTest {
         when(paymentService.getPaymentsByInvoiceId(1L)).thenReturn(Collections.singletonList(testPayment));
 
         ResponseEntity<List<PaymentDto>> response = invoiceController.getInvoicePayments(1L);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(1, response.getBody().size());
         assertEquals(50.0, response.getBody().get(0).getAmount());
@@ -255,7 +255,7 @@ class InvoiceControllerTest {
         when(paymentService.getPaymentsByInvoiceId(1L)).thenReturn(Collections.emptyList());
 
         ResponseEntity<List<PaymentDto>> response = invoiceController.getInvoicePayments(1L);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(response.getBody().isEmpty());
     }
@@ -267,11 +267,11 @@ class InvoiceControllerTest {
         payment2.setAmount(30.0);
         payment2.setPaymentMethod("CARD");
         payment2.setPaymentDate(LocalDate.now());
-        
+
         when(paymentService.getPaymentsByInvoiceId(1L)).thenReturn(Arrays.asList(testPayment, payment2));
 
         ResponseEntity<List<PaymentDto>> response = invoiceController.getInvoicePayments(1L);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(2, response.getBody().size());
     }
@@ -279,13 +279,13 @@ class InvoiceControllerTest {
     @Test
     void getAllInvoices_InvoiceWithNullBillingPeriod_HandlesProperly() {
         testInvoice.setBillingPeriodEnd(null);
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(invoiceService.getAllInvoices()).thenReturn(Collections.singletonList(testInvoice));
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody().get(0).getDueDate());
     }
@@ -293,13 +293,13 @@ class InvoiceControllerTest {
     @Test
     void getAllInvoices_InvoiceWithNullCustomer_HandlesProperly() {
         testInvoice.setCustomer(null);
-        
+
         when(authentication.getName()).thenReturn("admin");
         when(userService.getUserByUsername("admin")).thenReturn(adminUser);
         when(invoiceService.getAllInvoices()).thenReturn(Collections.singletonList(testInvoice));
 
         ResponseEntity<List<InvoiceDto>> response = invoiceController.getAllInvoices(authentication);
-        
+
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNull(response.getBody().get(0).getCustomerId());
     }
