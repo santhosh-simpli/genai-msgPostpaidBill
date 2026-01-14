@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,14 +21,17 @@
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="bg-gradient-to-br from-msg-yellow to-yellow-300 min-h-screen flex items-center justify-center" x-data="authApp()">
+
+<body class="bg-gradient-to-br from-msg-yellow to-yellow-300 min-h-screen flex items-center justify-center"
+    x-data="authApp()">
     <div class="container mx-auto px-4">
         <!-- Login/Register Card -->
         <div class="max-w-md mx-auto bg-white rounded-lg shadow-2xl overflow-hidden">
             <!-- Header -->
             <div class="bg-msg-blue text-white p-6 text-center">
                 <div class="flex items-center justify-center mb-3">
-                    <img src="images/msg-logo.png" alt="MSG Logo" class="h-24 w-24 object-contain" onerror="this.style.display='none'">
+                    <img src="images/msg-logo.png" alt="MSG Logo" class="h-24 w-24 object-contain"
+                        onerror="this.style.display='none'">
                 </div>
                 <h1 class="text-3xl font-bold">MSG Telecom</h1>
                 <p class="text-blue-100 mt-2">Innovation Through Communication</p>
@@ -36,14 +40,14 @@
 
             <!-- Tabs -->
             <div class="flex border-b">
-                <button @click="activeTab = 'login'" 
-                        :class="{'bg-msg-yellow text-msg-blue border-b-4 border-msg-blue': activeTab === 'login'}"
-                        class="flex-1 py-3 font-semibold hover:bg-yellow-100 transition">
+                <button @click="activeTab = 'login'"
+                    :class="{'bg-msg-yellow text-msg-blue border-b-4 border-msg-blue': activeTab === 'login'}"
+                    class="flex-1 py-3 font-semibold hover:bg-yellow-100 transition">
                     Login
                 </button>
-                <button @click="activeTab = 'register'" 
-                        :class="{'bg-msg-yellow text-msg-blue border-b-4 border-msg-blue': activeTab === 'register'}"
-                        class="flex-1 py-3 font-semibold hover:bg-yellow-100 transition">
+                <button @click="activeTab = 'register'"
+                    :class="{'bg-msg-yellow text-msg-blue border-b-4 border-msg-blue': activeTab === 'register'}"
+                    class="flex-1 py-3 font-semibold hover:bg-yellow-100 transition">
                     Register
                 </button>
             </div>
@@ -61,28 +65,33 @@
                 <form @submit.prevent="login">
                     <div class="mb-4">
                         <label class="block text-gray-800 text-sm font-bold mb-2">Username or Email</label>
-                        <input type="text" x-model="loginForm.username" required placeholder="Enter your username or email"
-                               class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-3 px-4 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
+                        <input type="text" x-model="loginForm.username" required
+                            placeholder="Enter your username or email"
+                            class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-3 px-4 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-800 text-sm font-bold mb-2">Password</label>
-                        <input type="password" x-model="loginForm.password" required placeholder="Enter your password" minlength="6"
-                               class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-3 px-4 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
+                        <input type="password" x-model="loginForm.password" required placeholder="Enter your password"
+                            minlength="6"
+                            class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-3 px-4 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
                     </div>
                     <div class="mb-4 flex items-center justify-between">
                         <label class="flex items-center">
                             <input type="checkbox" x-model="loginForm.rememberMe" class="mr-2 h-4 w-4">
                             <span class="text-sm text-gray-800 font-medium">Remember me</span>
                         </label>
-                        <a href="#" @click.prevent="showForgotPassword = true" 
-                           class="text-sm text-msg-blue hover:text-msg-dark-blue font-semibold">
+                        <a href="#" @click.prevent="showForgotPassword = true"
+                            class="text-sm text-msg-blue hover:text-msg-dark-blue font-semibold">
                             Forgot Password?
                         </a>
                     </div>
-                    <div x-show="errorMessage" class="mb-4 p-4 bg-red-50 border-2 border-red-400 text-red-800 rounded-lg" x-cloak>
+                    <div x-show="errorMessage"
+                        class="mb-4 p-4 bg-red-50 border-2 border-red-400 text-red-800 rounded-lg" x-cloak>
                         <div class="flex items-start">
                             <svg class="w-5 h-5 text-red-600 mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd" />
                             </svg>
                             <div>
                                 <p class="font-semibold" x-text="errorMessage"></p>
@@ -91,33 +100,33 @@
                         </div>
                     </div>
                     <button type="submit" :disabled="loading"
-                            class="w-full bg-msg-blue hover:bg-msg-dark-blue text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400">
+                        class="w-full bg-msg-blue hover:bg-msg-dark-blue text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400">
                         <span x-show="!loading">Sign In</span>
                         <span x-show="loading">Signing in...</span>
                     </button>
                 </form>
 
                 <!-- Forgot Password Modal -->
-                <div x-show="showForgotPassword" 
-                     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-                     @click.self="showForgotPassword = false"
-                     x-cloak>
+                <div x-show="showForgotPassword"
+                    class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
+                    @click.self="showForgotPassword = false" x-cloak>
                     <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
                         <h3 class="text-lg font-bold mb-4">Reset Password</h3>
-                        <p class="text-sm text-gray-600 mb-4">Enter your email address and we'll send you instructions to reset your password.</p>
+                        <p class="text-sm text-gray-600 mb-4">Enter your email address and we'll send you instructions
+                            to reset your password.</p>
                         <form @submit.prevent="resetPassword">
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2">Email Address</label>
                                 <input type="email" x-model="forgotPasswordEmail" required
-                                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700">
+                                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700">
                             </div>
                             <div class="flex justify-end space-x-2">
-                                <button type="button" @click="showForgotPassword = false" 
-                                        class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                                <button type="button" @click="showForgotPassword = false"
+                                    class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
                                     Cancel
                                 </button>
-                                <button type="submit" 
-                                        class="bg-msg-blue text-white px-4 py-2 rounded hover:bg-msg-dark-blue">
+                                <button type="submit"
+                                    class="bg-msg-blue text-white px-4 py-2 rounded hover:bg-msg-dark-blue">
                                     Send Reset Link
                                 </button>
                             </div>
@@ -132,39 +141,44 @@
                     <div class="mb-4">
                         <label class="block text-gray-800 text-sm font-bold mb-2">Username *</label>
                         <input type="text" x-model="registerForm.username" required minlength="3"
-                               class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
+                            class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
                         <p class="text-xs text-gray-600 mt-1 font-medium">At least 3 characters</p>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-800 text-sm font-bold mb-2">Email *</label>
                         <input type="email" x-model="registerForm.email" required
-                               class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
+                            class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-800 text-sm font-bold mb-2">Password *</label>
                         <input type="password" x-model="registerForm.password" required minlength="6"
-                               class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
+                            class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
                         <p class="text-xs text-gray-600 mt-1 font-medium">Minimum 6 characters</p>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-800 text-sm font-bold mb-2">Confirm Password *</label>
                         <input type="password" x-model="registerForm.confirmPassword" required minlength="6"
-                               @input="validatePassword()"
-                               class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
-                        <p x-show="passwordMismatch" class="text-xs text-red-600 mt-1 font-semibold" x-cloak>❌ Passwords do not match</p>
+                            @input="validatePassword()"
+                            class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
+                        <p x-show="passwordMismatch" class="text-xs text-red-600 mt-1 font-semibold" x-cloak>❌ Passwords
+                            do not match</p>
                     </div>
                     <div class="mb-4">
                         <label class="block text-gray-800 text-sm font-bold mb-2">Account Type *</label>
                         <select x-model="registerForm.role" required
-                                class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
+                            class="shadow-sm appearance-none border-2 border-gray-300 rounded w-full py-2 px-3 text-gray-900 bg-white leading-tight focus:outline-none focus:ring-2 focus:ring-msg-blue focus:border-msg-blue">
                             <option value="CUSTOMER" selected>Customer - Manage bills and payments</option>
                         </select>
-                        <p class="text-xs text-gray-600 mt-1 font-medium">Note: Operator and Admin accounts must be created by existing admins</p>
+                        <p class="text-xs text-gray-600 mt-1 font-medium">Note: Operator and Admin accounts must be
+                            created by existing admins</p>
                     </div>
-                    <div x-show="errorMessage" class="mb-4 p-4 bg-red-50 border-2 border-red-400 text-red-800 rounded-lg" x-cloak>
+                    <div x-show="errorMessage"
+                        class="mb-4 p-4 bg-red-50 border-2 border-red-400 text-red-800 rounded-lg" x-cloak>
                         <div class="flex items-start">
                             <svg class="w-5 h-5 text-red-600 mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                    clip-rule="evenodd" />
                             </svg>
                             <div>
                                 <p class="font-semibold" x-text="errorMessage"></p>
@@ -172,7 +186,7 @@
                         </div>
                     </div>
                     <button type="submit" :disabled="loading || passwordMismatch"
-                            class="w-full bg-msg-blue hover:bg-msg-dark-blue text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400">
+                        class="w-full bg-msg-blue hover:bg-msg-dark-blue text-white font-bold py-3 px-4 rounded focus:outline-none focus:shadow-outline disabled:bg-gray-400">
                         <span x-show="!loading">Create Account</span>
                         <span x-show="loading">Creating Account...</span>
                     </button>
@@ -182,7 +196,8 @@
 
         <!-- Feature Info -->
         <div class="max-w-md mx-auto mt-8 text-center">
-            <h3 class="text-xl font-bold mb-4 text-gray-900 bg-white bg-opacity-90 rounded-lg py-2">Features by Role</h3>
+            <h3 class="text-xl font-bold mb-4 text-gray-900 bg-white bg-opacity-90 rounded-lg py-2">Features by Role
+            </h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div class="bg-white bg-opacity-95 rounded-lg p-4 shadow-md border-2 border-msg-blue">
                     <h4 class="font-bold mb-2 text-msg-blue text-base">Customer</h4>
@@ -216,7 +231,9 @@
     </div>
 
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 
     <script>
@@ -228,14 +245,14 @@
                 showForgotPassword: false,
                 forgotPasswordEmail: '',
                 passwordMismatch: false,
-                API_BASE_URL: 'http://localhost:8090/api',
-                
+                API_BASE_URL: '/api/v1/auth',
+
                 loginForm: {
                     username: '',
                     password: '',
                     rememberMe: false
                 },
-                
+
                 registerForm: {
                     username: '',
                     email: '',
@@ -253,12 +270,16 @@
                     this.errorMessage = '';
 
                     try {
+                        const loginPayload = {
+                            username: this.loginForm.username,
+                            password: this.loginForm.password
+                        };
                         const response = await fetch(`${this.API_BASE_URL}/login`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify(this.loginForm)
+                            body: JSON.stringify(loginPayload)
                         });
 
                         if (response.ok) {
@@ -342,4 +363,5 @@
         }
     </script>
 </body>
+
 </html>

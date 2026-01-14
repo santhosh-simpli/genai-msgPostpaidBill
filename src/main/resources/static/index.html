@@ -970,7 +970,8 @@
                 currentView: 'dashboard',
                 currentUser: null,
                 token: null,
-                API_BASE_URL: 'http://localhost:8090/api',
+                API_BASE_URL: '/api',
+                AUTH_BASE_URL: '/api/v1/auth',
 
                 // Data
                 customers: [],
@@ -1101,6 +1102,34 @@
 
                     // For responses with no content (like DELETE), return empty object
                     return {};
+                },
+
+                async authCall(endpoint, method = 'POST', body = null) {
+                    const headers = {
+                        'Content-Type': 'application/json'
+                    };
+
+                    if (this.token) {
+                        headers['Authorization'] = `Bearer ${this.token}`;
+                    }
+
+                    const options = { method, headers };
+                    if (body) {
+                        options.body = JSON.stringify(body);
+                    }
+
+                    const response = await fetch(`${this.AUTH_BASE_URL}${endpoint}`, options);
+                    if (!response.ok) {
+                        let message = 'Request failed';
+                        try {
+                            const err = await response.json();
+                            message = err.message || message;
+                        } catch (_) {
+                            // ignore
+                        }
+                        throw new Error(message);
+                    }
+                    return response.json();
                 },
 
                 async loadCustomers() {
@@ -1251,7 +1280,7 @@
 
                             alert(`User "${updatedUser.username}" role updated to ${updatedUser.role} successfully!`);
                         } else {
-                            await this.apiCall('/register', 'POST', {
+                            await this.authCall('/register', 'POST', {
                                 username: this.userForm.username,
                                 email: this.userForm.email,
                                 password: 'TempPass123!',
@@ -1326,7 +1355,7 @@
                             alert('Customer updated successfully! Email changes have been synchronized with the user account.');
                         } else {
                             // Create new customer - First create the user account
-                            const registerResponse = await this.apiCall('/register', 'POST', {
+                            const registerResponse = await this.authCall('/register', 'POST', {
                                 username: this.customerForm.username,
                                 email: this.customerForm.email,
                                 password: this.customerForm.password,
