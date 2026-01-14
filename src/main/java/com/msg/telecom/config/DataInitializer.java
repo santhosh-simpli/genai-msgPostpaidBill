@@ -74,6 +74,8 @@ public class DataInitializer implements CommandLineRunner {
             // Create customer profile for all users
             Customer customer = Customer.builder()
                     .user(user)
+                    .firstName(firstName)
+                    .lastName(lastName)
                     .fullName(firstName + " " + lastName)
                     .address((100 + i * 10) + " " + streets[i] + ", " + cities[i])
                     .phoneNumber(String.format("+1-%03d-%03d-%04d",
@@ -120,33 +122,44 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private void createUsageRecords(Service service, Random random, String serviceType) {
-        int numberOfRecords = 3 + random.nextInt(5); // 3-7 usage records per service
+        int numberOfRecords = 5 + random.nextInt(10); // 5-14 usage records per service for more test data
 
         for (int i = 0; i < numberOfRecords; i++) {
-            LocalDate usageDate = LocalDate.now().minusDays(random.nextInt(60));
+            LocalDate usageDate = LocalDate.now().minusDays(random.nextInt(90));
             String unit;
             double amount;
 
+            // Generate varied and realistic usage data based on service type
             switch (serviceType) {
                 case "Mobile":
-                    unit = random.nextBoolean() ? "Minutes" : "GB";
-                    amount = unit.equals("Minutes") ? 100 + random.nextInt(900) : 1 + random.nextInt(50);
+                    // Randomly choose between voice, SMS, or data
+                    int mobileType = random.nextInt(3);
+                    if (mobileType == 0) {
+                        unit = "Minutes";
+                        amount = 50 + random.nextInt(500); // 50-550 minutes
+                    } else if (mobileType == 1) {
+                        unit = "SMS";
+                        amount = 10 + random.nextInt(200); // 10-210 SMS
+                    } else {
+                        unit = "GB";
+                        amount = 0.5 + (random.nextDouble() * 25); // 0.5-25.5 GB
+                    }
                     break;
                 case "Broadband":
                     unit = "GB";
-                    amount = 50 + random.nextInt(450);
+                    amount = 10 + random.nextInt(500); // 10-510 GB with variation
                     break;
                 case "Cable TV":
                     unit = "Hours";
-                    amount = 20 + random.nextInt(180);
+                    amount = 5 + random.nextInt(250); // 5-255 hours
                     break;
                 case "VoIP":
                     unit = "Minutes";
-                    amount = 50 + random.nextInt(450);
+                    amount = 30 + random.nextInt(600); // 30-630 minutes
                     break;
                 default:
                     unit = "Units";
-                    amount = random.nextInt(100);
+                    amount = 1 + random.nextInt(150);
             }
 
             UsageRecord usageRecord = UsageRecord.builder()

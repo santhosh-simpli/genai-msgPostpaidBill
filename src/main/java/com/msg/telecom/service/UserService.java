@@ -155,4 +155,27 @@ public class UserService {
         log.info("Deleting user with ID: {}", id);
         userRepository.deleteById(id);
     }
+
+    /**
+     * Changes a user's password.
+     * <p>
+     * Validates the old password before updating to the new password.
+     * </p>
+     *
+     * @param id          The user's unique identifier
+     * @param oldPassword The current password
+     * @param newPassword The new password to set
+     * @throws RuntimeException if old password is incorrect
+     */
+    public void changePassword(Long id, String oldPassword, String newPassword) {
+        User user = getUserById(id);
+
+        if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
+            throw new RuntimeException("Current password is incorrect");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        log.info("Password changed successfully for user ID: {}", id);
+    }
 }

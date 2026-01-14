@@ -43,6 +43,18 @@ public class Customer {
     private User user;
 
     /**
+     * Customer's first name.
+     */
+    @Column(name = "first_name")
+    private String firstName;
+
+    /**
+     * Customer's last name.
+     */
+    @Column(name = "last_name")
+    private String lastName;
+
+    /**
      * Customer's full legal name.
      */
     @Column(name = "full_name", nullable = false)

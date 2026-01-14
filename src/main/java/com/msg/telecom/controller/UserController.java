@@ -3,6 +3,7 @@ package com.msg.telecom.controller;
 import com.msg.telecom.model.User;
 import com.msg.telecom.service.UserService;
 import com.msg.telecom.dto.UserDto;
+import com.msg.telecom.dto.PasswordChangeRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -116,6 +117,21 @@ public class UserController {
         log.info("Deleting user with ID: {}", id);
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Changes a user's password.
+     *
+     * @param id                    The user's unique identifier
+     * @param passwordChangeRequest The request containing old and new passwords
+     * @return ResponseEntity with success message
+     */
+    @PutMapping("/{id}/password")
+    public ResponseEntity<String> changePassword(@PathVariable Long id,
+            @RequestBody PasswordChangeRequest passwordChangeRequest) {
+        log.info("Password change request for user ID: {}", id);
+        userService.changePassword(id, passwordChangeRequest.getOldPassword(), passwordChangeRequest.getNewPassword());
+        return ResponseEntity.ok("Password changed successfully");
     }
 
     /**
