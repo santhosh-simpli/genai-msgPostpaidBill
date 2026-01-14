@@ -31,7 +31,7 @@ class PaymentRepositoryTest {
     void setUp() {
         User testUser = new User();
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
         testUser.setPasswordHash("password");
         testUser.setRole(UserRole.CUSTOMER);
         testUser = entityManager.persistAndFlush(testUser);

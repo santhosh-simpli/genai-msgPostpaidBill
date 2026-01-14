@@ -12,12 +12,12 @@ class UserDtoTest {
         
         dto.setUserId(1L);
         dto.setUsername("testuser");
-        dto.setEmail("test@example.com");
+        dto.setEmail("test@msgtel.com");
         dto.setRole("ADMIN");
         
         assertEquals(1L, dto.getUserId());
         assertEquals("testuser", dto.getUsername());
-        assertEquals("test@example.com", dto.getEmail());
+        assertEquals("test@msgtel.com", dto.getEmail());
         assertEquals("ADMIN", dto.getRole());
     }
 
@@ -184,10 +184,10 @@ class UserDtoTest {
     void testUserDtoWithSpecialCharacters() {
         UserDto dto = new UserDto();
         dto.setUsername("user_name-123");
-        dto.setEmail("test+special@example.com");
+        dto.setEmail("test+special@msgtel.com");
         
         assertEquals("user_name-123", dto.getUsername());
-        assertEquals("test+special@example.com", dto.getEmail());
+        assertEquals("test+special@msgtel.com", dto.getEmail());
     }
 
     @Test

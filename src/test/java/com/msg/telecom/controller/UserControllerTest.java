@@ -36,13 +36,13 @@ class UserControllerTest {
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("john");
-        testUser.setEmail("john@example.com");
+        testUser.setEmail("john@msgtel.com");
         testUser.setRole(UserRole.ADMIN);
         
         testUserDto = new UserDto();
         testUserDto.setUserId(1L);
         testUserDto.setUsername("john");
-        testUserDto.setEmail("john@example.com");
+        testUserDto.setEmail("john@msgtel.com");
         testUserDto.setRole("ADMIN");
     }
 
@@ -72,7 +72,7 @@ class UserControllerTest {
         User user2 = new User();
         user2.setUserId(2L);
         user2.setUsername("jane");
-        user2.setEmail("jane@example.com");
+        user2.setEmail("jane@msgtel.com");
         user2.setRole(UserRole.CUSTOMER);
         
         when(userService.getAllUsers()).thenReturn(Arrays.asList(testUser, user2));
@@ -91,7 +91,7 @@ class UserControllerTest {
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("john", response.getBody().getUsername());
-        assertEquals("john@example.com", response.getBody().getEmail());
+        assertEquals("john@msgtel.com", response.getBody().getEmail());
         assertEquals("ADMIN", response.getBody().getRole());
     }
 
@@ -100,7 +100,7 @@ class UserControllerTest {
         User customerUser = new User();
         customerUser.setUserId(2L);
         customerUser.setUsername("alice");
-        customerUser.setEmail("alice@example.com");
+        customerUser.setEmail("alice@msgtel.com");
         customerUser.setRole(UserRole.CUSTOMER);
         
         when(userService.getUserById(2L)).thenReturn(customerUser);
@@ -117,7 +117,7 @@ class UserControllerTest {
         User userWithNullRole = new User();
         userWithNullRole.setUserId(3L);
         userWithNullRole.setUsername("noRole");
-        userWithNullRole.setEmail("noRole@example.com");
+        userWithNullRole.setEmail("noRole@msgtel.com");
         userWithNullRole.setRole(null);
         
         when(userService.getUserById(3L)).thenReturn(userWithNullRole);
@@ -143,13 +143,13 @@ class UserControllerTest {
     void createUser_WithAllFields_ReturnsCreatedUserDto() {
         UserDto dto = new UserDto();
         dto.setUsername("bob");
-        dto.setEmail("bob@example.com");
+        dto.setEmail("bob@msgtel.com");
         dto.setRole("CUSTOMER");
         
         User createdUser = new User();
         createdUser.setUserId(4L);
         createdUser.setUsername("bob");
-        createdUser.setEmail("bob@example.com");
+        createdUser.setEmail("bob@msgtel.com");
         createdUser.setRole(UserRole.CUSTOMER);
         
         when(userService.createUser(any(User.class))).thenReturn(createdUser);
@@ -158,19 +158,19 @@ class UserControllerTest {
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("bob", response.getBody().getUsername());
-        assertEquals("bob@example.com", response.getBody().getEmail());
+        assertEquals("bob@msgtel.com", response.getBody().getEmail());
     }
 
     @Test
     void updateUser_ReturnsUpdatedUserDto() {
         UserDto dto = new UserDto();
         dto.setUsername("eve");
-        dto.setEmail("eve@example.com");
+        dto.setEmail("eve@msgtel.com");
         
         User updatedUser = new User();
         updatedUser.setUserId(4L);
         updatedUser.setUsername("eve");
-        updatedUser.setEmail("eve@example.com");
+        updatedUser.setEmail("eve@msgtel.com");
         updatedUser.setRole(UserRole.CUSTOMER);
         
         when(userService.updateUser(eq(4L), any(User.class))).thenReturn(updatedUser);
@@ -179,7 +179,7 @@ class UserControllerTest {
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("eve", response.getBody().getUsername());
-        assertEquals("eve@example.com", response.getBody().getEmail());
+        assertEquals("eve@msgtel.com", response.getBody().getEmail());
     }
 
     @Test
@@ -187,13 +187,13 @@ class UserControllerTest {
         UserDto dto = new UserDto();
         dto.setUserId(5L);
         dto.setUsername("updated");
-        dto.setEmail("updated@example.com");
+        dto.setEmail("updated@msgtel.com");
         dto.setRole("ADMIN");
         
         User updatedUser = new User();
         updatedUser.setUserId(5L);
         updatedUser.setUsername("updated");
-        updatedUser.setEmail("updated@example.com");
+        updatedUser.setEmail("updated@msgtel.com");
         updatedUser.setRole(UserRole.ADMIN);
         
         when(userService.updateUser(eq(5L), any(User.class))).thenReturn(updatedUser);

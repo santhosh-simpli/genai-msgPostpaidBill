@@ -15,7 +15,7 @@ class CustomerModelTest {
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
 
         customer = new Customer();
         customer.setCustomerId(1L);

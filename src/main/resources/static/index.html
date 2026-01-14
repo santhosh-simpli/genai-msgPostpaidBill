@@ -205,6 +205,8 @@
                                             </p>
                                             <p class="text-sm text-gray-600"
                                                 x-text="formatDate(invoice.billingPeriodStart)"></p>
+                                            <p class="text-xs text-gray-500"
+                                                x-text="getCustomerName(invoice.customer?.customerId)"></p>
                                         </div>
                                         <div class="text-right">
                                             <p class="font-bold text-gray-800">$<span
@@ -235,6 +237,8 @@
                                             </p>
                                             <p class="text-sm text-gray-600"
                                                 x-text="formatPaymentMethod(payment.paymentMethod)"></p>
+                                            <p class="text-xs text-gray-500"
+                                                x-text="getCustomerName(payment.invoice?.customer?.customerId)"></p>
                                         </div>
                                         <div class="text-right">
                                             <p class="font-bold text-gray-800">$<span
@@ -294,7 +298,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                                             Date</th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
-                                            Service Type</th>
+                                            Service Details</th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
                                             Quantity</th>
                                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">
@@ -309,9 +313,13 @@
                                             <td class="px-6 py-4 text-sm text-gray-900"
                                                 x-text="formatDate(usage.usageDate)"></td>
                                             <td class="px-6 py-4">
-                                                <span
-                                                    class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold"
-                                                    x-text="usage.service?.serviceType || 'N/A'"></span>
+                                                <div>
+                                                    <span
+                                                        class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold"
+                                                        x-text="usage.service?.serviceType || 'N/A'"></span>
+                                                    <p class="text-xs text-gray-500 mt-1"
+                                                        x-text="'Type: ' + (usage.service?.serviceType || 'N/A') + ' | Amount: $' + (calculateUsageAmount(usage).toFixed(2))"></p>
+                                                </div>
                                             </td>
                                             <td class="px-6 py-4 text-sm text-gray-900"
                                                 x-text="usage.usageAmount?.toFixed(2) + ' ' + usage.unit"></td>
@@ -428,7 +436,7 @@
                                                 x-for="invoice in invoices.filter(i => i.status?.toUpperCase() !== 'PAID')"
                                                 :key="invoice.invoiceId">
                                                 <option :value="invoice.invoiceId"
-                                                    x-text="`Invoice #${invoice.invoiceId} - $${invoice.totalAmount?.toFixed(2) || '0.00'} (${invoice.status})`">
+                                                    x-text="`Invoice #${invoice.invoiceId} - ${getCustomerName(invoice.customer?.customerId)} - $${invoice.totalAmount?.toFixed(2) || '0.00'} (${invoice.status})`">
                                                 </option>
                                             </template>
                                         </select>
@@ -488,6 +496,8 @@
                                                             x-text="payment.paymentId"></span></p>
                                                     <p class="text-sm text-gray-600"
                                                         x-text="formatDate(payment.paymentDate)"></p>
+                                                    <p class="text-xs text-gray-500"
+                                                        x-text="getCustomerName(payment.invoice?.customer?.customerId)"></p>
                                                 </div>
                                                 <span class="status-badge bg-green-100 text-green-800">
                                                     Completed
@@ -1600,6 +1610,12 @@ User ID: ${customer.user?.userId || 'N/A'}`;
                 getInvoiceNumber(invoiceId) {
                     const invoice = this.invoices.find(i => i.id === invoiceId);
                     return invoice?.invoiceNumber || 'N/A';
+                },
+
+                getCustomerName(customerId) {
+                    if (!customerId) return 'N/A';
+                    const customer = this.customers.find(c => c.customerId === customerId);
+                    return customer ? `${customer.firstName} ${customer.lastName}` : 'N/A';
                 },
 
                 logout() {

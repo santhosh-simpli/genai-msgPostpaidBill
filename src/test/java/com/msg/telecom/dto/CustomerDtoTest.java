@@ -12,13 +12,13 @@ class CustomerDtoTest {
         
         dto.setCustomerId(1L);
         dto.setName("John Doe");
-        dto.setEmail("john@example.com");
+        dto.setEmail("john@msgtel.com");
         dto.setPhoneNumber("1234567890");
         dto.setUserId(10L);
         
         assertEquals(1L, dto.getCustomerId());
         assertEquals("John Doe", dto.getName());
-        assertEquals("john@example.com", dto.getEmail());
+        assertEquals("john@msgtel.com", dto.getEmail());
         assertEquals("1234567890", dto.getPhoneNumber());
         assertEquals(10L, dto.getUserId());
     }
@@ -182,11 +182,11 @@ class CustomerDtoTest {
     void testCustomerDtoWithSpecialCharacters() {
         CustomerDto dto = new CustomerDto();
         dto.setName("O'Brien-Smith");
-        dto.setEmail("test+special@example.com");
+        dto.setEmail("test+special@msgtel.com");
         dto.setPhoneNumber("+1-555-123-4567");
         
         assertEquals("O'Brien-Smith", dto.getName());
-        assertEquals("test+special@example.com", dto.getEmail());
+        assertEquals("test+special@msgtel.com", dto.getEmail());
         assertEquals("+1-555-123-4567", dto.getPhoneNumber());
     }
 

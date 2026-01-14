@@ -37,7 +37,7 @@ class AuthControllerTest {
         request.setUsername("testuser");
         request.setPassword("password123");
         
-        AuthResponse expectedResponse = createAuthResponse("jwt-token-123", 1L, "testuser", "test@example.com", "CUSTOMER");
+        AuthResponse expectedResponse = createAuthResponse("jwt-token-123", 1L, "testuser", "test@msgtel.com", "CUSTOMER");
         when(authService.login(request)).thenReturn(expectedResponse);
 
         ResponseEntity<AuthResponse> response = authController.login(request);
@@ -54,7 +54,7 @@ class AuthControllerTest {
         request.setUsername("admin");
         request.setPassword("admin123");
         
-        AuthResponse expectedResponse = createAuthResponse("admin-token", 1L, "admin", "admin@example.com", "ADMIN");
+        AuthResponse expectedResponse = createAuthResponse("admin-token", 1L, "admin", "admin@msgtel.com", "ADMIN");
         when(authService.login(request)).thenReturn(expectedResponse);
 
         authController.login(request);
@@ -66,10 +66,10 @@ class AuthControllerTest {
     void register_Success_ReturnsAuthResponse() {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("newuser");
-        request.setEmail("newuser@example.com");
+        request.setEmail("newuser@msgtel.com");
         request.setPassword("password123");
         
-        AuthResponse expectedResponse = createAuthResponse("new-user-token", 2L, "newuser", "newuser@example.com", "CUSTOMER");
+        AuthResponse expectedResponse = createAuthResponse("new-user-token", 2L, "newuser", "newuser@msgtel.com", "CUSTOMER");
         when(authService.register(request)).thenReturn(expectedResponse);
 
         ResponseEntity<AuthResponse> response = authController.register(request);
@@ -83,11 +83,11 @@ class AuthControllerTest {
     void register_WithRole_ReturnsAuthResponse() {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("adminuser");
-        request.setEmail("admin@example.com");
+        request.setEmail("admin@msgtel.com");
         request.setPassword("adminpass");
         request.setRole("ADMIN");
         
-        AuthResponse expectedResponse = createAuthResponse("admin-new-token", 3L, "adminuser", "admin@example.com", "ADMIN");
+        AuthResponse expectedResponse = createAuthResponse("admin-new-token", 3L, "adminuser", "admin@msgtel.com", "ADMIN");
         when(authService.register(request)).thenReturn(expectedResponse);
 
         ResponseEntity<AuthResponse> response = authController.register(request);
@@ -100,10 +100,10 @@ class AuthControllerTest {
     void register_CallsAuthService() {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("testregister");
-        request.setEmail("test@example.com");
+        request.setEmail("test@msgtel.com");
         request.setPassword("testpass");
         
-        AuthResponse expectedResponse = createAuthResponse("test-token", 4L, "testregister", "test@example.com", "CUSTOMER");
+        AuthResponse expectedResponse = createAuthResponse("test-token", 4L, "testregister", "test@msgtel.com", "CUSTOMER");
         when(authService.register(request)).thenReturn(expectedResponse);
 
         authController.register(request);
@@ -117,7 +117,7 @@ class AuthControllerTest {
         request.setUsername("bearer");
         request.setPassword("password");
         
-        AuthResponse expectedResponse = createAuthResponse("token", 5L, "bearer", "bearer@example.com", "CUSTOMER");
+        AuthResponse expectedResponse = createAuthResponse("token", 5L, "bearer", "bearer@msgtel.com", "CUSTOMER");
         when(authService.login(request)).thenReturn(expectedResponse);
 
         ResponseEntity<AuthResponse> response = authController.login(request);
@@ -129,10 +129,10 @@ class AuthControllerTest {
     void register_ReturnsResponseWithBearerType() {
         RegisterRequest request = new RegisterRequest();
         request.setUsername("newbearer");
-        request.setEmail("bearer@example.com");
+        request.setEmail("bearer@msgtel.com");
         request.setPassword("password");
         
-        AuthResponse expectedResponse = createAuthResponse("token", 6L, "newbearer", "bearer@example.com", "CUSTOMER");
+        AuthResponse expectedResponse = createAuthResponse("token", 6L, "newbearer", "bearer@msgtel.com", "CUSTOMER");
         when(authService.register(request)).thenReturn(expectedResponse);
 
         ResponseEntity<AuthResponse> response = authController.register(request);
@@ -150,8 +150,8 @@ class AuthControllerTest {
         request2.setUsername("user2");
         request2.setPassword("pass2");
         
-        AuthResponse response1 = createAuthResponse("token1", 1L, "user1", "user1@example.com", "CUSTOMER");
-        AuthResponse response2 = createAuthResponse("token2", 2L, "user2", "user2@example.com", "CUSTOMER");
+        AuthResponse response1 = createAuthResponse("token1", 1L, "user1", "user1@msgtel.com", "CUSTOMER");
+        AuthResponse response2 = createAuthResponse("token2", 2L, "user2", "user2@msgtel.com", "CUSTOMER");
         
         when(authService.login(request1)).thenReturn(response1);
         when(authService.login(request2)).thenReturn(response2);

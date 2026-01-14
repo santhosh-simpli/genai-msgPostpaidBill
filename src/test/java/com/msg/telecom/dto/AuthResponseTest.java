@@ -20,13 +20,13 @@ class AuthResponseTest {
 
     @Test
     void testAuthResponseAllArgsConstructor() {
-        AuthResponse response = new AuthResponse("token123", "Bearer", 1L, "testuser", "test@example.com", "ADMIN");
+        AuthResponse response = new AuthResponse("token123", "Bearer", 1L, "testuser", "test@msgtel.com", "ADMIN");
         
         assertEquals("token123", response.getToken());
         assertEquals("Bearer", response.getType());
         assertEquals(1L, response.getId());
         assertEquals("testuser", response.getUsername());
-        assertEquals("test@example.com", response.getEmail());
+        assertEquals("test@msgtel.com", response.getEmail());
         assertEquals("ADMIN", response.getRole());
     }
 
@@ -50,14 +50,14 @@ class AuthResponseTest {
         response.setType("Custom");
         response.setId(10L);
         response.setUsername("newuser");
-        response.setEmail("new@example.com");
+        response.setEmail("new@msgtel.com");
         response.setRole("ADMIN");
         
         assertEquals("new-token", response.getToken());
         assertEquals("Custom", response.getType());
         assertEquals(10L, response.getId());
         assertEquals("newuser", response.getUsername());
-        assertEquals("new@example.com", response.getEmail());
+        assertEquals("new@msgtel.com", response.getEmail());
         assertEquals("ADMIN", response.getRole());
     }
 
@@ -80,12 +80,12 @@ class AuthResponseTest {
 
     @Test
     void testAuthResponseToString() {
-        AuthResponse response = new AuthResponse("jwt-token-xyz", 1L, "testuser", "test@example.com", "ADMIN");
+        AuthResponse response = new AuthResponse("jwt-token-xyz", 1L, "testuser", "test@msgtel.com", "ADMIN");
         
         String toString = response.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("testuser"));
-        assertTrue(toString.contains("test@example.com"));
+        assertTrue(toString.contains("test@msgtel.com"));
         assertTrue(toString.contains("ADMIN"));
     }
 

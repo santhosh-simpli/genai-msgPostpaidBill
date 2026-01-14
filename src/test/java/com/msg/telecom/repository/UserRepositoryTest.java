@@ -20,7 +20,7 @@ class UserRepositoryTest {
     void findByUsername_ReturnsUser() {
         User user = new User();
         user.setUsername("testuser");
-        user.setEmail("test@example.com");
+        user.setEmail("test@msgtel.com");
         user.setPasswordHash("password");
         user.setRole(UserRole.CUSTOMER);
         userRepository.save(user);
@@ -34,12 +34,12 @@ class UserRepositoryTest {
     void existsByEmail_ReturnsTrue() {
         User user = new User();
         user.setUsername("testuser");
-        user.setEmail("test@example.com");
+        user.setEmail("test@msgtel.com");
         user.setPasswordHash("password");
         user.setRole(UserRole.CUSTOMER);
         userRepository.save(user);
 
-        boolean exists = userRepository.existsByEmail("test@example.com");
+        boolean exists = userRepository.existsByEmail("test@msgtel.com");
         assertTrue(exists);
     }
 }

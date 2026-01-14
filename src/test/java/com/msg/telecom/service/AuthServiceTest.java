@@ -50,12 +50,12 @@ class AuthServiceTest {
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
         testUser.setPasswordHash("encodedPassword");
         testUser.setRole(UserRole.CUSTOMER);
 
         loginRequest = new LoginRequest("testuser", "password123");
-        registerRequest = new RegisterRequest("newuser", "new@example.com", "password123", "CUSTOMER");
+        registerRequest = new RegisterRequest("newuser", "new@msgtel.com", "password123", "CUSTOMER");
     }
 
     @Test
@@ -70,7 +70,7 @@ class AuthServiceTest {
         assertNotNull(response);
         assertEquals("jwt-token", response.getToken());
         assertEquals("testuser", response.getUsername());
-        assertEquals("test@example.com", response.getEmail());
+        assertEquals("test@msgtel.com", response.getEmail());
         assertEquals("CUSTOMER", response.getRole());
         verify(authenticationManager, times(1)).authenticate(any());
         verify(jwtTokenProvider, times(1)).generateToken(any());
@@ -100,11 +100,11 @@ class AuthServiceTest {
         User newUser = new User();
         newUser.setUserId(2L);
         newUser.setUsername("newuser");
-        newUser.setEmail("new@example.com");
+        newUser.setEmail("new@msgtel.com");
         newUser.setRole(UserRole.CUSTOMER);
 
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
-        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail("new@msgtel.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(newUser);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
@@ -132,7 +132,7 @@ class AuthServiceTest {
     @Test
     void register_EmailExists() {
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
-        when(userRepository.existsByEmail("new@example.com")).thenReturn(true);
+        when(userRepository.existsByEmail("new@msgtel.com")).thenReturn(true);
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> authService.register(registerRequest));
         assertTrue(ex.getMessage().contains("Email already exists"));
@@ -141,15 +141,15 @@ class AuthServiceTest {
 
     @Test
     void register_AdminRole() {
-        RegisterRequest adminRequest = new RegisterRequest("admin", "admin@example.com", "password123", "ADMIN");
+        RegisterRequest adminRequest = new RegisterRequest("admin", "admin@msgtel.com", "password123", "ADMIN");
         User adminUser = new User();
         adminUser.setUserId(3L);
         adminUser.setUsername("admin");
-        adminUser.setEmail("admin@example.com");
+        adminUser.setEmail("admin@msgtel.com");
         adminUser.setRole(UserRole.ADMIN);
 
         when(userRepository.existsByUsername("admin")).thenReturn(false);
-        when(userRepository.existsByEmail("admin@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail("admin@msgtel.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(adminUser);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
@@ -168,11 +168,11 @@ class AuthServiceTest {
         User newUser = new User();
         newUser.setUserId(2L);
         newUser.setUsername("newuser");
-        newUser.setEmail("new@example.com");
+        newUser.setEmail("new@msgtel.com");
         newUser.setRole(UserRole.CUSTOMER);
 
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
-        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail("new@msgtel.com")).thenReturn(false);
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(newUser);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
@@ -197,7 +197,7 @@ class AuthServiceTest {
         User mockUser = User.builder()
                 .username("user")
                 .passwordHash("hashedPassword")
-                .email("user@example.com")
+                .email("user@msgtel.com")
                 .role(UserRole.CUSTOMER)
                 .build();
         when(userRepository.findByUsername("user")).thenReturn(Optional.of(mockUser));

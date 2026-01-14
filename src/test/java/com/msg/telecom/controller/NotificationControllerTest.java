@@ -47,7 +47,7 @@ class NotificationControllerTest {
                                 .emailStatus("SENT")
                                 .invoiceId(1L)
                                 .customerName("John Doe")
-                                .customerEmail("john@example.com")
+                                .customerEmail("john@msgtel.com")
                                 .build();
 
                 failureResponse = NotificationResponse.builder()

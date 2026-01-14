@@ -21,7 +21,7 @@ class UserModelTest {
         user.setUserId(1L);
         user.setUsername("testuser");
         user.setPasswordHash("hashedpassword123");
-        user.setEmail("test@example.com");
+        user.setEmail("test@msgtel.com");
         user.setRole(UserRole.CUSTOMER);
         user.setCreatedAt(testTime);
     }
@@ -31,7 +31,7 @@ class UserModelTest {
         assertEquals(1L, user.getUserId());
         assertEquals("testuser", user.getUsername());
         assertEquals("hashedpassword123", user.getPasswordHash());
-        assertEquals("test@example.com", user.getEmail());
+        assertEquals("test@msgtel.com", user.getEmail());
         assertEquals(UserRole.CUSTOMER, user.getRole());
         assertEquals(testTime, user.getCreatedAt());
     }
@@ -43,7 +43,7 @@ class UserModelTest {
                 .userId(2L)
                 .username("admin")
                 .passwordHash("adminpass")
-                .email("admin@example.com")
+                .email("admin@msgtel.com")
                 .role(UserRole.ADMIN)
                 .createdAt(now)
                 .build();
@@ -51,7 +51,7 @@ class UserModelTest {
         assertEquals(2L, builtUser.getUserId());
         assertEquals("admin", builtUser.getUsername());
         assertEquals("adminpass", builtUser.getPasswordHash());
-        assertEquals("admin@example.com", builtUser.getEmail());
+        assertEquals("admin@msgtel.com", builtUser.getEmail());
         assertEquals(UserRole.ADMIN, builtUser.getRole());
         assertEquals(now, builtUser.getCreatedAt());
     }
@@ -59,12 +59,12 @@ class UserModelTest {
     @Test
     void testAllArgsConstructor() {
         LocalDateTime now = LocalDateTime.now();
-        User constructedUser = new User(3L, "operator", "operatorpass", "operator@example.com", UserRole.OPERATOR, now);
+        User constructedUser = new User(3L, "operator", "operatorpass", "operator@msgtel.com", UserRole.OPERATOR, now);
 
         assertEquals(3L, constructedUser.getUserId());
         assertEquals("operator", constructedUser.getUsername());
         assertEquals("operatorpass", constructedUser.getPasswordHash());
-        assertEquals("operator@example.com", constructedUser.getEmail());
+        assertEquals("operator@msgtel.com", constructedUser.getEmail());
         assertEquals(UserRole.OPERATOR, constructedUser.getRole());
         assertEquals(now, constructedUser.getCreatedAt());
     }
@@ -86,7 +86,7 @@ class UserModelTest {
                 .userId(1L)
                 .username("testuser")
                 .passwordHash("password")
-                .email("test@example.com")
+                .email("test@msgtel.com")
                 .role(UserRole.CUSTOMER)
                 .createdAt(testTime)
                 .build();
@@ -95,7 +95,7 @@ class UserModelTest {
                 .userId(1L)
                 .username("testuser")
                 .passwordHash("password")
-                .email("test@example.com")
+                .email("test@msgtel.com")
                 .role(UserRole.CUSTOMER)
                 .createdAt(testTime)
                 .build();
@@ -183,7 +183,7 @@ class UserModelTest {
         String userString = user.toString();
         assertNotNull(userString);
         assertTrue(userString.contains("testuser"));
-        assertTrue(userString.contains("test@example.com"));
+        assertTrue(userString.contains("test@msgtel.com"));
     }
 
     @Test
@@ -205,8 +205,8 @@ class UserModelTest {
         testUser.setPasswordHash("newpassword");
         assertEquals("newpassword", testUser.getPasswordHash());
 
-        testUser.setEmail("new@example.com");
-        assertEquals("new@example.com", testUser.getEmail());
+        testUser.setEmail("new@msgtel.com");
+        assertEquals("new@msgtel.com", testUser.getEmail());
 
         testUser.setRole(UserRole.ADMIN);
         assertEquals(UserRole.ADMIN, testUser.getRole());

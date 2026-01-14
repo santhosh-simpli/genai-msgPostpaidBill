@@ -36,7 +36,7 @@ class CustomUserDetailsServiceTest {
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
         testUser.setPasswordHash("encodedPassword");
         testUser.setRole(UserRole.CUSTOMER);
     }
@@ -86,7 +86,7 @@ class CustomUserDetailsServiceTest {
             User adminUser = new User();
             adminUser.setUserId(2L);
             adminUser.setUsername("admin");
-            adminUser.setEmail("admin@example.com");
+            adminUser.setEmail("admin@msgtel.com");
             adminUser.setPasswordHash("adminPassword");
             adminUser.setRole(UserRole.ADMIN);
 
@@ -104,7 +104,7 @@ class CustomUserDetailsServiceTest {
             User operatorUser = new User();
             operatorUser.setUserId(3L);
             operatorUser.setUsername("operator");
-            operatorUser.setEmail("operator@example.com");
+            operatorUser.setEmail("operator@msgtel.com");
             operatorUser.setPasswordHash("operatorPassword");
             operatorUser.setRole(UserRole.OPERATOR);
 
@@ -167,7 +167,7 @@ class CustomUserDetailsServiceTest {
 
             assertTrue(result instanceof User);
             User loadedUser = (User) result;
-            assertEquals("test@example.com", loadedUser.getEmail());
+            assertEquals("test@msgtel.com", loadedUser.getEmail());
         }
     }
 }

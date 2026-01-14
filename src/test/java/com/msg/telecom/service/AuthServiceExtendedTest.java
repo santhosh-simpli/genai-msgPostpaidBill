@@ -51,7 +51,7 @@ class AuthServiceExtendedTest {
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
         testUser.setPasswordHash("encodedPassword");
         testUser.setRole(UserRole.CUSTOMER);
     }
@@ -81,7 +81,7 @@ class AuthServiceExtendedTest {
             User adminUser = new User();
             adminUser.setUserId(2L);
             adminUser.setUsername("admin");
-            adminUser.setEmail("admin@example.com");
+            adminUser.setEmail("admin@msgtel.com");
             adminUser.setRole(UserRole.ADMIN);
 
             LoginRequest request = new LoginRequest("admin", "adminPass");
@@ -102,7 +102,7 @@ class AuthServiceExtendedTest {
             User operatorUser = new User();
             operatorUser.setUserId(3L);
             operatorUser.setUsername("operator");
-            operatorUser.setEmail("operator@example.com");
+            operatorUser.setEmail("operator@msgtel.com");
             operatorUser.setRole(UserRole.OPERATOR);
 
             LoginRequest request = new LoginRequest("operator", "operatorPass");
@@ -153,7 +153,7 @@ class AuthServiceExtendedTest {
 
             AuthResponse response = authService.login(request);
 
-            assertEquals("test@example.com", response.getEmail());
+            assertEquals("test@msgtel.com", response.getEmail());
         }
     }
 
@@ -164,16 +164,16 @@ class AuthServiceExtendedTest {
         @Test
         @DisplayName("Should register admin user")
         void register_AdminUser() {
-            RegisterRequest request = new RegisterRequest("newadmin", "admin@example.com", "password", "ADMIN");
+            RegisterRequest request = new RegisterRequest("newadmin", "admin@msgtel.com", "password", "ADMIN");
 
             User savedUser = new User();
             savedUser.setUserId(10L);
             savedUser.setUsername("newadmin");
-            savedUser.setEmail("admin@example.com");
+            savedUser.setEmail("admin@msgtel.com");
             savedUser.setRole(UserRole.ADMIN);
 
             when(userRepository.existsByUsername("newadmin")).thenReturn(false);
-            when(userRepository.existsByEmail("admin@example.com")).thenReturn(false);
+            when(userRepository.existsByEmail("admin@msgtel.com")).thenReturn(false);
             when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
             when(userRepository.save(any(User.class))).thenReturn(savedUser);
             when(authenticationManager.authenticate(any())).thenReturn(authentication);
@@ -188,17 +188,17 @@ class AuthServiceExtendedTest {
         @Test
         @DisplayName("Should register operator user")
         void register_OperatorUser() {
-            RegisterRequest request = new RegisterRequest("newoperator", "operator@example.com", "password",
+            RegisterRequest request = new RegisterRequest("newoperator", "operator@msgtel.com", "password",
                     "OPERATOR");
 
             User savedUser = new User();
             savedUser.setUserId(11L);
             savedUser.setUsername("newoperator");
-            savedUser.setEmail("operator@example.com");
+            savedUser.setEmail("operator@msgtel.com");
             savedUser.setRole(UserRole.OPERATOR);
 
             when(userRepository.existsByUsername("newoperator")).thenReturn(false);
-            when(userRepository.existsByEmail("operator@example.com")).thenReturn(false);
+            when(userRepository.existsByEmail("operator@msgtel.com")).thenReturn(false);
             when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
             when(userRepository.save(any(User.class))).thenReturn(savedUser);
             when(authenticationManager.authenticate(any())).thenReturn(authentication);
@@ -212,7 +212,7 @@ class AuthServiceExtendedTest {
         @Test
         @DisplayName("Should throw exception for duplicate username")
         void register_DuplicateUsername() {
-            RegisterRequest request = new RegisterRequest("existinguser", "new@example.com", "password", "CUSTOMER");
+            RegisterRequest request = new RegisterRequest("existinguser", "new@msgtel.com", "password", "CUSTOMER");
 
             when(userRepository.existsByUsername("existinguser")).thenReturn(true);
 
@@ -226,10 +226,10 @@ class AuthServiceExtendedTest {
         @Test
         @DisplayName("Should throw exception for duplicate email")
         void register_DuplicateEmail() {
-            RegisterRequest request = new RegisterRequest("newuser", "existing@example.com", "password", "CUSTOMER");
+            RegisterRequest request = new RegisterRequest("newuser", "existing@msgtel.com", "password", "CUSTOMER");
 
             when(userRepository.existsByUsername("newuser")).thenReturn(false);
-            when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
+            when(userRepository.existsByEmail("existing@msgtel.com")).thenReturn(true);
 
             RuntimeException exception = assertThrows(RuntimeException.class,
                     () -> authService.register(request));
@@ -241,16 +241,16 @@ class AuthServiceExtendedTest {
         @Test
         @DisplayName("Should encode password before saving")
         void register_PasswordEncoded() {
-            RegisterRequest request = new RegisterRequest("newuser", "new@example.com", "plainPassword", "CUSTOMER");
+            RegisterRequest request = new RegisterRequest("newuser", "new@msgtel.com", "plainPassword", "CUSTOMER");
 
             User savedUser = new User();
             savedUser.setUserId(12L);
             savedUser.setUsername("newuser");
-            savedUser.setEmail("new@example.com");
+            savedUser.setEmail("new@msgtel.com");
             savedUser.setRole(UserRole.CUSTOMER);
 
             when(userRepository.existsByUsername("newuser")).thenReturn(false);
-            when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+            when(userRepository.existsByEmail("new@msgtel.com")).thenReturn(false);
             when(passwordEncoder.encode("plainPassword")).thenReturn("hashedPassword");
             when(userRepository.save(any(User.class))).thenReturn(savedUser);
             when(authenticationManager.authenticate(any())).thenReturn(authentication);
@@ -264,16 +264,16 @@ class AuthServiceExtendedTest {
         @Test
         @DisplayName("Should generate token after successful registration")
         void register_TokenGenerated() {
-            RegisterRequest request = new RegisterRequest("newuser", "new@example.com", "password", "CUSTOMER");
+            RegisterRequest request = new RegisterRequest("newuser", "new@msgtel.com", "password", "CUSTOMER");
 
             User savedUser = new User();
             savedUser.setUserId(13L);
             savedUser.setUsername("newuser");
-            savedUser.setEmail("new@example.com");
+            savedUser.setEmail("new@msgtel.com");
             savedUser.setRole(UserRole.CUSTOMER);
 
             when(userRepository.existsByUsername("newuser")).thenReturn(false);
-            when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+            when(userRepository.existsByEmail("new@msgtel.com")).thenReturn(false);
             when(passwordEncoder.encode(any())).thenReturn("encoded");
             when(userRepository.save(any(User.class))).thenReturn(savedUser);
             when(authenticationManager.authenticate(any())).thenReturn(authentication);
@@ -288,16 +288,16 @@ class AuthServiceExtendedTest {
         @Test
         @DisplayName("Should return user ID in response after registration")
         void register_UserIdInResponse() {
-            RegisterRequest request = new RegisterRequest("newuser", "new@example.com", "password", "CUSTOMER");
+            RegisterRequest request = new RegisterRequest("newuser", "new@msgtel.com", "password", "CUSTOMER");
 
             User savedUser = new User();
             savedUser.setUserId(99L);
             savedUser.setUsername("newuser");
-            savedUser.setEmail("new@example.com");
+            savedUser.setEmail("new@msgtel.com");
             savedUser.setRole(UserRole.CUSTOMER);
 
             when(userRepository.existsByUsername("newuser")).thenReturn(false);
-            when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+            when(userRepository.existsByEmail("new@msgtel.com")).thenReturn(false);
             when(passwordEncoder.encode(any())).thenReturn("encoded");
             when(userRepository.save(any(User.class))).thenReturn(savedUser);
             when(authenticationManager.authenticate(any())).thenReturn(authentication);

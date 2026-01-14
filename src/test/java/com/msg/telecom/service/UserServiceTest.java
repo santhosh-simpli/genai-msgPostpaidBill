@@ -35,7 +35,7 @@ class UserServiceTest {
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
         testUser.setPasswordHash("encodedPassword");
         testUser.setRole(UserRole.CUSTOMER);
     }
@@ -94,11 +94,11 @@ class UserServiceTest {
     void createUser_Success() {
         User newUser = new User();
         newUser.setUsername("newuser");
-        newUser.setEmail("new@example.com");
+        newUser.setEmail("new@msgtel.com");
         newUser.setPasswordHash("rawPassword");
 
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
-        when(userRepository.existsByEmail("new@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail("new@msgtel.com")).thenReturn(false);
         when(passwordEncoder.encode("rawPassword")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(newUser);
 
@@ -123,9 +123,9 @@ class UserServiceTest {
     void createUser_EmailExists() {
         User user = new User();
         user.setUsername("newuser");
-        user.setEmail("existing@example.com");
+        user.setEmail("existing@msgtel.com");
         when(userRepository.existsByUsername("newuser")).thenReturn(false);
-        when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
+        when(userRepository.existsByEmail("existing@msgtel.com")).thenReturn(true);
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.createUser(user));
         assertTrue(ex.getMessage().contains("Email already exists"));
@@ -136,12 +136,12 @@ class UserServiceTest {
     void updateUser_Success_AllFields() {
         User updateDetails = new User();
         updateDetails.setUsername("updateduser");
-        updateDetails.setEmail("updated@example.com");
+        updateDetails.setEmail("updated@msgtel.com");
         updateDetails.setRole(UserRole.ADMIN);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByUsername("updateduser")).thenReturn(false);
-        when(userRepository.existsByEmail("updated@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail("updated@msgtel.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
         when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
@@ -154,10 +154,10 @@ class UserServiceTest {
     void updateUser_SameUsername() {
         User updateDetails = new User();
         updateDetails.setUsername("testuser"); // Same as existing
-        updateDetails.setEmail("newemail@example.com");
+        updateDetails.setEmail("newemail@msgtel.com");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-        when(userRepository.existsByEmail("newemail@example.com")).thenReturn(false);
+        when(userRepository.existsByEmail("newemail@msgtel.com")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
         when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
@@ -170,7 +170,7 @@ class UserServiceTest {
     void updateUser_SameEmail() {
         User updateDetails = new User();
         updateDetails.setUsername("newusername");
-        updateDetails.setEmail("test@example.com"); // Same as existing
+        updateDetails.setEmail("test@msgtel.com"); // Same as existing
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.existsByUsername("newusername")).thenReturn(false);
@@ -198,10 +198,10 @@ class UserServiceTest {
     void updateUser_EmailAlreadyExists() {
         User updateDetails = new User();
         updateDetails.setUsername(null);
-        updateDetails.setEmail("existing@example.com");
+        updateDetails.setEmail("existing@msgtel.com");
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-        when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
+        when(userRepository.existsByEmail("existing@msgtel.com")).thenReturn(true);
 
         RuntimeException ex = assertThrows(RuntimeException.class, () -> userService.updateUser(1L, updateDetails));
         assertTrue(ex.getMessage().contains("Email already exists"));

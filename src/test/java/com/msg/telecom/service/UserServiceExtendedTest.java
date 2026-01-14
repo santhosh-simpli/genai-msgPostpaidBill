@@ -42,7 +42,7 @@ class UserServiceExtendedTest {
         testUser = new User();
         testUser.setUserId(1L);
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
         testUser.setPasswordHash("encodedPassword");
         testUser.setRole(UserRole.CUSTOMER);
     }
@@ -104,7 +104,7 @@ class UserServiceExtendedTest {
 
             assertEquals(1L, result.getUserId());
             assertEquals("testuser", result.getUsername());
-            assertEquals("test@example.com", result.getEmail());
+            assertEquals("test@msgtel.com", result.getEmail());
             assertEquals(UserRole.CUSTOMER, result.getRole());
         }
 
@@ -183,16 +183,16 @@ class UserServiceExtendedTest {
         @DisplayName("Should update email only")
         void updateUser_EmailOnly() {
             User updateDetails = new User();
-            updateDetails.setEmail("newemail@example.com");
+            updateDetails.setEmail("newemail@msgtel.com");
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-            when(userRepository.existsByEmail("newemail@example.com")).thenReturn(false);
+            when(userRepository.existsByEmail("newemail@msgtel.com")).thenReturn(false);
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
             when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 
-            assertEquals("newemail@example.com", result.getEmail());
+            assertEquals("newemail@msgtel.com", result.getEmail());
         }
 
         @Test
@@ -230,10 +230,10 @@ class UserServiceExtendedTest {
         @DisplayName("Should throw exception when new email already exists")
         void updateUser_EmailExists() {
             User updateDetails = new User();
-            updateDetails.setEmail("existing@example.com");
+            updateDetails.setEmail("existing@msgtel.com");
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-            when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
+            when(userRepository.existsByEmail("existing@msgtel.com")).thenReturn(true);
 
             RuntimeException exception = assertThrows(RuntimeException.class,
                     () -> userService.updateUser(1L, updateDetails));
@@ -263,7 +263,7 @@ class UserServiceExtendedTest {
         @DisplayName("Should not check email if not changed")
         void updateUser_SameEmail() {
             User updateDetails = new User();
-            updateDetails.setEmail("test@example.com"); // Same as existing
+            updateDetails.setEmail("test@msgtel.com"); // Same as existing
             updateDetails.setRole(UserRole.OPERATOR);
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
@@ -281,19 +281,19 @@ class UserServiceExtendedTest {
         void updateUser_AllFields() {
             User updateDetails = new User();
             updateDetails.setUsername("brandnewuser");
-            updateDetails.setEmail("brandnew@example.com");
+            updateDetails.setEmail("brandnew@msgtel.com");
             updateDetails.setRole(UserRole.ADMIN);
 
             when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
             when(userRepository.existsByUsername("brandnewuser")).thenReturn(false);
-            when(userRepository.existsByEmail("brandnew@example.com")).thenReturn(false);
+            when(userRepository.existsByEmail("brandnew@msgtel.com")).thenReturn(false);
             when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
             when(customerRepository.findByUser_UserId(1L)).thenReturn(Collections.emptyList());
 
             User result = userService.updateUser(1L, updateDetails);
 
             assertEquals("brandnewuser", result.getUsername());
-            assertEquals("brandnew@example.com", result.getEmail());
+            assertEquals("brandnew@msgtel.com", result.getEmail());
             assertEquals(UserRole.ADMIN, result.getRole());
         }
 

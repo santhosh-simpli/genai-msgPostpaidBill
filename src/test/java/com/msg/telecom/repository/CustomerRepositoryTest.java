@@ -31,7 +31,7 @@ class CustomerRepositoryTest {
     void setUp() {
         testUser = new User();
         testUser.setUsername("testuser");
-        testUser.setEmail("test@example.com");
+        testUser.setEmail("test@msgtel.com");
         testUser.setPasswordHash("password");
         testUser.setRole(UserRole.CUSTOMER);
         testUser = entityManager.persistAndFlush(testUser);
@@ -41,7 +41,7 @@ class CustomerRepositoryTest {
     void testFindById_Success() {
         Customer customer = Customer.builder()
                 .fullName("John Doe")
-                .email("john.doe@example.com")
+                .email("john.doe@msgtel.com")
                 .address("123 Main St")
                 .phoneNumber("1234567890")
                 .user(testUser)

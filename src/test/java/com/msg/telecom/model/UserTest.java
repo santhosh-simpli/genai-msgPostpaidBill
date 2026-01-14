@@ -19,7 +19,7 @@ class UserTest {
         user.setUserId(1L);
         user.setUsername("testuser");
         user.setPasswordHash("hashedPassword123");
-        user.setEmail("test@example.com");
+        user.setEmail("test@msgtel.com");
         user.setRole(UserRole.CUSTOMER);
         user.setCreatedAt(LocalDateTime.now());
     }
@@ -29,7 +29,7 @@ class UserTest {
         assertEquals(1L, user.getUserId());
         assertEquals("testuser", user.getUsername());
         assertEquals("hashedPassword123", user.getPasswordHash());
-        assertEquals("test@example.com", user.getEmail());
+        assertEquals("test@msgtel.com", user.getEmail());
         assertEquals(UserRole.CUSTOMER, user.getRole());
         assertNotNull(user.getCreatedAt());
     }
@@ -99,12 +99,12 @@ class UserTest {
         User user1 = new User();
         user1.setUserId(1L);
         user1.setUsername("testuser");
-        user1.setEmail("test@example.com");
+        user1.setEmail("test@msgtel.com");
 
         User user2 = new User();
         user2.setUserId(1L);
         user2.setUsername("testuser");
-        user2.setEmail("test@example.com");
+        user2.setEmail("test@msgtel.com");
 
         assertEquals(user1, user2);
         assertEquals(user1.hashCode(), user2.hashCode());
@@ -128,7 +128,7 @@ class UserTest {
         String toString = user.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("testuser"));
-        assertTrue(toString.contains("test@example.com"));
+        assertTrue(toString.contains("test@msgtel.com"));
     }
 
     @Test
@@ -142,12 +142,12 @@ class UserTest {
     @Test
     void testAllArgsConstructor() {
         LocalDateTime now = LocalDateTime.now();
-        User fullUser = new User(1L, "fulluser", "password", "full@example.com", UserRole.ADMIN, now);
+        User fullUser = new User(1L, "fulluser", "password", "full@msgtel.com", UserRole.ADMIN, now);
         
         assertEquals(1L, fullUser.getUserId());
         assertEquals("fulluser", fullUser.getUsername());
         assertEquals("password", fullUser.getPasswordHash());
-        assertEquals("full@example.com", fullUser.getEmail());
+        assertEquals("full@msgtel.com", fullUser.getEmail());
         assertEquals(UserRole.ADMIN, fullUser.getRole());
         assertEquals(now, fullUser.getCreatedAt());
     }
@@ -158,14 +158,14 @@ class UserTest {
                 .userId(2L)
                 .username("builder")
                 .passwordHash("builderPass")
-                .email("builder@example.com")
+                .email("builder@msgtel.com")
                 .role(UserRole.OPERATOR)
                 .build();
         
         assertEquals(2L, builtUser.getUserId());
         assertEquals("builder", builtUser.getUsername());
         assertEquals("builderPass", builtUser.getPasswordHash());
-        assertEquals("builder@example.com", builtUser.getEmail());
+        assertEquals("builder@msgtel.com", builtUser.getEmail());
         assertEquals(UserRole.OPERATOR, builtUser.getRole());
     }
 
@@ -174,7 +174,7 @@ class UserTest {
         User newUser = new User();
         newUser.setUsername("newuser");
         newUser.setPasswordHash("pass");
-        newUser.setEmail("new@example.com");
+        newUser.setEmail("new@msgtel.com");
         newUser.setRole(UserRole.CUSTOMER);
         
         // Simulate @PrePersist

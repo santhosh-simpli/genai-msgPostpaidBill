@@ -33,10 +33,10 @@ class RegisterRequestTest {
 
     @Test
     void testRegisterRequestAllArgsConstructor() {
-        RegisterRequest request = new RegisterRequest("testuser", "test@example.com", "password123", "ADMIN");
+        RegisterRequest request = new RegisterRequest("testuser", "test@msgtel.com", "password123", "ADMIN");
         
         assertEquals("testuser", request.getUsername());
-        assertEquals("test@example.com", request.getEmail());
+        assertEquals("test@msgtel.com", request.getEmail());
         assertEquals("password123", request.getPassword());
         assertEquals("ADMIN", request.getRole());
     }
@@ -46,12 +46,12 @@ class RegisterRequestTest {
         RegisterRequest request = new RegisterRequest();
         
         request.setUsername("newuser");
-        request.setEmail("new@example.com");
+        request.setEmail("new@msgtel.com");
         request.setPassword("securepass");
         request.setRole("CUSTOMER");
         
         assertEquals("newuser", request.getUsername());
-        assertEquals("new@example.com", request.getEmail());
+        assertEquals("new@msgtel.com", request.getEmail());
         assertEquals("securepass", request.getPassword());
         assertEquals("CUSTOMER", request.getRole());
     }
@@ -75,17 +75,17 @@ class RegisterRequestTest {
 
     @Test
     void testRegisterRequestToString() {
-        RegisterRequest request = new RegisterRequest("testuser", "test@example.com", "password", "ADMIN");
+        RegisterRequest request = new RegisterRequest("testuser", "test@msgtel.com", "password", "ADMIN");
         
         String toString = request.toString();
         assertNotNull(toString);
         assertTrue(toString.contains("testuser"));
-        assertTrue(toString.contains("test@example.com"));
+        assertTrue(toString.contains("test@msgtel.com"));
     }
 
     @Test
     void testValidRegisterRequest() {
-        RegisterRequest request = new RegisterRequest("validuser", "valid@example.com", "password123", "CUSTOMER");
+        RegisterRequest request = new RegisterRequest("validuser", "valid@msgtel.com", "password123", "CUSTOMER");
         
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
         assertTrue(violations.isEmpty());
@@ -93,7 +93,7 @@ class RegisterRequestTest {
 
     @Test
     void testRegisterRequestBlankUsername() {
-        RegisterRequest request = new RegisterRequest("", "valid@example.com", "password123", "CUSTOMER");
+        RegisterRequest request = new RegisterRequest("", "valid@msgtel.com", "password123", "CUSTOMER");
         
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
@@ -109,7 +109,7 @@ class RegisterRequestTest {
 
     @Test
     void testRegisterRequestShortPassword() {
-        RegisterRequest request = new RegisterRequest("validuser", "valid@example.com", "12345", "CUSTOMER");
+        RegisterRequest request = new RegisterRequest("validuser", "valid@msgtel.com", "12345", "CUSTOMER");
         
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
@@ -117,7 +117,7 @@ class RegisterRequestTest {
 
     @Test
     void testRegisterRequestShortUsername() {
-        RegisterRequest request = new RegisterRequest("ab", "valid@example.com", "password123", "CUSTOMER");
+        RegisterRequest request = new RegisterRequest("ab", "valid@msgtel.com", "password123", "CUSTOMER");
         
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());
@@ -125,7 +125,7 @@ class RegisterRequestTest {
 
     @Test
     void testRegisterRequestNullPassword() {
-        RegisterRequest request = new RegisterRequest("validuser", "valid@example.com", null, "CUSTOMER");
+        RegisterRequest request = new RegisterRequest("validuser", "valid@msgtel.com", null, "CUSTOMER");
         
         Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(request);
         assertFalse(violations.isEmpty());

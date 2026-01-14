@@ -36,14 +36,14 @@ class UsageRecordRepositoryTest {
     void setUp() {
         testUser = new User();
         testUser.setUsername("usageuser");
-        testUser.setEmail("usage@example.com");
+        testUser.setEmail("usage@msgtel.com");
         testUser.setPasswordHash("password");
         testUser.setRole(UserRole.CUSTOMER);
         testUser = entityManager.persistAndFlush(testUser);
 
         testCustomer = new Customer();
         testCustomer.setFullName("Usage Customer");
-        testCustomer.setEmail("usage.customer@example.com");
+        testCustomer.setEmail("usage.customer@msgtel.com");
         testCustomer.setAddress("123 Usage St");
         testCustomer.setPhoneNumber("1112223333");
         testCustomer.setUser(testUser);

@@ -168,7 +168,7 @@ class CustomerControllerTest {
     void createCustomer_WithAllFields_ReturnsDto() {
         CustomerDto dto = new CustomerDto();
         dto.setName("Full Customer");
-        dto.setEmail("full@example.com");
+        dto.setEmail("full@msgtel.com");
         dto.setPhoneNumber("5555555555");
         dto.setUserId(1L);
 

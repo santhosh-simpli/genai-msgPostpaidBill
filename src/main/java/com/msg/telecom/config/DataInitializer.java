@@ -61,7 +61,7 @@ public class DataInitializer implements CommandLineRunner {
             // First 2 users are admins, rest are customers
             UserRole role = (i < 2) ? UserRole.ADMIN : UserRole.CUSTOMER;
 
-            String email = username + "@example.com";
+            String email = username + "@msgtel.com";
             User user = User.builder()
                     .username(username)
                     .passwordHash(passwordEncoder.encode("password123"))

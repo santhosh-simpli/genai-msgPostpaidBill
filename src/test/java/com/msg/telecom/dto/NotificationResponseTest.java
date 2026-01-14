@@ -31,7 +31,7 @@ class NotificationResponseTest {
                 "https://wa.me/1234567890",
                 123L,
                 "John Doe",
-                "john@example.com",
+                "john@msgtel.com",
                 "1234567890");
 
         assertAll("All args constructor",
@@ -42,7 +42,7 @@ class NotificationResponseTest {
                 () -> assertEquals("https://wa.me/1234567890", response.getWhatsappLink()),
                 () -> assertEquals(123L, response.getInvoiceId()),
                 () -> assertEquals("John Doe", response.getCustomerName()),
-                () -> assertEquals("john@example.com", response.getCustomerEmail()),
+                () -> assertEquals("john@msgtel.com", response.getCustomerEmail()),
                 () -> assertEquals("1234567890", response.getCustomerPhone()));
     }
 
@@ -57,7 +57,7 @@ class NotificationResponseTest {
                 .whatsappLink("https://wa.me/1234567890")
                 .invoiceId(456L)
                 .customerName("Jane Smith")
-                .customerEmail("jane@example.com")
+                .customerEmail("jane@msgtel.com")
                 .customerPhone("9876543210")
                 .build();
 
@@ -69,7 +69,7 @@ class NotificationResponseTest {
                 () -> assertEquals("https://wa.me/1234567890", response.getWhatsappLink()),
                 () -> assertEquals(456L, response.getInvoiceId()),
                 () -> assertEquals("Jane Smith", response.getCustomerName()),
-                () -> assertEquals("jane@example.com", response.getCustomerEmail()),
+                () -> assertEquals("jane@msgtel.com", response.getCustomerEmail()),
                 () -> assertEquals("9876543210", response.getCustomerPhone()));
     }
 
@@ -176,7 +176,7 @@ class NotificationResponseTest {
     @DisplayName("Should set and get customerEmail")
     void testCustomerEmailGetterSetter() {
         NotificationResponse response = new NotificationResponse();
-        String email = "alice@example.com";
+        String email = "alice@msgtel.com";
         response.setCustomerEmail(email);
         assertEquals(email, response.getCustomerEmail());
     }
@@ -211,7 +211,7 @@ class NotificationResponseTest {
                 .whatsappStatus("SENT")
                 .invoiceId(1L)
                 .customerName("Test User")
-                .customerEmail("test@example.com")
+                .customerEmail("test@msgtel.com")
                 .customerPhone("1234567890")
                 .whatsappLink("https://wa.me/1234567890")
                 .build();
@@ -223,7 +223,7 @@ class NotificationResponseTest {
                 .whatsappStatus("SENT")
                 .invoiceId(1L)
                 .customerName("Test User")
-                .customerEmail("test@example.com")
+                .customerEmail("test@msgtel.com")
                 .customerPhone("1234567890")
                 .whatsappLink("https://wa.me/1234567890")
                 .build();
@@ -307,7 +307,7 @@ class NotificationResponseTest {
                 .whatsappLink("https://wa.me/1234567890")
                 .invoiceId(123L)
                 .customerName("John Doe")
-                .customerEmail("john@example.com")
+                .customerEmail("john@msgtel.com")
                 .customerPhone("1234567890")
                 .build();
 
@@ -319,7 +319,7 @@ class NotificationResponseTest {
         assertTrue(toString.contains("SENT"));
         assertTrue(toString.contains("123"));
         assertTrue(toString.contains("John Doe"));
-        assertTrue(toString.contains("john@example.com"));
+        assertTrue(toString.contains("john@msgtel.com"));
         assertTrue(toString.contains("1234567890"));
     }
 
@@ -340,7 +340,7 @@ class NotificationResponseTest {
                 .message("Email sent successfully")
                 .emailStatus("SENT")
                 .whatsappStatus("SKIPPED")
-                .customerEmail("customer@example.com")
+                .customerEmail("customer@msgtel.com")
                 .build();
 
         assertAll("Email only",
@@ -399,7 +399,7 @@ class NotificationResponseTest {
                 .whatsappLink("https://wa.me/1234567890")
                 .invoiceId(1L)
                 .customerName("Test")
-                .customerEmail("test@example.com")
+                .customerEmail("test@msgtel.com")
                 .customerPhone("1234567890")
                 .build();
 
