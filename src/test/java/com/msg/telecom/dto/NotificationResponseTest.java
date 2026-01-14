@@ -7,7 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Comprehensive test suite for NotificationResponse DTO.
- * Tests builder pattern, getters, setters, equals, hashCode, and toString methods.
+ * Tests builder pattern, getters, setters, equals, hashCode, and toString
+ * methods.
  */
 @DisplayName("NotificationResponse DTO Tests")
 class NotificationResponseTest {
@@ -23,79 +24,75 @@ class NotificationResponseTest {
     @DisplayName("Should create NotificationResponse with all-args constructor")
     void testAllArgsConstructor() {
         NotificationResponse response = new NotificationResponse(
-            true, 
-            "Notification sent successfully",
-            "SENT",
-            "SENT",
-            "https://wa.me/1234567890",
-            123L,
-            "John Doe",
-            "john@example.com",
-            "1234567890"
-        );
-        
+                true,
+                "Notification sent successfully",
+                "SENT",
+                "SENT",
+                "https://wa.me/1234567890",
+                123L,
+                "John Doe",
+                "john@example.com",
+                "1234567890");
+
         assertAll("All args constructor",
-            () -> assertTrue(response.isSuccess()),
-            () -> assertEquals("Notification sent successfully", response.getMessage()),
-            () -> assertEquals("SENT", response.getEmailStatus()),
-            () -> assertEquals("SENT", response.getWhatsappStatus()),
-            () -> assertEquals("https://wa.me/1234567890", response.getWhatsappLink()),
-            () -> assertEquals(123L, response.getInvoiceId()),
-            () -> assertEquals("John Doe", response.getCustomerName()),
-            () -> assertEquals("john@example.com", response.getCustomerEmail()),
-            () -> assertEquals("1234567890", response.getCustomerPhone())
-        );
+                () -> assertTrue(response.isSuccess()),
+                () -> assertEquals("Notification sent successfully", response.getMessage()),
+                () -> assertEquals("SENT", response.getEmailStatus()),
+                () -> assertEquals("SENT", response.getWhatsappStatus()),
+                () -> assertEquals("https://wa.me/1234567890", response.getWhatsappLink()),
+                () -> assertEquals(123L, response.getInvoiceId()),
+                () -> assertEquals("John Doe", response.getCustomerName()),
+                () -> assertEquals("john@example.com", response.getCustomerEmail()),
+                () -> assertEquals("1234567890", response.getCustomerPhone()));
     }
 
     @Test
     @DisplayName("Should create NotificationResponse using builder")
     void testBuilder() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(true)
-            .message("Notification sent")
-            .emailStatus("SENT")
-            .whatsappStatus("SENT")
-            .whatsappLink("https://wa.me/1234567890")
-            .invoiceId(456L)
-            .customerName("Jane Smith")
-            .customerEmail("jane@example.com")
-            .customerPhone("9876543210")
-            .build();
-        
+                .success(true)
+                .message("Notification sent")
+                .emailStatus("SENT")
+                .whatsappStatus("SENT")
+                .whatsappLink("https://wa.me/1234567890")
+                .invoiceId(456L)
+                .customerName("Jane Smith")
+                .customerEmail("jane@example.com")
+                .customerPhone("9876543210")
+                .build();
+
         assertAll("Builder pattern",
-            () -> assertTrue(response.isSuccess()),
-            () -> assertEquals("Notification sent", response.getMessage()),
-            () -> assertEquals("SENT", response.getEmailStatus()),
-            () -> assertEquals("SENT", response.getWhatsappStatus()),
-            () -> assertEquals("https://wa.me/1234567890", response.getWhatsappLink()),
-            () -> assertEquals(456L, response.getInvoiceId()),
-            () -> assertEquals("Jane Smith", response.getCustomerName()),
-            () -> assertEquals("jane@example.com", response.getCustomerEmail()),
-            () -> assertEquals("9876543210", response.getCustomerPhone())
-        );
+                () -> assertTrue(response.isSuccess()),
+                () -> assertEquals("Notification sent", response.getMessage()),
+                () -> assertEquals("SENT", response.getEmailStatus()),
+                () -> assertEquals("SENT", response.getWhatsappStatus()),
+                () -> assertEquals("https://wa.me/1234567890", response.getWhatsappLink()),
+                () -> assertEquals(456L, response.getInvoiceId()),
+                () -> assertEquals("Jane Smith", response.getCustomerName()),
+                () -> assertEquals("jane@example.com", response.getCustomerEmail()),
+                () -> assertEquals("9876543210", response.getCustomerPhone()));
     }
 
     @Test
     @DisplayName("Should create partial NotificationResponse using builder")
     void testPartialBuilder() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(false)
-            .message("Email failed")
-            .emailStatus("FAILED")
-            .whatsappStatus("SKIPPED")
-            .build();
-        
+                .success(false)
+                .message("Email failed")
+                .emailStatus("FAILED")
+                .whatsappStatus("SKIPPED")
+                .build();
+
         assertAll("Partial builder",
-            () -> assertFalse(response.isSuccess()),
-            () -> assertEquals("Email failed", response.getMessage()),
-            () -> assertEquals("FAILED", response.getEmailStatus()),
-            () -> assertEquals("SKIPPED", response.getWhatsappStatus()),
-            () -> assertNull(response.getWhatsappLink()),
-            () -> assertNull(response.getInvoiceId()),
-            () -> assertNull(response.getCustomerName()),
-            () -> assertNull(response.getCustomerEmail()),
-            () -> assertNull(response.getCustomerPhone())
-        );
+                () -> assertFalse(response.isSuccess()),
+                () -> assertEquals("Email failed", response.getMessage()),
+                () -> assertEquals("FAILED", response.getEmailStatus()),
+                () -> assertEquals("SKIPPED", response.getWhatsappStatus()),
+                () -> assertNull(response.getWhatsappLink()),
+                () -> assertNull(response.getInvoiceId()),
+                () -> assertNull(response.getCustomerName()),
+                () -> assertNull(response.getCustomerEmail()),
+                () -> assertNull(response.getCustomerPhone()));
     }
 
     @Test
@@ -104,7 +101,7 @@ class NotificationResponseTest {
         NotificationResponse response = new NotificationResponse();
         response.setSuccess(true);
         assertTrue(response.isSuccess());
-        
+
         response.setSuccess(false);
         assertFalse(response.isSuccess());
     }
@@ -122,13 +119,13 @@ class NotificationResponseTest {
     @DisplayName("Should set and get emailStatus")
     void testEmailStatusGetterSetter() {
         NotificationResponse response = new NotificationResponse();
-        
+
         response.setEmailStatus("SENT");
         assertEquals("SENT", response.getEmailStatus());
-        
+
         response.setEmailStatus("FAILED");
         assertEquals("FAILED", response.getEmailStatus());
-        
+
         response.setEmailStatus("SKIPPED");
         assertEquals("SKIPPED", response.getEmailStatus());
     }
@@ -137,13 +134,13 @@ class NotificationResponseTest {
     @DisplayName("Should set and get whatsappStatus")
     void testWhatsappStatusGetterSetter() {
         NotificationResponse response = new NotificationResponse();
-        
+
         response.setWhatsappStatus("SENT");
         assertEquals("SENT", response.getWhatsappStatus());
-        
+
         response.setWhatsappStatus("FAILED");
         assertEquals("FAILED", response.getWhatsappStatus());
-        
+
         response.setWhatsappStatus("SKIPPED");
         assertEquals("SKIPPED", response.getWhatsappStatus());
     }
@@ -197,10 +194,10 @@ class NotificationResponseTest {
     @DisplayName("Should test equals with same object")
     void testEqualsSameObject() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(true)
-            .message("Test")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .build();
+
         assertEquals(response, response);
     }
 
@@ -208,29 +205,29 @@ class NotificationResponseTest {
     @DisplayName("Should test equals with equal objects")
     void testEqualsEqualObjects() {
         NotificationResponse response1 = NotificationResponse.builder()
-            .success(true)
-            .message("Test")
-            .emailStatus("SENT")
-            .whatsappStatus("SENT")
-            .invoiceId(1L)
-            .customerName("Test User")
-            .customerEmail("test@example.com")
-            .customerPhone("1234567890")
-            .whatsappLink("https://wa.me/1234567890")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .emailStatus("SENT")
+                .whatsappStatus("SENT")
+                .invoiceId(1L)
+                .customerName("Test User")
+                .customerEmail("test@example.com")
+                .customerPhone("1234567890")
+                .whatsappLink("https://wa.me/1234567890")
+                .build();
+
         NotificationResponse response2 = NotificationResponse.builder()
-            .success(true)
-            .message("Test")
-            .emailStatus("SENT")
-            .whatsappStatus("SENT")
-            .invoiceId(1L)
-            .customerName("Test User")
-            .customerEmail("test@example.com")
-            .customerPhone("1234567890")
-            .whatsappLink("https://wa.me/1234567890")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .emailStatus("SENT")
+                .whatsappStatus("SENT")
+                .invoiceId(1L)
+                .customerName("Test User")
+                .customerEmail("test@example.com")
+                .customerPhone("1234567890")
+                .whatsappLink("https://wa.me/1234567890")
+                .build();
+
         assertEquals(response1, response2);
     }
 
@@ -238,15 +235,15 @@ class NotificationResponseTest {
     @DisplayName("Should test equals with different objects")
     void testEqualsDifferentObjects() {
         NotificationResponse response1 = NotificationResponse.builder()
-            .success(true)
-            .message("Test 1")
-            .build();
-        
+                .success(true)
+                .message("Test 1")
+                .build();
+
         NotificationResponse response2 = NotificationResponse.builder()
-            .success(false)
-            .message("Test 2")
-            .build();
-        
+                .success(false)
+                .message("Test 2")
+                .build();
+
         assertNotEquals(response1, response2);
     }
 
@@ -268,14 +265,14 @@ class NotificationResponseTest {
     @DisplayName("Should test hashCode consistency")
     void testHashCodeConsistency() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(true)
-            .message("Test")
-            .emailStatus("SENT")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .emailStatus("SENT")
+                .build();
+
         int hashCode1 = response.hashCode();
         int hashCode2 = response.hashCode();
-        
+
         assertEquals(hashCode1, hashCode2);
     }
 
@@ -283,19 +280,19 @@ class NotificationResponseTest {
     @DisplayName("Should test hashCode with equal objects")
     void testHashCodeEqualObjects() {
         NotificationResponse response1 = NotificationResponse.builder()
-            .success(true)
-            .message("Test")
-            .emailStatus("SENT")
-            .whatsappStatus("SENT")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .emailStatus("SENT")
+                .whatsappStatus("SENT")
+                .build();
+
         NotificationResponse response2 = NotificationResponse.builder()
-            .success(true)
-            .message("Test")
-            .emailStatus("SENT")
-            .whatsappStatus("SENT")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .emailStatus("SENT")
+                .whatsappStatus("SENT")
+                .build();
+
         assertEquals(response1.hashCode(), response2.hashCode());
     }
 
@@ -303,19 +300,19 @@ class NotificationResponseTest {
     @DisplayName("Should test toString contains all fields")
     void testToString() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(true)
-            .message("Notification sent successfully")
-            .emailStatus("SENT")
-            .whatsappStatus("SENT")
-            .whatsappLink("https://wa.me/1234567890")
-            .invoiceId(123L)
-            .customerName("John Doe")
-            .customerEmail("john@example.com")
-            .customerPhone("1234567890")
-            .build();
-        
+                .success(true)
+                .message("Notification sent successfully")
+                .emailStatus("SENT")
+                .whatsappStatus("SENT")
+                .whatsappLink("https://wa.me/1234567890")
+                .invoiceId(123L)
+                .customerName("John Doe")
+                .customerEmail("john@example.com")
+                .customerPhone("1234567890")
+                .build();
+
         String toString = response.toString();
-        
+
         assertNotNull(toString);
         assertTrue(toString.contains("true"));
         assertTrue(toString.contains("Notification sent successfully"));
@@ -339,76 +336,73 @@ class NotificationResponseTest {
     @DisplayName("Should handle email-only notification")
     void testEmailOnlyNotification() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(true)
-            .message("Email sent successfully")
-            .emailStatus("SENT")
-            .whatsappStatus("SKIPPED")
-            .customerEmail("customer@example.com")
-            .build();
-        
+                .success(true)
+                .message("Email sent successfully")
+                .emailStatus("SENT")
+                .whatsappStatus("SKIPPED")
+                .customerEmail("customer@example.com")
+                .build();
+
         assertAll("Email only",
-            () -> assertTrue(response.isSuccess()),
-            () -> assertEquals("SENT", response.getEmailStatus()),
-            () -> assertEquals("SKIPPED", response.getWhatsappStatus()),
-            () -> assertNotNull(response.getCustomerEmail()),
-            () -> assertNull(response.getCustomerPhone())
-        );
+                () -> assertTrue(response.isSuccess()),
+                () -> assertEquals("SENT", response.getEmailStatus()),
+                () -> assertEquals("SKIPPED", response.getWhatsappStatus()),
+                () -> assertNotNull(response.getCustomerEmail()),
+                () -> assertNull(response.getCustomerPhone()));
     }
 
     @Test
     @DisplayName("Should handle WhatsApp-only notification")
     void testWhatsAppOnlyNotification() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(true)
-            .message("WhatsApp link generated")
-            .emailStatus("SKIPPED")
-            .whatsappStatus("SENT")
-            .whatsappLink("https://wa.me/1234567890")
-            .customerPhone("1234567890")
-            .build();
-        
+                .success(true)
+                .message("WhatsApp link generated")
+                .emailStatus("SKIPPED")
+                .whatsappStatus("SENT")
+                .whatsappLink("https://wa.me/1234567890")
+                .customerPhone("1234567890")
+                .build();
+
         assertAll("WhatsApp only",
-            () -> assertTrue(response.isSuccess()),
-            () -> assertEquals("SKIPPED", response.getEmailStatus()),
-            () -> assertEquals("SENT", response.getWhatsappStatus()),
-            () -> assertNotNull(response.getWhatsappLink()),
-            () -> assertNotNull(response.getCustomerPhone())
-        );
+                () -> assertTrue(response.isSuccess()),
+                () -> assertEquals("SKIPPED", response.getEmailStatus()),
+                () -> assertEquals("SENT", response.getWhatsappStatus()),
+                () -> assertNotNull(response.getWhatsappLink()),
+                () -> assertNotNull(response.getCustomerPhone()));
     }
 
     @Test
     @DisplayName("Should handle failed notification")
     void testFailedNotification() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(false)
-            .message("Failed to send notifications")
-            .emailStatus("FAILED")
-            .whatsappStatus("FAILED")
-            .build();
-        
+                .success(false)
+                .message("Failed to send notifications")
+                .emailStatus("FAILED")
+                .whatsappStatus("FAILED")
+                .build();
+
         assertAll("Failed notification",
-            () -> assertFalse(response.isSuccess()),
-            () -> assertEquals("Failed to send notifications", response.getMessage()),
-            () -> assertEquals("FAILED", response.getEmailStatus()),
-            () -> assertEquals("FAILED", response.getWhatsappStatus())
-        );
+                () -> assertFalse(response.isSuccess()),
+                () -> assertEquals("Failed to send notifications", response.getMessage()),
+                () -> assertEquals("FAILED", response.getEmailStatus()),
+                () -> assertEquals("FAILED", response.getWhatsappStatus()));
     }
 
     @Test
     @DisplayName("Should handle builder with chain methods")
     void testBuilderChaining() {
         NotificationResponse response = NotificationResponse.builder()
-            .success(true)
-            .message("Test")
-            .emailStatus("SENT")
-            .whatsappStatus("SENT")
-            .whatsappLink("https://wa.me/1234567890")
-            .invoiceId(1L)
-            .customerName("Test")
-            .customerEmail("test@example.com")
-            .customerPhone("1234567890")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .emailStatus("SENT")
+                .whatsappStatus("SENT")
+                .whatsappLink("https://wa.me/1234567890")
+                .invoiceId(1L)
+                .customerName("Test")
+                .customerEmail("test@example.com")
+                .customerPhone("1234567890")
+                .build();
+
         assertNotNull(response);
         assertTrue(response.isSuccess());
     }
@@ -462,11 +456,11 @@ class NotificationResponseTest {
         NotificationResponse response = new NotificationResponse();
         response.setSuccess(false);
         response.setMessage("Initial message");
-        
+
         // Update
         response.setSuccess(true);
         response.setMessage("Updated message");
-        
+
         assertTrue(response.isSuccess());
         assertEquals("Updated message", response.getMessage());
     }
@@ -476,12 +470,12 @@ class NotificationResponseTest {
     void testBuilderInstance() {
         NotificationResponse.NotificationResponseBuilder builder = NotificationResponse.builder();
         assertNotNull(builder);
-        
+
         NotificationResponse response = builder
-            .success(true)
-            .message("Test")
-            .build();
-        
+                .success(true)
+                .message("Test")
+                .build();
+
         assertNotNull(response);
         assertTrue(response.isSuccess());
     }
@@ -508,17 +502,16 @@ class NotificationResponseTest {
     @DisplayName("Should test no-args constructor initializes to defaults")
     void testNoArgsConstructorDefaults() {
         NotificationResponse response = new NotificationResponse();
-        
+
         assertAll("Default values",
-            () -> assertFalse(response.isSuccess()),
-            () -> assertNull(response.getMessage()),
-            () -> assertNull(response.getEmailStatus()),
-            () -> assertNull(response.getWhatsappStatus()),
-            () -> assertNull(response.getWhatsappLink()),
-            () -> assertNull(response.getInvoiceId()),
-            () -> assertNull(response.getCustomerName()),
-            () -> assertNull(response.getCustomerEmail()),
-            () -> assertNull(response.getCustomerPhone())
-        );
+                () -> assertFalse(response.isSuccess()),
+                () -> assertNull(response.getMessage()),
+                () -> assertNull(response.getEmailStatus()),
+                () -> assertNull(response.getWhatsappStatus()),
+                () -> assertNull(response.getWhatsappLink()),
+                () -> assertNull(response.getInvoiceId()),
+                () -> assertNull(response.getCustomerName()),
+                () -> assertNull(response.getCustomerEmail()),
+                () -> assertNull(response.getCustomerPhone()));
     }
 }

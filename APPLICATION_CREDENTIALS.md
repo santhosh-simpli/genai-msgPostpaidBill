@@ -1,13 +1,13 @@
 # 🔐 MSG Telecom Postpaid Billing System - Access Credentials
 
-**Status:** Application Running on Port 8080  
+**Status:** Application Running on Port 8080
 **Date:** January 14, 2026
 
 ---
 
 ## 🌐 Swagger API Documentation
 
-**Swagger UI URL:** http://localhost:8080/swagger-ui.html  
+**Swagger UI URL:** http://localhost:8080/swagger-ui.html
 **API Docs (JSON):** http://localhost:8080/v3/api-docs
 
 ---
@@ -249,6 +249,6 @@ http://localhost:8080/api/v1
 
 ---
 
-**Status:** ✅ Application Running  
-**Last Updated:** January 14, 2026  
+**Status:** ✅ Application Running
+**Last Updated:** January 14, 2026
 **Test Coverage:** 90% (760 tests)

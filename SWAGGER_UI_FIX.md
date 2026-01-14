@@ -99,15 +99,15 @@ Password: password123
 
 ## ✨ Features Now Available
 
-✅ Interactive Swagger UI  
-✅ API documentation  
-✅ Try-it-out functionality  
-✅ OpenAPI 3.0 schema  
-✅ JWT authentication support  
-✅ Request/response examples  
+✅ Interactive Swagger UI
+✅ API documentation
+✅ Try-it-out functionality
+✅ OpenAPI 3.0 schema
+✅ JWT authentication support
+✅ Request/response examples
 
 ---
 
-**Status:** ✅ Fixed and Ready to Use  
-**Port:** 8080  
+**Status:** ✅ Fixed and Ready to Use
+**Port:** 8080
 **Test Coverage:** 90%
