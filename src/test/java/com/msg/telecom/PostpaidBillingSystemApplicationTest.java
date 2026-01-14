@@ -1,14 +1,17 @@
 package com.msg.telecom;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
+@DisplayName("PostpaidBillingSystemApplication Tests")
 class PostpaidBillingSystemApplicationTest {
 
     @Test
+    @DisplayName("Should run main method without throwing exception")
     void mainMethodRunsSuccessfully() {
         // Test main method with empty args - just verify the class exists
         assertDoesNotThrow(() -> {
@@ -18,11 +21,13 @@ class PostpaidBillingSystemApplicationTest {
     }
 
     @Test
+    @DisplayName("Should verify application class exists")
     void applicationClassExists() {
         assertNotNull(PostpaidBillingSystemApplication.class);
     }
 
     @Test
+    @DisplayName("Should verify main method exists")
     void applicationHasMainMethod() {
         assertDoesNotThrow(() -> {
             PostpaidBillingSystemApplication.class.getMethod("main", String[].class);
@@ -30,12 +35,14 @@ class PostpaidBillingSystemApplicationTest {
     }
 
     @Test
+    @DisplayName("Should have SpringBootApplication annotation")
     void applicationHasSpringBootApplicationAnnotation() {
         assertTrue(PostpaidBillingSystemApplication.class.isAnnotationPresent(
-                org.springframework.boot.autoconfigure.SpringBootApplication.class));
+                SpringBootApplication.class));
     }
 
     @Test
+    @DisplayName("Should verify main method signature")
     void mainMethodAcceptsStringArray() throws NoSuchMethodException {
         var mainMethod = PostpaidBillingSystemApplication.class.getMethod("main", String[].class);
         assertNotNull(mainMethod);
@@ -45,6 +52,7 @@ class PostpaidBillingSystemApplicationTest {
     }
 
     @Test
+    @DisplayName("Should instantiate application")
     void applicationCanBeInstantiated() {
         PostpaidBillingSystemApplication app = new PostpaidBillingSystemApplication();
         assertNotNull(app);

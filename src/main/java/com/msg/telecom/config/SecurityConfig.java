@@ -50,19 +50,22 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Public endpoints
-                .requestMatchers("/api/register", "/api/login").permitAll()
+                // Public endpoints - allow both /api and /api/v1 paths
+                .requestMatchers("/api/login", "/api/register").permitAll()
+                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/index.html", "/", "/static/**", "/*.html", "/*.css", "/*.js").permitAll()
+                .requestMatchers("/login.html", "/login").permitAll()
                 
                 // Admin endpoints
-                .requestMatchers("/api/users/**").hasRole("ADMIN")
+                .requestMatchers("/api/users/**", "/api/v1/users/**").hasRole("ADMIN")
                 
                 // Customer endpoints
-                .requestMatchers("/api/customers/**").hasAnyRole("ADMIN", "OPERATOR", "CUSTOMER")
-                .requestMatchers("/api/service-usage/**").hasAnyRole("ADMIN", "OPERATOR", "CUSTOMER")
-                .requestMatchers("/api/invoices/**").hasAnyRole("ADMIN", "OPERATOR", "CUSTOMER")
-                .requestMatchers("/api/payments/**").hasAnyRole("ADMIN", "CUSTOMER")
+                .requestMatchers("/api/customers/**", "/api/v1/customers/**").hasAnyRole("ADMIN", "OPERATOR", "CUSTOMER")
+                .requestMatchers("/api/service-usage/**", "/api/v1/services/**").hasAnyRole("ADMIN", "OPERATOR", "CUSTOMER")
+                .requestMatchers("/api/invoices/**", "/api/v1/invoices/**").hasAnyRole("ADMIN", "OPERATOR", "CUSTOMER")
+                .requestMatchers("/api/payments/**", "/api/v1/payments/**").hasAnyRole("ADMIN", "CUSTOMER")
                 
                 // All other requests need authentication
                 .anyRequest().authenticated()
