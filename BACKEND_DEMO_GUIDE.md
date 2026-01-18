@@ -184,24 +184,24 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> 
+            .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 // Public endpoints
                 .requestMatchers("/api/login", "/api/register").permitAll()
                 .requestMatchers("/h2-console/**", "/swagger-ui/**").permitAll()
-                
+
                 // Admin-only endpoints
                 .requestMatchers("/api/users/**").hasRole("ADMIN")
-                
+
                 // Multi-role endpoints
                 .requestMatchers("/api/customers/**")
                     .hasAnyRole("ADMIN", "OPERATOR", "CUSTOMER")
-                
+
                 // All other requests need authentication
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter, 
+            .addFilterBefore(jwtAuthenticationFilter,
                 UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -310,9 +310,9 @@ public class PaymentController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'CUSTOMER')")
     public ResponseEntity<PaymentDto> createPayment(
-            @RequestBody PaymentDto dto, 
+            @RequestBody PaymentDto dto,
             Authentication authentication) {
-        
+
         Payment payment = toEntity(dto);
         Payment created = paymentService.createPayment(payment);
         return ResponseEntity.ok(toDto(created));
@@ -362,7 +362,7 @@ public class PaymentService {
             Invoice invoice = payment.getInvoice();
             invoice.setStatus("PAID");
             invoiceRepository.save(invoice);
-            log.info("Updated invoice {} status to PAID after payment", 
+            log.info("Updated invoice {} status to PAID after payment",
                     invoice.getInvoiceId());
         }
 
@@ -410,7 +410,7 @@ public class AuthService {
         // Authenticate using Spring Security
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                request.getUsername(), 
+                request.getUsername(),
                 request.getPassword()
             )
         );
@@ -422,14 +422,14 @@ public class AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        log.info("Successful login for user: {} with role: {}", 
+        log.info("Successful login for user: {} with role: {}",
                 user.getUsername(), user.getRole());
-        
+
         return new AuthResponse(
-            token, 
-            user.getUserId(), 
-            user.getUsername(), 
-            user.getEmail(), 
+            token,
+            user.getUserId(),
+            user.getUsername(),
+            user.getEmail(),
             user.getRole().name()
         );
     }
@@ -456,23 +456,23 @@ public class AuthService {
                 .build();
 
         User savedUser = userRepository.save(user);
-        log.info("Registered new user: {} with role: {}", 
+        log.info("Registered new user: {} with role: {}",
                 savedUser.getUsername(), savedUser.getRole());
 
         // Auto-login after registration
         Authentication auth = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
-                request.getUsername(), 
+                request.getUsername(),
                 request.getPassword()
             )
         );
         String token = jwtTokenProvider.generateToken(auth);
 
         return new AuthResponse(
-            token, 
-            savedUser.getUserId(), 
-            savedUser.getUsername(), 
-            savedUser.getEmail(), 
+            token,
+            savedUser.getUserId(),
+            savedUser.getUsername(),
+            savedUser.getEmail(),
             savedUser.getRole().name()
         );
     }
@@ -872,9 +872,9 @@ String jwt = getJwtFromRequest(request);
 if (jwtTokenProvider.validateToken(jwt)) {
     String username = jwtTokenProvider.getUsernameFromToken(jwt);
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-    
+
     // Set authentication in context
-    UsernamePasswordAuthenticationToken auth = 
+    UsernamePasswordAuthenticationToken auth =
         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     SecurityContextHolder.getContext().setAuthentication(auth);
 }
@@ -888,10 +888,10 @@ public ResponseEntity<PaymentDto> createPayment(@RequestBody PaymentDto dto) {
     // Check authorization (Spring Security handles this)
     // Convert DTO to Entity
     Payment payment = toEntity(dto);
-    
+
     // Call service layer
     Payment created = paymentService.createPayment(payment);
-    
+
     // Convert Entity to DTO
     return ResponseEntity.ok(toDto(created));
 }
@@ -904,7 +904,7 @@ public Payment createPayment(Payment payment) {
     // Save payment
     Payment savedPayment = paymentRepository.save(payment);
     log.info("Created payment ID: {}", savedPayment.getPaymentId());
-    
+
     // Auto-update invoice status
     if (payment.getInvoice() != null) {
         Invoice invoice = payment.getInvoice();
@@ -912,7 +912,7 @@ public Payment createPayment(Payment payment) {
         invoiceRepository.save(invoice);
         log.info("Updated invoice {} to PAID", invoice.getInvoiceId());
     }
-    
+
     return savedPayment;
 }
 ```
@@ -921,7 +921,7 @@ public Payment createPayment(Payment payment) {
 ```java
 // Spring Data JPA generates SQL automatically
 paymentRepository.save(payment);
-// Executes: INSERT INTO payments (amount, invoice_id, payment_date, payment_method) 
+// Executes: INSERT INTO payments (amount, invoice_id, payment_date, payment_method)
 //           VALUES (150.00, 1, '2026-01-18', 'CREDIT_CARD')
 ```
 
@@ -1260,6 +1260,6 @@ java -jar target/postpaid-billing-system-0.0.1-SNAPSHOT.jar
 
 ---
 
-**Last Updated:** January 18, 2026  
-**Spring Boot Version:** 3.2.1  
+**Last Updated:** January 18, 2026
+**Spring Boot Version:** 3.2.1
 **Java Version:** 21

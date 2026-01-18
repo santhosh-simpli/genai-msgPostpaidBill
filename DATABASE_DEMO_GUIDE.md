@@ -187,7 +187,7 @@ ORDER BY i.billing_end_date DESC;
 
 ### 7. Statistics
 ```sql
-SELECT 
+SELECT
     COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pending_invoices,
     COUNT(CASE WHEN status = 'PAID' THEN 1 END) AS paid_invoices,
     COUNT(CASE WHEN status = 'OVERDUE' THEN 1 END) AS overdue_invoices,

@@ -53,14 +53,14 @@ Driver Class: org.h2.Driver
 
 ### View All Users
 ```sql
-SELECT user_id, username, email, role, first_name, last_name 
-FROM users 
+SELECT user_id, username, email, role, first_name, last_name
+FROM users
 ORDER BY user_id;
 ```
 
 ### View All Customers with User Info
 ```sql
-SELECT c.customer_id, c.first_name, c.last_name, c.email, c.phone_number, 
+SELECT c.customer_id, c.first_name, c.last_name, c.email, c.phone_number,
        u.username, u.role
 FROM customers c
 LEFT JOIN users u ON c.user_id = u.user_id
@@ -114,7 +114,7 @@ ORDER BY i.billing_end_date DESC;
 
 ### Statistics Query
 ```sql
-SELECT 
+SELECT
     COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pending_invoices,
     COUNT(CASE WHEN status = 'PAID' THEN 1 END) AS paid_invoices,
     COUNT(CASE WHEN status = 'OVERDUE' THEN 1 END) AS overdue_invoices,
@@ -524,6 +524,6 @@ Database (H2 → PostgreSQL for production)
 
 ---
 
-**Last Updated:** January 18, 2026  
-**Application Version:** 1.0  
+**Last Updated:** January 18, 2026
+**Application Version:** 1.0
 **Demo Environment:** http://localhost:8080
